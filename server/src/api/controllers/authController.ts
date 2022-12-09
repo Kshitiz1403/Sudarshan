@@ -1,3 +1,4 @@
+import { IPasswordResetToken } from '@/interfaces/IPasswordResetToken';
 import { IUserInputDTO } from '@/interfaces/IUser';
 import AuthService from '@/services/authService';
 import { NextFunction, Request, Response } from 'express';
@@ -42,6 +43,22 @@ export class AuthController {
       const email = req.body.email;
       const status = await this.authServiceInstance.forgotPassword(email);
       return res.status(200).json(Result.success<Object>(status));
+    } catch (e) {
+      return res.status(500).json(Result.error(e));
+    }
+  };
+
+  public checkResetToken = (req: Request & { token: IPasswordResetToken }, res: Response, next: NextFunction) => {
+    this.logger.debug('Calling Check Reset Password Token endpoint');
+    const isToken = this.authServiceInstance.checkValidResetToken(req.token);
+    return res.status(200).json(Result.success(isToken));
+  };
+
+  public reset = async (req: Request & { token: IPasswordResetToken }, res: Response, next: NextFunction) => {
+    this.logger.debug('Calling Reset Password endpoint with body: %o', req.body);
+    try {
+      const user = await this.authServiceInstance.resetPassword(req.token, req.body.password);
+      return res.status(200).json(Result.success(user));
     } catch (e) {
       return res.status(500).json(Result.error(e));
     }

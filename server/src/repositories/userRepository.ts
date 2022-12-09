@@ -43,6 +43,13 @@ export class UserRepository {
     }
   };
 
+  public updatePasswordByUsername = async (userId: IUser['_id'], salt: IUser['salt'], password: IUser['password']) => {
+    return UserModel.findOneAndUpdate({ _id: userId }, { $set: { salt, password } }, { new: true }, (err, doc) => {
+      if (err) throw err;
+      return doc.toObject();
+    });
+  };
+
   private deleteSensitiveInfo = (user: IUser) => {
     Reflect.deleteProperty(user, 'salt');
     Reflect.deleteProperty(user, 'password');

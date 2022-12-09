@@ -9,6 +9,7 @@ import { UserRepository } from '@/repositories/userRepository';
 import { Logger } from 'winston';
 import { PasswordResetTokenRepository } from '@/repositories/passwordResetTokenRepository';
 import EmailService from './emailService';
+import { IPasswordResetToken } from '@/interfaces/IPasswordResetToken';
 
 @Service()
 export default class AuthService {
@@ -123,6 +124,34 @@ export default class AuthService {
     this.emailServiceInstance.sendResetPasswordEmail(user.email, reset_link, token_expiry);
 
     return 'Check your email for password reset instructions';
+  };
+
+  public checkValidResetToken = (token: IPasswordResetToken) => {
+    this.logger.silly('Checking reset token');
+
+    return 'Valid Reset Link';
+  };
+
+  public resetPassword = async (token: IPasswordResetToken, newPassword: string) => {
+    try {
+      const { salt, hashedPassword } = await this.hashPassword(newPassword);
+
+      this.logger.silly('Updating user db record');
+      const userId = token['userId'];
+      const userRecord = this.userRepositoryInstance.updatePasswordByUsername(
+        userId,
+        salt.toString('hex'),
+        hashedPassword,
+      );
+      await this.passwordResetRepositoryInstance.markTokenUsed(token._id);
+
+      const user = await userRecord;
+      Reflect.deleteProperty(user, 'password');
+      Reflect.deleteProperty(user, 'salt');
+      return { user };
+    } catch (e) {
+      throw new Error(e);
+    }
   };
 
   private hashPassword = async (password: string) => {

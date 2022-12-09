@@ -35,4 +35,15 @@ export class AuthController {
       return next(error);
     }
   };
+
+  public forgot = async (req: Request, res: Response, next: NextFunction) => {
+    this.logger.debug('Calling Forgot Password endpoint with body: %o', req.body);
+    try {
+      const email = req.body.email;
+      const status = await this.authServiceInstance.forgotPassword(email);
+      return res.status(200).json(Result.success<Object>(status));
+    } catch (e) {
+      return res.status(500).json(Result.error(e));
+    }
+  };
 }

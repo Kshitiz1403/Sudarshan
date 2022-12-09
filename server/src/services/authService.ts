@@ -7,13 +7,24 @@ import { randomBytes } from 'crypto';
 import { IUser, IUserInputDTO } from '@/interfaces/IUser';
 import { UserRepository } from '@/repositories/userRepository';
 import { Logger } from 'winston';
+import { PasswordResetTokenRepository } from '@/repositories/passwordResetTokenRepository';
+import EmailService from './emailService';
 
 @Service()
 export default class AuthService {
   protected userRepositoryInstance: UserRepository;
+  protected passwordResetRepositoryInstance: PasswordResetTokenRepository;
+  protected emailServiceInstance: EmailService;
 
-  constructor(userRepository: UserRepository, @Inject('logger') private logger: Logger) {
+  constructor(
+    userRepository: UserRepository,
+    @Inject('logger') private logger: Logger,
+    passwordResetTokenRepository: PasswordResetTokenRepository,
+    emailService: EmailService,
+  ) {
     this.userRepositoryInstance = userRepository;
+    this.passwordResetRepositoryInstance = passwordResetTokenRepository;
+    this.emailServiceInstance = emailService;
   }
 
   public async signUp(userInputDTO: IUserInputDTO): Promise<{ user: IUser; token: string }> {
@@ -85,6 +96,34 @@ export default class AuthService {
       throw new Error('Invalid Password');
     }
   }
+
+  public forgotPassword = async (email: IUserInputDTO['email']) => {
+    const getPasswordResetExpiryDuration = () => {
+      const now = new Date();
+      const exp = new Date(now);
+      exp.setTime(exp.getTime() + 1000 * 60 * 30); // 30 minutes from now
+      return exp;
+    };
+
+    const token = randomBytes(48).toString('hex');
+    const token_expiry = getPasswordResetExpiryDuration();
+
+    const user = await this.userRepositoryInstance.findUserByEmail(email);
+
+    if (!user) return 'Check your email for password reset instructions';
+
+    const password_reset_token = await this.passwordResetRepositoryInstance.createResetToken({
+      userId: user._id,
+      token: token,
+      token_expiry: token_expiry,
+    });
+
+    const reset_link = `https://${config.host}/reset/${token}`;
+
+    this.emailServiceInstance.sendResetPasswordEmail(user.email, reset_link, token_expiry);
+
+    return 'Check your email for password reset instructions';
+  };
 
   private hashPassword = async (password: string) => {
     const salt = randomBytes(32);

@@ -35,6 +35,8 @@ export default (app: Router) => {
     ctrl.signin,
   );
 
+  route.post('/forgot', ctrl.forgot);
+
   /**
    * @TODO Let's leave this as a place holder for now
    * The reason for a logout route could be deleting a 'push notification token'

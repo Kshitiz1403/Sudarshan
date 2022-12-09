@@ -40,4 +40,9 @@ export default {
   api: {
     prefix: '/api',
   },
+
+  emails: {
+    sender: process.env.AZURE_EMAIL_SENDER,
+    azure_connection_string: process.env.AZURE_EMAIL_CONNECTION_STRING,
+  },
 };

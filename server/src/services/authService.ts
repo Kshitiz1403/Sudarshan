@@ -49,7 +49,7 @@ export default class AuthService {
        * that transforms data from layer to layer
        * but that's too over-engineering for now
        */
-      const user = userRecord;
+      const user = { ...userRecord };
       Reflect.deleteProperty(user, 'password');
       Reflect.deleteProperty(user, 'salt');
       return { user, token };
@@ -74,7 +74,7 @@ export default class AuthService {
       this.logger.silly('Generating JWT');
       const token = this.generateToken(userRecord);
 
-      const user = {...userRecord}
+      const user = { ...userRecord };
       Reflect.deleteProperty(user, 'password');
       Reflect.deleteProperty(user, 'salt');
       /**

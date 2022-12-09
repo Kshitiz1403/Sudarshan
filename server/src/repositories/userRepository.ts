@@ -9,9 +9,9 @@ export class UserRepository {
   public findUserByEmail = async (email: IUser['email']) => {
     try {
       const user = await UserModel.findOne({ email });
-      if (user){
-          const userRecord = user.toObject();
-          return userRecord;
+      if (user) {
+        const userRecord = user.toObject();
+        return userRecord;
       }
       return null;
     } catch (error) {
@@ -20,11 +20,15 @@ export class UserRepository {
   };
   public createUser = async (userInputDTO: IUserInputDTO, salt: IUser['salt'], password: IUser['password']) => {
     try {
-      return await UserModel.create({
+      const user = await UserModel.create({
         ...userInputDTO,
         salt,
         password,
       });
+      if (user) {
+        return user.toObject();
+      }
+      return null;
     } catch (error) {
       throw 'User cannot be created';
     }

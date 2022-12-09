@@ -1,7 +1,7 @@
 {
-  "name": "bulletproof-nodejs",
+  "name": "Sudarshan-Backend",
   "version": "1.0.0",
-  "description": "Bulletproof node.js",
+  "description": "sudarshan to the 🚀",
   "main": "src/app.ts",
   "scripts": {
     "build": "tsc",

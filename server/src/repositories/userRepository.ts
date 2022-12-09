@@ -9,8 +9,11 @@ export class UserRepository {
   public findUserByEmail = async (email: IUser['email']) => {
     try {
       const user = await UserModel.findOne({ email });
-      const userRecord = user.toObject();
-      return userRecord;
+      if (user){
+          const userRecord = user.toObject();
+          return userRecord;
+      }
+      return null;
     } catch (error) {
       throw error;
     }

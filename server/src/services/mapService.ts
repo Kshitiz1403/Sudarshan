@@ -49,6 +49,8 @@ export class MapService {
   public goToPlace = async ({ origin, destination, waypoints }: IGoToPlaceInputDTO) => {
     if (!this.validatePlace(origin) || !this.validatePlace(destination)) throw 'Please enter valid location';
 
+    if (waypoints.length > 9) throw 'Waypoints cannot be more than 9'; // Google cloud charges extra for more than 10 waypoints - https://developers.google.com/maps/documentation/directions/usage-and-billing
+    
     let optimize_waypoints = false;
     let waypoints_place = [];
     if (waypoints && waypoints.length > 0) {

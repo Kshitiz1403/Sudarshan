@@ -132,7 +132,6 @@ export default class AuthService {
   public resetPassword = async (email: IUser['email'], otp: IPasswordResetToken['otp'], newPassword: string) => {
     try {
       const record = await this.passwordResetRepositoryInstance.getResetPasswordToken(email);
-      console.log(record);
       if (!record) throw 'The OTP is not valid.';
       if (!record['passwordresettoken']) throw 'The OTP is not valid.';
       const password_reset_token = record['passwordresettoken'];
@@ -150,12 +149,11 @@ export default class AuthService {
         salt.toString('hex'),
         hashedPassword,
       );
-      await this.passwordResetRepositoryInstance.markTokenUsed(password_reset_token._id);
-
+      this.passwordResetRepositoryInstance.markTokenUsed(password_reset_token._id);
       const user = await userRecord;
-      Reflect.deleteProperty(user, 'password');
-      Reflect.deleteProperty(user, 'salt');
-      return { user };
+
+      const token = this.generateToken(await userRecord);
+      return { user: { _id: user._id, email: user.email }, token };
     } catch (e) {
       throw new Error(e);
     }

@@ -2,9 +2,10 @@ import config from '@/config';
 import Mailer from '@/loaders/mailer';
 import dayjs from 'dayjs';
 import relativeTime from 'dayjs/plugin/relativeTime';
-import { Inject } from 'typedi';
+import { Inject, Service } from 'typedi';
 import { EmailUtilService } from './emailUtilService';
 
+@Service()
 export default class EmailService {
   constructor(
     @Inject('emailClient') private emailClient: typeof Mailer,

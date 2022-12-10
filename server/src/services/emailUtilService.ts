@@ -1,5 +1,7 @@
 import { IEmailTemplate } from '@/interfaces/IEmail';
+import { Service } from 'typedi';
 
+@Service()
 export class EmailUtilService {
   public resetPasswordEmailTemplate = (token_expiry: string, link: string): IEmailTemplate => {
     return {

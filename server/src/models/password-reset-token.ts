@@ -3,8 +3,8 @@ import mongoose, { Schema } from 'mongoose';
 const PasswordResetToken = new mongoose.Schema(
   {
     userId: Schema.Types.ObjectId,
-    token: String,
-    token_expiry: Date,
+    otp: String,
+    otp_expiry: Date,
     used: {
       type: Boolean,
       default: false,

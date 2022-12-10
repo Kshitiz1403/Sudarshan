@@ -105,24 +105,22 @@ export default class AuthService {
       return exp;
     };
 
-    const token = randomBytes(48).toString('hex');
-    const token_expiry = getPasswordResetExpiryDuration();
+    const otp = this.getOtp(6);
+    const otp_expiry = getPasswordResetExpiryDuration();
 
     const user = await this.userRepositoryInstance.findUserByEmail(email);
 
-    if (!user) return 'Check your email for password reset instructions';
+    if (!user) return 'OTP has been sent to your email address';
 
     const password_reset_token = await this.passwordResetRepositoryInstance.createResetToken({
       userId: user._id,
-      token: token,
-      token_expiry: token_expiry,
+      otp,
+      otp_expiry,
     });
 
-    const reset_link = `https://${config.host}/reset/${token}`;
+    this.emailServiceInstance.sendResetPasswordEmail(user.email, otp, otp_expiry);
 
-    this.emailServiceInstance.sendResetPasswordEmail(user.email, reset_link, token_expiry);
-
-    return 'Check your email for password reset instructions';
+    return 'OTP has been sent to your email address';
   };
 
   public checkValidResetToken = (token: IPasswordResetToken) => {
@@ -131,18 +129,28 @@ export default class AuthService {
     return 'Valid Reset Link';
   };
 
-  public resetPassword = async (token: IPasswordResetToken, newPassword: string) => {
+  public resetPassword = async (email: IUser['email'], otp: IPasswordResetToken['otp'], newPassword: string) => {
     try {
+      const record = await this.passwordResetRepositoryInstance.getResetPasswordToken(email);
+      console.log(record);
+      if (!record) throw 'The OTP is not valid.';
+      if (!record['passwordresettoken']) throw 'The OTP is not valid.';
+      const password_reset_token = record['passwordresettoken'];
+      if (password_reset_token.otp != otp) throw 'The OTP is not valid.';
+      if (password_reset_token.used) throw 'The OTP is not valid.';
+
+      const now = new Date();
+      if (password_reset_token.otp_expiry < now) throw 'The OTP is not valid.';
       const { salt, hashedPassword } = await this.hashPassword(newPassword);
 
       this.logger.silly('Updating user db record');
-      const userId = token['userId'];
+      const userId = record['_id'];
       const userRecord = this.userRepositoryInstance.updatePasswordByUsername(
         userId,
         salt.toString('hex'),
         hashedPassword,
       );
-      await this.passwordResetRepositoryInstance.markTokenUsed(token._id);
+      await this.passwordResetRepositoryInstance.markTokenUsed(password_reset_token._id);
 
       const user = await userRecord;
       Reflect.deleteProperty(user, 'password');
@@ -151,6 +159,10 @@ export default class AuthService {
     } catch (e) {
       throw new Error(e);
     }
+  };
+
+  private getOtp = (length: number) => {
+    return Math.random().toFixed(length).substr(-length);
   };
 
   private hashPassword = async (password: string) => {

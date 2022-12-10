@@ -21,13 +21,13 @@ export default class EmailService {
     return { delivered: 0, messageId: null, status: 'error', error };
   };
 
-  public sendResetPasswordEmail = async (email: string, link: string, token_expiry: Date) => {
+  public sendResetPasswordEmail = async (email: string, otp: string, otp_expiry: Date) => {
     dayjs.extend(relativeTime);
     const now = dayjs(new Date());
-    const expireDate = dayjs(token_expiry);
+    const expireDate = dayjs(otp_expiry);
     const expireTime = expireDate.from(now, true);
 
-    const template = this.mailUtilService.resetPasswordEmailTemplate(expireTime, link);
+    const template = this.mailUtilService.resetPasswordEmailTemplate(expireTime, otp);
 
     const message = this.emailClient.generateMessage({
       html: template.html,

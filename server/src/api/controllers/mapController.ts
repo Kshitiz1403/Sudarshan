@@ -1,9 +1,10 @@
 import { MapService } from '@/services/mapService';
-import { Inject } from 'typedi';
+import { Inject, Service } from 'typedi';
 import { Logger } from 'winston';
 import { INextFunction, IRequest, IResponse } from '../types/express';
 import { Result } from '../util/result';
 
+@Service()
 export class MapController {
   protected mapServiceInstance: MapService;
   protected logger: Logger;

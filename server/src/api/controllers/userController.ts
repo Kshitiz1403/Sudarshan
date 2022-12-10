@@ -3,7 +3,7 @@ import UserService from '@/services/userService';
 import { NextFunction, Response } from 'express';
 import { Inject } from 'typedi';
 import { Logger } from 'winston';
-import { IRequest } from '../types/express';
+import { INextFunction, IRequest } from '../types/express';
 import { Result } from '../util/result';
 
 export class UserController {
@@ -13,6 +13,16 @@ export class UserController {
     this.userServiceInstance = userService;
     this.logger = logger;
   }
+
+  public getUserDetails = async (req: IRequest, res: Response, next: INextFunction) => {
+    this.logger.debug('Calling get user details endpoint with query: %o', req.query);
+    try {
+      const user = await this.userServiceInstance.getUserDetails(req.currentUser.userId);
+      return res.status(200).json(Result.success(user));
+    } catch (e) {
+      return next(e);
+    }
+  };
 
   public completeDetails = async (req: IRequest, res: Response, next: NextFunction) => {
     this.logger.debug('Calling Complete Details endpoint with body: %o', req.body);

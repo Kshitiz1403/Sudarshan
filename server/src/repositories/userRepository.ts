@@ -6,6 +6,19 @@ import { Service } from 'typedi';
 export class UserRepository {
   constructor() {}
 
+  public findUser = async (id: IUser['_id']) => {
+    try {
+      const user = await UserModel.findById(id);
+      if (user) {
+        const userRecord = user.toJSON();
+        return userRecord;
+      }
+      return null;
+    } catch (e) {
+      throw e;
+    }
+  };
+
   public findUserByEmail = async (email: IUser['email']) => {
     try {
       const user = await UserModel.findOne({ email });

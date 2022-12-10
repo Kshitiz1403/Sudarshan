@@ -11,6 +11,17 @@ export default class UserService {
     this.userRepositoryInstance = userRepository;
   }
 
+  public getUserDetails = async (userId: IUser['_id']) => {
+    try {
+      const userRecord = await this.userRepositoryInstance.findUser(userId);
+      userRecord.password = undefined;
+      userRecord.salt = undefined;
+      return userRecord;
+    } catch (e) {
+      throw e;
+    }
+  };
+
   public completeDetails = async (userId: IUser['_id'], userInputDTO: IUserDetails) => {
     try {
       const userRecord = await this.userRepositoryInstance.completeDetails(userId, userInputDTO);

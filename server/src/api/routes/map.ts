@@ -10,4 +10,6 @@ export default (app: Router) => {
   app.use('/maps', route);
 
   route.get('/autocomplete', middlewares.isAuth, ctrl.getAutoComplete);
+
+  route.post('/go', middlewares.isAuth, ctrl.goToPlace);
 };

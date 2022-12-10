@@ -15,35 +15,34 @@ const getTokenFromHeader = (req): string => {
   return null;
 };
 
-export const checkToken = (token: string, isAuth=true): IToken => {
+export const checkToken = (token: string, isAuth = true): IToken => {
   const Logger: Logger = Container.get('logger');
-  if (!token && isAuth) throw "Token malformed";
-  try{
-    const decoded = verify(token, config.jwtSecret, {algorithms:[config.jwtAlgorithm]});
+  if (!token && isAuth)
+    throw { status: 401, message: 'This is an authenticated resource, you must be logged in to access it.' };
+  try {
+    const decoded = verify(token, config.jwtSecret, { algorithms: [config.jwtAlgorithm] });
     return decoded;
-
-  }catch(err){
-    if (err.name === "TokenExpiredError"){
+  } catch (err) {
+    if (err.name === 'TokenExpiredError') {
       /** @TODO here, we reissue the token using the refresh token from the database  */
     }
-    
+
     Logger.error('🔥 Error in verifying token: %o', err);
     throw err;
-  };
+  }
 };
 
 const isAuth = async (req: IRequest, res: IResponse, next: INextFunction) => {
   const Logger: Logger = Container.get('logger');
-  
-  try{
+
+  try {
     const tokenFromHeader = getTokenFromHeader(req);
     const token = checkToken(tokenFromHeader);
-    Logger.debug('User authenticated %o',token);
+    Logger.debug('User authenticated %o', token);
 
     req.currentUser = token;
     return next();
-  }
-  catch(e){
+  } catch (e) {
     Logger.error('🔥 Error attaching user to req: %o', e);
     return next(e);
   }

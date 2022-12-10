@@ -6,7 +6,6 @@ import { IToken } from '@/interfaces/IToken';
 import { INextFunction, IRequest, IResponse } from '@/api/types/express';
 
 const getTokenFromHeader = (req): string => {
-  console.log(req.headers.authorization)
   if (
     (req.headers.authorization && req.headers.authorization.split(' ')[0] === 'Token') ||
     (req.headers.authorization && req.headers.authorization.split(' ')[0] === 'Bearer')

@@ -45,4 +45,8 @@ export default {
     sender: process.env.AZURE_EMAIL_SENDER,
     azure_connection_string: process.env.AZURE_EMAIL_CONNECTION_STRING,
   },
+
+  maps: {
+    apiKey: process.env.GOOGLE_CLOUD_MAPS_API_KEY,
+  },
 };

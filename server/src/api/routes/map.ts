@@ -8,6 +8,8 @@ const route = Router();
 export default (app: Router) => {
   const ctrl: MapController = Container.get(MapController);
   app.use('/maps', route);
+  
+  route.use(middlewares.rateLimit({}));
 
   route.get('/autocomplete', middlewares.isAuth, ctrl.getAutoComplete);
 

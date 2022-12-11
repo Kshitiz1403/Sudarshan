@@ -49,4 +49,9 @@ export default {
   maps: {
     apiKey: process.env.GOOGLE_CLOUD_MAPS_API_KEY,
   },
+
+  cache: {
+    host: process.env.REDIS_HOST,
+    port: +process.env.REDIS_PORT,
+  },
 };

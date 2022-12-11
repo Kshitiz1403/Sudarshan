@@ -16,7 +16,7 @@ const rateLimit = ({ secondsWindow = 60, allowedHits = 10 }: IRateLimit) => {
 
     if (requests === 1) {
       await cache.expire(key, secondsWindow);
-      ttl = 60;
+      ttl = secondsWindow;
     } else {
       ttl = await cache.ttl(key);
     }

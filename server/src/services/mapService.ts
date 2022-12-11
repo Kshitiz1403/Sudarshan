@@ -18,12 +18,18 @@ export class MapService {
   ) => {
     location.radius = location.radius || 10000;
     const strictBounds = true;
-    const l = `${location.latitude}, ${location.longitude}`;
-    const query = `input=${input}&location=${l}&radius=${location.radius}&strictbounds=${strictBounds}&key=${this.apiKey}`;
-    const url = `https://maps.googleapis.com/maps/api/place/autocomplete/json?input=${input}&location=${location.latitude},${location.longitude}&radius=${location.radius}&strictbounds=${strictBounds}&key=${this.apiKey}`;
-
     try {
-      let data = await (await axios.get(url)).data;
+      let data = (
+        await axios.get('https://maps.googleapis.com/maps/api/place/autocomplete/json', {
+          params: {
+            input,
+            location: `${location.latitude},${location.longitude}`,
+            radius: location.radius,
+            strictBounds,
+            key: this.apiKey,
+          },
+        })
+      ).data;
       data = Object.values(data)[0];
       const predictions = [];
 

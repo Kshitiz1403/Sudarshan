@@ -5,7 +5,7 @@ import { Service } from 'typedi';
 export class EmailUtilService {
   public resetPasswordEmailTemplate = (otp_expiry: string, otp: string): IEmailTemplate => {
     return {
-      subject: 'Reset your password',
+      subject: 'Reset your password - Sudarshan',
 
       text: `Need to reset your password?
       Use your secret code!

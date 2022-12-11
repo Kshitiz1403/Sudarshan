@@ -12,7 +12,7 @@ export class PasswordResetTokenRepository {
     // if exists, then overwrite token used status to false and create a new otp + otp_expiry
     // else create a new token
 
-    PasswordResetTokenModel.findOneAndUpdate(
+    return PasswordResetTokenModel.findOneAndUpdate(
       { userId: passwordResetTokenInputDTO.userId },
       { $set: { ...passwordResetTokenInputDTO, used: false } },
       { upsert: true, new: true },

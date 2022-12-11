@@ -1154,6 +1154,11 @@
     query-string "^7.0.1"
     retry-axios "^2.2.1"
 
+"@googlemaps/polyline-codec@^1.0.28":
+  version "1.0.28"
+  resolved "https://registry.yarnpkg.com/@googlemaps/polyline-codec/-/polyline-codec-1.0.28.tgz#8e41aaa117fac31811dcd1c238aaa42d139fba89"
+  integrity sha512-m7rh8sbxlrHvebXEweBHX8r1uPtToPRYxWDD6p6k2YG8hyhBe0Wi6xRUVFpxpEseMNgF+OBotFQC5senj8K7TQ==
+
 "@googlemaps/url-signature@^1.0.4":
   version "1.0.28"
   resolved "https://registry.yarnpkg.com/@googlemaps/url-signature/-/url-signature-1.0.28.tgz#16d12905d82877e08a435df2824ad4533682e505"

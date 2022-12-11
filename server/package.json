@@ -33,6 +33,7 @@
   "dependencies": {
     "@azure/communication-email": "^1.0.0-beta.1",
     "@googlemaps/google-maps-services-js": "^3.3.16",
+    "@googlemaps/polyline-codec": "^1.0.28",
     "argon2": "^0.27.0",
     "axios": "^1.2.1",
     "body-parser": "^1.19.0",

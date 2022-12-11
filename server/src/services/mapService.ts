@@ -4,6 +4,7 @@ import { Client, UnitSystem, Language } from '@googlemaps/google-maps-services-j
 import { TravelMode } from '@googlemaps/google-maps-services-js/dist/common';
 import axios from 'axios';
 import { Service } from 'typedi';
+import { decode } from '@googlemaps/polyline-codec';
 
 @Service()
 export class MapService {
@@ -49,8 +50,7 @@ export class MapService {
   public goToPlace = async ({ origin, destination, waypoints }: IGoToPlaceInputDTO) => {
     if (!this.validatePlace(origin) || !this.validatePlace(destination)) throw 'Please enter valid location';
 
-    if (waypoints.length > 9) throw 'Waypoints cannot be more than 9'; // Google cloud charges extra for more than 10 waypoints - https://developers.google.com/maps/documentation/directions/usage-and-billing
-    
+    if (waypoints && waypoints.length > 9) throw 'Waypoints cannot be more than 9'; // Google cloud charges extra for more than 10 waypoints - https://developers.google.com/maps/documentation/directions/usage-and-billing
     let optimize_waypoints = false;
     let waypoints_place = [];
     if (waypoints && waypoints.length > 0) {
@@ -76,7 +76,9 @@ export class MapService {
     let totalTime = 0;
     const routes = data['routes'][0];
     const obj = {};
+    let points = decode(routes.overview_polyline.points, 5);
     obj['overview_polyline'] = routes.overview_polyline;
+    obj['overview_polyline']['path'] = points;
     const arr: String[] = [];
     data.geocoded_waypoints.map(waypoint => {
       arr.push(waypoint.place_id);

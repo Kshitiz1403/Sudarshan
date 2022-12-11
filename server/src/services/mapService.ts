@@ -1,17 +1,14 @@
 import config from '@/config';
 import { IGoToPlaceInputDTO, IPlace } from '@/interfaces/IPlace';
-import { Client, UnitSystem, Language } from '@googlemaps/google-maps-services-js';
-import { TravelMode } from '@googlemaps/google-maps-services-js/dist/common';
 import axios from 'axios';
 import { Service } from 'typedi';
 import { decode } from '@googlemaps/polyline-codec';
+import { GoogleMapsApiEndpoints } from '@/enums/GoogleMapsApiEndpoints';
+
+const apiKey = config.maps.apiKey;
 
 @Service()
 export class MapService {
-  private readonly apiKey = config.maps.apiKey;
-
-  private client = new Client({});
-
   public getAutoComplete = async (
     input: string,
     location: { latitude: number; longitude: number; radius?: number },
@@ -20,13 +17,13 @@ export class MapService {
     const strictBounds = true;
     try {
       let data = (
-        await axios.get('https://maps.googleapis.com/maps/api/place/autocomplete/json', {
+        await axios.get(GoogleMapsApiEndpoints.AUTOCOMPLETE, {
           params: {
             input,
             location: `${location.latitude},${location.longitude}`,
             radius: location.radius,
             strictBounds,
-            key: this.apiKey,
+            key: apiKey,
           },
         })
       ).data;
@@ -65,24 +62,25 @@ export class MapService {
     if (waypoints_place.length > 0) optimize_waypoints = true;
 
     const data = (
-      await this.client.directions({
+      await axios.get(GoogleMapsApiEndpoints.DIRECTIONS, {
         params: {
           origin: this.getPlace(origin),
           destination: this.getPlace(destination),
-          key: this.apiKey,
-          units: UnitSystem.metric,
-          mode: TravelMode.walking,
-          language: Language.en,
+          key: apiKey,
+          units: 'metric',
+          mode: 'walking',
+          language: 'en',
           optimize: optimize_waypoints,
           waypoints: waypoints_place,
         },
       })
     ).data;
+
     let totalDistance = 0;
     let totalTime = 0;
     const routes = data['routes'][0];
     const obj = {};
-    let points = decode(routes.overview_polyline.points, 5);
+    const points = decode(routes.overview_polyline.points, 5);
     obj['overview_polyline'] = routes.overview_polyline;
     obj['overview_polyline']['path'] = points;
     const arr: String[] = [];

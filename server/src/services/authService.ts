@@ -123,12 +123,6 @@ export default class AuthService {
     return 'OTP has been sent to your email address';
   };
 
-  public checkValidResetToken = (token: IPasswordResetToken) => {
-    this.logger.silly('Checking reset token');
-
-    return 'Valid Reset Link';
-  };
-
   public resetPassword = async (email: IUser['email'], otp: IPasswordResetToken['otp'], newPassword: string) => {
     try {
       const record = await this.passwordResetRepositoryInstance.getResetPasswordToken(email);
@@ -139,7 +133,7 @@ export default class AuthService {
       if (password_reset_token.used) throw 'The OTP is not valid.';
 
       const now = new Date();
-      if (password_reset_token.otp_expiry < now) throw 'The OTP is not valid.';
+      if (password_reset_token.otp_expiry < now) throw 'The OTP is expired, please request a new one';
       const { salt, hashedPassword } = await this.hashPassword(newPassword);
 
       this.logger.silly('Updating user db record');

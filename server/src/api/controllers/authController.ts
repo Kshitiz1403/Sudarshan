@@ -49,7 +49,7 @@ export class AuthController {
   };
 
   public reset = async (req: Request & { token: IPasswordResetToken }, res: Response, next: NextFunction) => {
-    this.logger.debug('Calling Reset Password endpoint with body: %o', req.body);
+    this.logger.debug('Calling Reset Password endpoint with body: %o', {email:req.body.email, otp:req.body.otp}); //protects from exposing password to the log
     try {
       const user = await this.authServiceInstance.resetPassword(req.body.email, req.body.otp, req.body.password);
       return res.status(200).json(Result.success(user));

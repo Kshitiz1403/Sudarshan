@@ -1,5 +1,5 @@
 import { Pressable, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native'
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import sharedStyles from './sharedStyles'
 import colors from '../../theme/colors'
 import OtpInput from '../../components/OtpInput'
@@ -14,11 +14,17 @@ const VerifyPassword = ({ navigation, route }) => {
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
 
+  const passwordRef = useRef(null)
+
   const authService = useAuthService();
 
   useEffect(() => {
     if (route.params && route.params['email']) { setEmail(route.params['email']); }
   }, [])
+
+  useEffect(() => {
+    if (isPinReady) passwordRef.current.focus()
+  }, [isPinReady])
 
   const reset = async () => {
     authService.reset(email, otpCode, password)
@@ -37,6 +43,7 @@ const VerifyPassword = ({ navigation, route }) => {
         </View>
         <Text style={{ ...sharedStyles.titleText, marginBottom: 5 }}>New Password</Text>
         <TextInput style={sharedStyles.input}
+          ref={passwordRef}
           placeholder="Password"
           secureTextEntry
           autoCapitalize="none"

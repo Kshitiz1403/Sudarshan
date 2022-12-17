@@ -10,9 +10,13 @@ export const onboardingSlice = createSlice({
         completeOnboarding: (state) => {
             state.isOnboarded = true;
             AsyncStorage.setItem('@onboarded', 'true')
+        },
+        reonboard: (state) =>{
+            state.isOnboarded = false;
+            AsyncStorage.removeItem('@onboarded');
         }
     }
 })
-export const { completeOnboarding } = onboardingSlice.actions;
+export const { completeOnboarding, reonboard } = onboardingSlice.actions;
 
 export default onboardingSlice.reducer;

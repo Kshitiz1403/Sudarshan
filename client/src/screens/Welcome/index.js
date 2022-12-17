@@ -1,38 +1,40 @@
 import { Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import React from 'react'
 import Progress from '../../components/Progress'
+import GestureRecognizer from 'react-native-swipe-gestures'
 
 const Welcome = ({ navigation }) => {
     return (
         <View style={styles.onBoardingContainer}>
-            <Text style={styles.titles}>Step 1 of 2</Text>
-            <Image
-                source={require("../../assets/Welcome/running-people.png")}
-                style={styles.image}
-            />
+            <GestureRecognizer style={{ flex: 1 }} onSwipeLeft={() => navigation.navigate("Auth")} >
+                <Text style={styles.titles}>Step 1 of 2</Text>
+                <Image
+                    source={require("../../assets/Welcome/running-people.png")}
+                    style={styles.image}
+                />
 
-            <View style={styles.welcome}>
-                <Text style={styles.welcomeText}>Welcome to</Text>
-                <Text style={styles.welcomeText}>SUDARSHAN</Text>
-            </View>
+                <View style={styles.welcome}>
+                    <Text style={styles.welcomeText}>Welcome to</Text>
+                    <Text style={styles.welcomeText}>SUDARSHAN</Text>
+                </View>
 
-            <View style={styles.subtitle}>
-                <Text style={styles.subtitleText}>
-                    Our app is based on the concept of plogging and helps to calculate
-                    calories burnt
-                </Text>
-            </View>
+                <View style={styles.subtitle}>
+                    <Text style={styles.subtitleText}>
+                        Our app is based on the concept of plogging and helps to calculate
+                        calories burnt
+                    </Text>
+                </View>
 
-            {/* Button */}
-            <View style={buttonStyle.container}>
-                <TouchableOpacity
-                    style={buttonStyle.button}
-                    onPress={() => navigation.navigate("Auth")}
-                >
-                    <Text style={buttonStyle.text}>Get Started</Text>
-                </TouchableOpacity>
-                <Progress length={2} unselectedColor="#949397" selectedColor='#56CCF2' activeIndex={0} />
-            </View>
+                <View style={buttonStyle.container}>
+                    <TouchableOpacity
+                        style={buttonStyle.button}
+                        onPress={() => navigation.navigate("Auth")}
+                    >
+                        <Text style={buttonStyle.text}>Get Started</Text>
+                    </TouchableOpacity>
+                    <Progress length={2} unselectedColor="#949397" selectedColor='#56CCF2' activeIndex={0} />
+                </View>
+            </GestureRecognizer>
         </View>
     )
 }

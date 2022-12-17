@@ -14,7 +14,7 @@ const Auth = ({ navigation, route }) => {
     useEffect(() => {
         if (route.params && route.params['signIn'] == true) { setIsRegistering(false); return; }
         if (route.params && route.params['register'] == true) { setIsRegistering(true); return; }
-    }, [])
+    }, [route])
 
     const authService = useAuthService();
     const signIn = () => {

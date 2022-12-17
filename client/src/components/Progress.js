@@ -2,10 +2,10 @@ import React from "react";
 import { View, StyleSheet, Text } from "react-native";
 import { FontAwesome } from "@expo/vector-icons";
 
-const Progress = ({ length, activeIndex }) => {
+const Progress = ({ length, activeIndex, unselectedColor = "rgba(255,255,255,0.5)", selectedColor = 'white' }) => {
   const bars = new Array(length);
-  bars.fill("rgba(255,255,255,0.5)")
-  bars[activeIndex] = "white"
+  bars.fill(unselectedColor)
+  bars[activeIndex] = selectedColor
   let count = 0;
   return (
     <View style={styles.iconsView}>

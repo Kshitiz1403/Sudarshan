@@ -5,7 +5,9 @@ import { Text, View } from "react-native";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 import { useSelector } from "react-redux";
 import useOnboardingService from "../hooks/onboardingService";
+import Auth from "../screens/Auth";
 import Onboarding from "../screens/Onboarding";
+import Welcome from "../screens/Welcome";
 
 const Routes = () => {
 
@@ -14,6 +16,7 @@ const Routes = () => {
     const isOnboarded = useSelector(state => state.onboarding.isOnboarded)
     const onboardingService = useOnboardingService(); //required for initializing onboarding state
     const OnboardingStack = createNativeStackNavigator();
+    const AuthStack = createNativeStackNavigator();
 
 
     const OnboardingScreens = () => (
@@ -21,6 +24,15 @@ const Routes = () => {
             <OnboardingStack.Screen name="Onboarding" component={Onboarding} />
         </OnboardingStack.Navigator>
     )
+
+
+    const AuthScreens = () => (
+        <AuthStack.Navigator screenOptions={{ headerShown: false, animation: "slide_from_right" }}>
+            <AuthStack.Screen name="Welcome" component={Welcome} />
+            <AuthStack.Screen name="Auth" component={Auth} />
+        </AuthStack.Navigator>
+    )
+
     return (
         <SafeAreaProvider>
             <NavigationContainer>
@@ -29,6 +41,7 @@ const Routes = () => {
                         <Text style={{ textAlign: 'center', }}>Loading....</Text>
                     </View>} */}
                     {!isOnboarded && <OnboardingScreens />}
+                    {isOnboarded && <AuthScreens />}
 
                 </View>
             </NavigationContainer>

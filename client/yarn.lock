@@ -3097,20 +3097,7 @@ expo-application@~5.0.1:
   resolved "https://registry.npmjs.org/expo-application/-/expo-application-5.0.1.tgz"
   integrity sha512-bThxK5zH/Lc2tkCvEXGjfM7ayvOVmPWYcWzXsMIU1RtG73TyXo4cq+73FvfDNIWn6gKS0WyMcmoPB3WXEV/jsw==
 
-expo-asset@^8.6.2:
-  version "8.6.2"
-  resolved "https://registry.yarnpkg.com/expo-asset/-/expo-asset-8.6.2.tgz#607dbbed988f7fc54a6f37cd33f86a2388264b4b"
-  integrity sha512-XqlXjkuUCEiojbHwbHPjQs1oboRz6w3eV96+9NBD+wb3EUqgAAYY2Do+IWyVCAl8UIFbFi3xzMiqk0Xm9+H8uQ==
-  dependencies:
-    blueimp-md5 "^2.10.0"
-    expo-constants "~14.0.0"
-    expo-file-system "~15.1.0"
-    invariant "^2.2.4"
-    md5-file "^3.2.3"
-    path-browserify "^1.0.0"
-    url-parse "^1.5.9"
-
-expo-asset@~8.6.2:
+expo-asset@^8.6.2, expo-asset@~8.6.2:
   version "8.6.2"
   resolved "https://registry.npmjs.org/expo-asset/-/expo-asset-8.6.2.tgz"
   integrity sha512-XqlXjkuUCEiojbHwbHPjQs1oboRz6w3eV96+9NBD+wb3EUqgAAYY2Do+IWyVCAl8UIFbFi3xzMiqk0Xm9+H8uQ==

@@ -24,6 +24,10 @@ const VerifyPassword = ({ navigation, route }) => {
     authService.reset(email, otpCode, password)
   }
 
+  const resend = async () => {
+    authService.forgot(email)
+  }
+
   return (
     <View style={sharedStyles.container}>
       <View style={{ ...sharedStyles.topContainer, flex: 0.7 }}>
@@ -43,7 +47,7 @@ const VerifyPassword = ({ navigation, route }) => {
         />
         <Text style={sharedStyles.actionText}>
           If you didn't receive a code,
-          <Text style={{ color: colors.primary }} onPress={() => { }}> Resend</Text>
+          <Text style={{ color: colors.primary }} onPress={resend}> Resend</Text>
         </Text>
         <TouchableOpacity style={sharedStyles.button} onPress={reset}>
           <Text style={sharedStyles.buttonText}>Send</Text>

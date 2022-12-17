@@ -6,7 +6,6 @@ import { getAuthenticatedAxios, getUnauthenticatedAxios } from "./baseConfig";
 const useAuthService = () => {
     const dispatch = useDispatch();
 
-
     const login = async (email, password) => {
         try {
             const unauthenticatedAxios = getUnauthenticatedAxios('/auth');
@@ -29,6 +28,26 @@ const useAuthService = () => {
         }
     }
 
+    const forgot = async (email) => {
+        try {
+            const unauthenticatedAxios = getUnauthenticatedAxios('/auth');
+            const data = await unauthenticatedAxios.post('/forgot', { email });
+            return data
+        } catch (error) {
+        }
+    }
+
+    const reset = async (email, otp, password) => {
+        try {
+            const unauthenticatedAxios = getUnauthenticatedAxios('/auth');
+            const data = await unauthenticatedAxios.post('/reset', { email, otp, password });
+            const token = `Bearer ${data['token']}`;
+            dispatch(loginUser(token));
+            return token;
+        } catch (error) {
+        }
+    }
+
     const getUserFromToken = async () => {
         try {
             dispatch(setLoading())
@@ -45,7 +64,7 @@ const useAuthService = () => {
         }
     }
 
-    return { login, signup, getUserFromToken }
+    return { login, signup, forgot, reset, getUserFromToken }
 }
 
 export default useAuthService;

@@ -2,6 +2,7 @@ import { Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import React from 'react'
 import Progress from '../../components/Progress'
 import GestureRecognizer from 'react-native-swipe-gestures'
+import colors from '../../theme/colors'
 
 const Welcome = ({ navigation }) => {
     return (
@@ -32,7 +33,7 @@ const Welcome = ({ navigation }) => {
                     >
                         <Text style={buttonStyle.text}>Get Started</Text>
                     </TouchableOpacity>
-                    <Progress length={2} unselectedColor="#949397" selectedColor='#56CCF2' activeIndex={0} />
+                    <Progress length={2} unselectedColor={colors.secondary} selectedColor={colors.primary} activeIndex={0} />
                 </View>
             </GestureRecognizer>
         </View>
@@ -49,7 +50,7 @@ const styles = StyleSheet.create({
         marginTop: "10%",
         fontSize: 25,
         fontWeight: "600",
-        color: "#56CCF2",
+        color: colors.primary,
         width: '100%',
         textAlign: 'center'
     },
@@ -92,7 +93,7 @@ const buttonStyle = StyleSheet.create({
         marginTop: "10%",
     },
     button: {
-        backgroundColor: "#56CCF2",
+        backgroundColor: colors.primary,
         height: 40,
         justifyContent: "center",
         alignItems: "center",

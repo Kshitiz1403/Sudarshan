@@ -1,15 +1,20 @@
-import { Image, KeyboardAvoidingView, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native'
-import React, { useState } from 'react'
+import { Image, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native'
+import React, { useEffect, useState } from 'react'
 import Progress from '../../components/Progress';
 import GestureRecognizer from 'react-native-swipe-gestures';
 import useAuthService from '../../hooks/api/authService';
+import colors from '../../theme/colors';
 
-const Auth = ({ navigation }) => {
+const Auth = ({ navigation, route }) => {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
 
     const [isRegistering, setIsRegistering] = useState(false)
 
+    useEffect(() => {
+        if (route.params && route.params['signIn'] == true) { setIsRegistering(false); return; }
+        if (route.params && route.params['register'] == true) { setIsRegistering(true); return; }
+    }, [])
 
     const authService = useAuthService();
     const signIn = () => {
@@ -64,7 +69,7 @@ const Auth = ({ navigation }) => {
                                 onChangeText={(text) => setPassword(text)}
                             />
                         </View>
-                        {!isRegistering && <Text style={styles.forgotPasswordText}>Forgot Password?</Text>}
+                        {!isRegistering && <TouchableOpacity onPress={() => navigation.navigate("Forgot")}><Text style={styles.forgotPasswordText}>Forgot Password?</Text></TouchableOpacity>}
                     </View>
                     <View style={styles.buttonContainer}>
                         <TouchableOpacity style={styles.button} onPress={isRegistering ? signUp : signIn}>
@@ -84,14 +89,14 @@ export default Auth
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: "#E0E0E0",
+        backgroundColor: "#E0E0E000",
     },
     stepText: {
         alignSelf: "center",
         marginTop: "10%",
         fontSize: 25,
         fontWeight: "600",
-        color: "#56CCF2",
+        color: colors.primary,
         textAlign: 'center',
         width: '100%',
     },
@@ -116,7 +121,7 @@ const styles = StyleSheet.create({
         height: 50,
         width: '30%',
         justifyContent: 'center',
-        borderColor: '#56CCF2',
+        borderColor: colors.primary,
         borderStyle: 'solid'
     },
     actionText: {
@@ -140,12 +145,12 @@ const styles = StyleSheet.create({
     input: {
         width: '100%',
         borderBottomWidth: 1,
-        borderColor: "#949397",
+        borderColor: colors.secondary,
         fontSize: 16,
         fontWeight: '600'
     },
     forgotPasswordText: {
-        color: "#56CCF2",
+        color: colors.primary,
         fontWeight: '600',
         fontSize: 15
     },
@@ -153,7 +158,7 @@ const styles = StyleSheet.create({
         flex: 0.25,
     },
     button: {
-        backgroundColor: "#56CCF2",
+        backgroundColor: colors.primary,
         height: 40,
         width: '90%',
         alignSelf: 'center',

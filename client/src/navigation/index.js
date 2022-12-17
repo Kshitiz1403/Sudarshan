@@ -7,6 +7,8 @@ import { useSelector } from "react-redux";
 import useAuthService from "../hooks/api/authService";
 import useOnboardingService from "../hooks/onboardingService";
 import Auth from "../screens/Auth";
+import ForgotPassword from "../screens/Auth/ForgotPassword";
+import VerifyPassword from "../screens/Auth/VerifyPassword";
 import Onboarding from "../screens/Onboarding";
 import Welcome from "../screens/Welcome";
 
@@ -35,6 +37,8 @@ const Routes = () => {
         <AuthStack.Navigator screenOptions={{ headerShown: false, animation: "slide_from_right" }}>
             <AuthStack.Screen name="Welcome" component={Welcome} />
             <AuthStack.Screen name="Auth" component={Auth} />
+            <AuthStack.Screen name="Forgot" component={ForgotPassword} options={{ headerShown: true, headerTitle: "Forgot Password" }} />
+            <AuthStack.Screen name="Verification" component={VerifyPassword} options={{ headerShown: true, headerTitle: "Verification" }} />
         </AuthStack.Navigator>
     )
 

@@ -69,9 +69,11 @@ const Onboarding = () => {
     }
 
     return (
-        <GestureRecognizer onSwipeLeft={handleIncrement} onSwipeRight={handleDecrement}>
-            <OnboardingItem onboarding={onboardings[indexToDisplay]} />
-        </GestureRecognizer>
+        <View style={{ marginTop: 20 }}>
+            <GestureRecognizer onSwipeLeft={handleIncrement} onSwipeRight={handleDecrement}>
+                <OnboardingItem onboarding={onboardings[indexToDisplay]} />
+            </GestureRecognizer>
+        </View>
     )
 }
 

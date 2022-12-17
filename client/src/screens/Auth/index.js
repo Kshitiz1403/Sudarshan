@@ -2,16 +2,22 @@ import { Image, KeyboardAvoidingView, StyleSheet, Text, TextInput, TouchableOpac
 import React, { useState } from 'react'
 import Progress from '../../components/Progress';
 import GestureRecognizer from 'react-native-swipe-gestures';
+import useAuthService from '../../hooks/api/authService';
 
 const Auth = ({ navigation }) => {
-    const [username, setUsername] = useState("")
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
 
     const [isRegistering, setIsRegistering] = useState(false)
 
-    const signIn = () => { };
-    const signUp = () => { };
+
+    const authService = useAuthService();
+    const signIn = () => {
+        authService.login(email, password)
+    };
+    const signUp = () => {
+        authService.signup(email, password)
+    };
 
     return (
         <View style={styles.container}>
@@ -34,17 +40,6 @@ const Auth = ({ navigation }) => {
 
                 <View style={styles.bottomContainer}>
                     <View style={styles.inputContainer}>
-                        {isRegistering && <View style={styles.subInputContainer}>
-                            <Text style={styles.inputTitle}>Username</Text>
-                            <TextInput style={styles.input}
-                                placeholder="Username"
-                                textContentType='username'
-                                autoCorrect={false}
-                                autoCapitalize="none"
-                                value={username}
-                                onChangeText={(text) => setUsername(text)}
-                            />
-                        </View>}
                         <View style={styles.subInputContainer}>
                             <Text style={styles.inputTitle}>Email address</Text>
                             <TextInput style={styles.input}

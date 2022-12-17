@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { Text, View } from "react-native";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 import { useSelector } from "react-redux";
+import useAuthService from "../hooks/api/authService";
 import useOnboardingService from "../hooks/onboardingService";
 import Auth from "../screens/Auth";
 import Onboarding from "../screens/Onboarding";
@@ -15,9 +16,13 @@ const Routes = () => {
     const isSignedIn = useSelector(state => state.auth.isLoggedIn);
     const isOnboarded = useSelector(state => state.onboarding.isOnboarded)
     const onboardingService = useOnboardingService(); //required for initializing onboarding state
+    const authService = useAuthService();
     const OnboardingStack = createNativeStackNavigator();
     const AuthStack = createNativeStackNavigator();
 
+    useEffect(() => {
+        authService.getUserFromToken()
+    }, [])
 
     const OnboardingScreens = () => (
         <OnboardingStack.Navigator screenOptions={{ headerShown: false }}>
@@ -37,11 +42,12 @@ const Routes = () => {
         <SafeAreaProvider>
             <NavigationContainer>
                 <View style={{ flex: 1 }}>
-                    {/* {isLoading && <View style={{ display: 'flex', flex: 1, justifyContent: 'center' }}>
+                    {isLoading && <View style={{ display: 'flex', flex: 1, justifyContent: 'center' }}>
                         <Text style={{ textAlign: 'center', }}>Loading....</Text>
-                    </View>} */}
+                    </View>}
                     {!isOnboarded && <OnboardingScreens />}
-                    {isOnboarded && <AuthScreens />}
+                    {isOnboarded && !isSignedIn && <AuthScreens />}
+                    {isOnboarded && isSignedIn && <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}><Text>Hello</Text></View>}
 
                 </View>
             </NavigationContainer>

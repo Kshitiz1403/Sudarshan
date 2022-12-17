@@ -54,8 +54,9 @@ const OtpInput = ({ code, setCode, maximumLength, setIsPinReady }) => {
                 {boxArray.map(boxDigit)}
             </Pressable>
             <TextInput style={{ position: 'absolute', opacity: 0 }}
+                keyboardType='numeric'
                 value={code}
-                onChangeText={setCode}
+                onChangeText={(text) => setCode(text.replace(/[^0-9]/g, ''))}
                 maxLength={maximumLength}
                 ref={inputRef}
                 onBlur={handleOnBlur}

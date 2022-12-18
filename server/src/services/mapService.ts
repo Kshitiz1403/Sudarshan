@@ -51,6 +51,7 @@ export class MapService {
     location.radius = location.radius || 10000;
     const strictBounds = true;
     try {
+      if (!input) return { predictions: [] };
       let data = await (
         await this.googleMapAxiosInstance.get(GoogleMapsApiEndpoints.AUTOCOMPLETE, {
           params: {

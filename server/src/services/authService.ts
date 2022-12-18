@@ -79,7 +79,9 @@ export default class AuthService {
      * We use verify from argon2 to prevent 'timing based' attacks
      */
     this.logger.silly('Checking password');
-    const validPassword = await argon2.verify(userRecord.password, password);
+    const validPassword = await argon2.verify(userRecord.password, password, {
+      salt: Buffer.from(userRecord.salt, 'utf-8'),
+    });
     if (validPassword) {
       this.logger.silly('Password is valid!');
       this.logger.silly('Generating JWT');

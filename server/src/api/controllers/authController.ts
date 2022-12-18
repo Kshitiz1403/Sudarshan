@@ -16,7 +16,7 @@ export class AuthController {
   }
 
   public signup = async (req: Request, res: Response, next: NextFunction) => {
-    this.logger.debug('Calling Sign-Up endpoint with body: %o', req.body);
+    this.logger.debug('Calling Sign-Up endpoint with body: %o', { ...req.body, password: '***' });
     try {
       const { user, token } = await this.authServiceInstance.signUp(req.body as IUserInputDTO);
       return res.status(201).json(Result.success({ user, token }));
@@ -27,7 +27,7 @@ export class AuthController {
   };
 
   public signin = async (req: Request, res: Response, next: NextFunction) => {
-    this.logger.debug('Calling Sign-In endpoint with body: %o', req.body);
+    this.logger.debug('Calling Sign-In endpoint with body: %o', { ...req.body, password: '***' });
     try {
       const { email, password } = req.body;
       const { user, token } = await this.authServiceInstance.signIn(email, password);
@@ -44,17 +44,17 @@ export class AuthController {
       const status = await this.authServiceInstance.forgotPassword(email);
       return res.status(200).json(Result.success<Object>(status));
     } catch (e) {
-      return res.status(500).json(Result.error(e));
+      return next(e)
     }
   };
 
   public reset = async (req: Request & { token: IPasswordResetToken }, res: Response, next: NextFunction) => {
-    this.logger.debug('Calling Reset Password endpoint with body: %o', {email:req.body.email, otp:req.body.otp}); //protects from exposing password to the log
+    this.logger.debug('Calling Reset Password endpoint with body: %o', { ...req.body, password: '***' }); //protects from exposing password to the log
     try {
       const user = await this.authServiceInstance.resetPassword(req.body.email, req.body.otp, req.body.password);
       return res.status(200).json(Result.success(user));
     } catch (e) {
-      return res.status(500).json(Result.error(e));
+      return next(e);
     }
   };
 }

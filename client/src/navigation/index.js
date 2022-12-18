@@ -1,7 +1,7 @@
 import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
-import { useEffect, useState } from "react";
-import { Button, Text, View } from "react-native";
+import { useEffect } from "react";
+import { Text, View } from "react-native";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 import { useDispatch, useSelector } from "react-redux";
 import useAuthService from "../hooks/api/authService";
@@ -10,9 +10,8 @@ import Auth from "../screens/Auth";
 import ForgotPassword from "../screens/Auth/ForgotPassword";
 import VerifyPassword from "../screens/Auth/VerifyPassword";
 import Onboarding from "../screens/Onboarding";
+import Search from "../screens/Search";
 import Welcome from "../screens/Welcome";
-import { logoutUser } from "../store/reducers/authSlice";
-import { reonboard } from "../store/reducers/onboardingSlice";
 
 const Routes = () => {
 
@@ -23,6 +22,7 @@ const Routes = () => {
     const authService = useAuthService();
     const OnboardingStack = createNativeStackNavigator();
     const AuthStack = createNativeStackNavigator();
+    const AppStack = createNativeStackNavigator();
 
     const dispatch = useDispatch()
 
@@ -46,6 +46,12 @@ const Routes = () => {
         </AuthStack.Navigator>
     )
 
+    const AppStackScreens = () => (
+        <AppStack.Navigator>
+            <AppStack.Screen />
+        </AppStack.Navigator>
+    )
+
     return (
         <SafeAreaProvider>
             <NavigationContainer>
@@ -55,8 +61,7 @@ const Routes = () => {
                     </View>}
                     {!isOnboarded && <OnboardingScreens />}
                     {isOnboarded && !isSignedIn && <AuthScreens />}
-                    {isOnboarded && isSignedIn && <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}><Text>Hello</Text><Button title="Logout " onPress={() => dispatch(logoutUser())} /><Button onPress={()=>{dispatch(logoutUser()); dispatch(reonboard())}} title="Re-onboard "/></View>}
-
+                    {isOnboarded && isSignedIn && <Search />}
                 </View>
             </NavigationContainer>
         </SafeAreaProvider>

@@ -37,7 +37,7 @@ export const getUnauthenticatedAxios = (url = '') => {
     error => {
       let err = error.response.data;
       console.error(err);
-      throw err.error;
+      throw err;
     },
   );
 
@@ -53,9 +53,9 @@ export const getAuthenticatedAxios = (url, token) => {
       return res.data;
     },
     error => {
-      let err = error.response.data;
+      let err = { ...error.response.data, status: error.response.status };
       console.error(err);
-      throw err.error;
+      throw err;
     },
   );
 

@@ -3106,7 +3106,7 @@ expo-application@~5.0.1:
   resolved "https://registry.npmjs.org/expo-application/-/expo-application-5.0.1.tgz"
   integrity sha512-bThxK5zH/Lc2tkCvEXGjfM7ayvOVmPWYcWzXsMIU1RtG73TyXo4cq+73FvfDNIWn6gKS0WyMcmoPB3WXEV/jsw==
 
-expo-asset@^8.6.2, expo-asset@~8.6.2:
+expo-asset@~8.6.2:
   version "8.6.2"
   resolved "https://registry.npmjs.org/expo-asset/-/expo-asset-8.6.2.tgz"
   integrity sha512-XqlXjkuUCEiojbHwbHPjQs1oboRz6w3eV96+9NBD+wb3EUqgAAYY2Do+IWyVCAl8UIFbFi3xzMiqk0Xm9+H8uQ==
@@ -3150,6 +3150,11 @@ expo-keep-awake@~11.0.1:
   version "11.0.1"
   resolved "https://registry.npmjs.org/expo-keep-awake/-/expo-keep-awake-11.0.1.tgz"
   integrity sha512-44ZjgLE4lnce2d40Pv8xsjMVc6R5GvgHOwZfkLYtGmgYG9TYrEJeEj5UfSeweXPL3pBFhXKfFU8xpGYMaHdP0A==
+
+expo-location@^15.0.1:
+  version "15.0.1"
+  resolved "https://registry.yarnpkg.com/expo-location/-/expo-location-15.0.1.tgz#b132b8b50ce4d2dd9257b7b66cec44beeba253a4"
+  integrity sha512-GOAP24m8fMahFcBT75H07f2+IQAOCOdNTzb8Ci/19NZ+Y/CY2lIvb55V8zu7Gn0+76FKPb7XC3ebQaq4ctn1QA==
 
 expo-modules-autolinking@1.0.0:
   version "1.0.0"

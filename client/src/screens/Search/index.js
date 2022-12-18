@@ -5,6 +5,7 @@ import { FontAwesome } from '@expo/vector-icons'
 import colors from '../../theme/colors'
 import _debounce from 'lodash.debounce'
 import useMapService from '../../hooks/api/mapService'
+import * as Location from 'expo-location'
 
 const Search = () => {
     const [searchTerm, setSearchTerm] = useState("")
@@ -22,8 +23,10 @@ const Search = () => {
     )
 
     const handleDebounceFn = async (input) => {
+        if (!input) return;
         try {
-            const data = await mapService.autoComplete({ lat: 26.877210280890985, lng: 75.77418706877837 }, input)
+            const location = await Location.getCurrentPositionAsync({ accuracy: 1 })
+            const data = await mapService.autoComplete({ lat: location.coords.latitude, lng: location.coords.longitude }, input)
             setPredictions(data)
         } catch (error) {
             if (error.status === 429) {

@@ -1,8 +1,7 @@
-import { Asset } from 'expo-asset'
-import { View, Text, ImageBackground, StyleSheet, Image } from 'react-native'
-import React, { useEffect, useState } from 'react'
+import { View, Text, ImageBackground, StyleSheet } from 'react-native'
+import React, { useState } from 'react'
 import { TouchableOpacity } from 'react-native'
-import GestureRecognizer, { swipeDirections } from 'react-native-swipe-gestures'
+import GestureRecognizer from 'react-native-swipe-gestures'
 import Progress from '../../components/Progress'
 import { useDispatch } from 'react-redux'
 import { completeOnboarding } from '../../store/reducers/onboardingSlice'
@@ -69,8 +68,8 @@ const Onboarding = () => {
     }
 
     return (
-        <View style={{ marginTop: 20 }}>
-            <GestureRecognizer onSwipeLeft={handleIncrement} onSwipeRight={handleDecrement}>
+        <View>
+            <GestureRecognizer onSwipeLeft={handleIncrement} onSwipeRight={handleDecrement} >
                 <OnboardingItem onboarding={onboardings[indexToDisplay]} />
             </GestureRecognizer>
         </View>
@@ -84,7 +83,7 @@ const styles = StyleSheet.create({
         alignItems: "center",
     },
     titles: {
-        marginTop: "10%",
+        marginTop: "15%",
         fontSize: 25,
         fontWeight: "600",
         color: "#56CCF2",

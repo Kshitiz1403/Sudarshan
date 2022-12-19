@@ -1,6 +1,7 @@
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import * as Location from 'expo-location'
 import { useDispatch } from 'react-redux';
-import { updateLocationState } from '../store/reducers/locationSlice';
+import { setLocationLoaded, updateLastSavedLocation, updateLocation, updateLocationState } from '../store/reducers/locationSlice';
 
 const useLocationService = () => {
 
@@ -8,18 +9,36 @@ const useLocationService = () => {
 
     const isPermissionGranted = async () => {
         const status = await Location.getForegroundPermissionsAsync()
-        console.log(status)
         dispatch(updateLocationState({ ...status }))
-        return status.granted;   
+        return status.granted;
     }
     const askForLocationPermission = async () => {
         const response = await Location.requestForegroundPermissionsAsync()
         const status = response;
-        dispatch(updateLocationState({...status}))
+        dispatch(updateLocationState({ ...status }))
         return isPermissionGranted();
     }
 
-    return { isPermissionGranted, askForLocationPermission }
+    const getCurrentLocation = async () => {
+        const location = await Location.getCurrentPositionAsync({ accuracy: 4 });
+        const { latitude, longitude } = location.coords;
+        dispatch(updateLocation({ latitude, longitude }));
+    }
+
+    const getLastSavedLocation = async () => {
+        try {
+            const lastSavedLocation = await AsyncStorage.getItem('@last_location');
+            if (!lastSavedLocation) return;
+            const { latitude, longitude } = JSON.parse(lastSavedLocation);
+            dispatch(updateLastSavedLocation({ latitude, longitude }));
+        } catch (error) {
+        }
+        finally {
+            dispatch(setLocationLoaded());
+        }
+    }
+
+    return { isPermissionGranted, askForLocationPermission, getCurrentLocation, getLastSavedLocation }
 
 }
 

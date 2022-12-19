@@ -4,6 +4,8 @@ import { useEffect } from "react";
 import { Text, View } from "react-native";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 import { useDispatch, useSelector } from "react-redux";
+import { getLastSavedLocation, setLastSavedLocation, updateLocation } from "../store/reducers/locationSlice";
+import * as Location from 'expo-location'
 import useAuthService from "../hooks/api/authService";
 import useLocationService from "../hooks/locationService";
 import useOnboardingService from "../hooks/onboardingService";
@@ -13,8 +15,11 @@ import VerifyPassword from "../screens/Auth/VerifyPassword";
 import Onboarding from "../screens/Onboarding";
 import AskLocation from "../screens/RequestLocation/AskLocation";
 import DeniedLocation from "../screens/RequestLocation/DeniedLocation";
+import Running from "../screens/Running";
 import Search from "../screens/Search";
 import Welcome from "../screens/Welcome";
+import { setLoaded, setLoading } from "../store/reducers/authSlice";
+import { createDrawerNavigator } from "@react-navigation/drawer";
 
 const Routes = () => {
 
@@ -23,6 +28,7 @@ const Routes = () => {
     const isOnboarded = useSelector(state => state.onboarding.isOnboarded)
     const isLocationPermissionGranted = useSelector(state => state.location.isPermissionGranted)
     const canAskAgainForLocation = useSelector(state => state.location.canAskAgain)
+    const isLocationLoaded = useSelector(state => state.location.isLocationLoaded)
     const onboardingService = useOnboardingService(); //required for initializing onboarding state
     const authService = useAuthService();
     const locationService = useLocationService();
@@ -30,12 +36,21 @@ const Routes = () => {
     const OnboardingStack = createNativeStackNavigator();
     const AuthStack = createNativeStackNavigator();
     const AppStack = createNativeStackNavigator();
+    const Drawer = createDrawerNavigator();
 
     const dispatch = useDispatch()
 
     useEffect(() => {
         authService.getUserFromToken()
         locationService.isPermissionGranted()
+    }, [])
+
+    useEffect(() => {
+        (async () => {
+            await locationService.getLastSavedLocation();
+            await locationService.getCurrentLocation();
+            // dispatch(setLastSavedLocation({ latitude, longitude }))
+        })();
     }, [])
 
     const OnboardingScreens = () => (
@@ -55,9 +70,10 @@ const Routes = () => {
     )
 
     const AppScreens = () => (
-        <AppStack.Navigator>
-            <AppStack.Screen name="Search" component={Search} options={{ headerShown: false }} />
-        </AppStack.Navigator>
+        <Drawer.Navigator >
+            <Drawer.Screen name="Running" component={Running} options={{ headerShown: false }} />
+            <Drawer.Screen name="Search" component={Search} options={{ headerShown: false }} />
+        </Drawer.Navigator>
     )
 
     return (
@@ -69,9 +85,9 @@ const Routes = () => {
                     </View>}
                     {!isLoading && !isOnboarded && <OnboardingScreens />}
                     {!isLoading && isOnboarded && !isSignedIn && <AuthScreens />}
-                    {isOnboarded && isSignedIn && !isLocationPermissionGranted && canAskAgainForLocation && <AskLocation />}
-                    {isOnboarded && isSignedIn && !isLocationPermissionGranted && !canAskAgainForLocation && <DeniedLocation />}
-                    {isOnboarded && isSignedIn && isLocationPermissionGranted && <AppScreens />}
+                    {!isLoading && isOnboarded && isSignedIn && !isLocationPermissionGranted && canAskAgainForLocation && <AskLocation />}
+                    {!isLoading && isOnboarded && isSignedIn && !isLocationPermissionGranted && !canAskAgainForLocation && <DeniedLocation />}
+                    {!isLoading && isOnboarded && isSignedIn && isLocationPermissionGranted && isLocationLoaded && <AppScreens />}
                 </View>
             </NavigationContainer>
         </SafeAreaProvider>

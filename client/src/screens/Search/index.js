@@ -50,7 +50,7 @@ const Search = () => {
             <View style={styles.topContainer}>
                 <View style={styles.searchContainer}>
                     <FontAwesome name='search' size={22} color={colors.secondary} style={styles.searchIcon} />
-                    <TextInput placeholder='Search for a place' autoCapitalize='sentences' value={searchTerm} onChangeText={handleTextInput} autoCorrect={false} style={styles.searchInput} />
+                    <TextInput placeholder='Search for a place' autoCapitalize='sentences' value={searchTerm} onChangeText={handleTextInput} autoCorrect={false} style={styles.searchInput} autoFocus={true}/>
                 </View>
                 <ScrollView style={styles.predictionsContainer} overScrollMode="never">
                     {predictions.map(prediction => <PredictionItem main_text={prediction.structured_formatting.main_text} secondary_text={prediction.structured_formatting.secondary_text} key={prediction.reference} />)}

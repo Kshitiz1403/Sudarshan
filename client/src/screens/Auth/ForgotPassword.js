@@ -25,6 +25,7 @@ const ForgotPassword = ({ navigation }) => {
           autoCapitalize="none"
           value={email}
           onChangeText={t => setEmail(t)}
+          onSubmitEditing={forgot}
         />
         <TouchableOpacity style={{ width: '100%' }} onPress={() => { navigation.navigate("Auth", { signIn: true, register: false }) }}>
           <Text style={sharedStyles.actionText}>Back to sign in</Text>

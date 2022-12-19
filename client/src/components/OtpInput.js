@@ -37,8 +37,8 @@ const OtpInput = ({ code, setCode, maximumLength, setIsPinReady }) => {
 
         const isValueFocused = isCurrentValue || (isLastValue && isCodeComplete);
 
-        const SplitBoxes = ({ children }) => <View style={{ borderColor: colors.tertiary, borderWidth: 1, borderRadius: 50, padding: 9, width: 50, height: 50 }}>{children}</View>
-        const SplitBoxesFocused = ({ children }) => <View style={{ borderColor: colors.primary, borderWidth: 1, borderRadius: 50, padding: 9, width: 50, height: 50 }}>{children}</View>
+        const SplitBoxes = ({ children }) => <View style={{ borderColor: colors.tertiary, borderWidth: 1, borderRadius: 50, padding: 9, width: 50, height: 50, marginHorizontal:5 }}>{children}</View>
+        const SplitBoxesFocused = ({ children }) => <View style={{ borderColor: colors.primary, borderWidth: 1, borderRadius: 50, padding: 9, width: 50, height: 50, marginHorizontal:5 }}>{children}</View>
 
         const StyledSplitBoxes =
             isInputBoxFocused && isValueFocused ? SplitBoxesFocused : SplitBoxes;

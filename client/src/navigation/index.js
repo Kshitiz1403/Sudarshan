@@ -4,8 +4,6 @@ import { useEffect } from "react";
 import { Text, View } from "react-native";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 import { useDispatch, useSelector } from "react-redux";
-import { getLastSavedLocation, setLastSavedLocation, updateLocation } from "../store/reducers/locationSlice";
-import * as Location from 'expo-location'
 import useAuthService from "../hooks/api/authService";
 import useLocationService from "../hooks/locationService";
 import useOnboardingService from "../hooks/onboardingService";
@@ -18,8 +16,8 @@ import DeniedLocation from "../screens/RequestLocation/DeniedLocation";
 import Running from "../screens/Running";
 import Search from "../screens/Search";
 import Welcome from "../screens/Welcome";
-import { setLoaded, setLoading } from "../store/reducers/authSlice";
 import { createDrawerNavigator } from "@react-navigation/drawer";
+import Directions from "../screens/Directions";
 
 const Routes = () => {
 
@@ -46,12 +44,14 @@ const Routes = () => {
     }, [])
 
     useEffect(() => {
-        (async () => {
-            await locationService.getLastSavedLocation();
-            await locationService.getCurrentLocation();
-            // dispatch(setLastSavedLocation({ latitude, longitude }))
-        })();
-    }, [])
+        if (isLocationPermissionGranted) {
+            (async () => {
+                await locationService.getLastSavedLocation();
+                await locationService.getCurrentLocation();
+                // dispatch(setLastSavedLocation({ latitude, longitude }))
+            })();
+        }
+    }, [isLocationPermissionGranted])
 
     const OnboardingScreens = () => (
         <OnboardingStack.Navigator screenOptions={{ headerShown: false }}>
@@ -72,7 +72,8 @@ const Routes = () => {
     const AppScreens = () => (
         <Drawer.Navigator >
             <Drawer.Screen name="Running" component={Running} options={{ headerShown: false }} />
-            <Drawer.Screen name="Search" component={Search} options={{ headerShown: false }} />
+            <Drawer.Screen name="Search" component={Search} options={{ headerShown: false, unmountOnBlur: false }} />
+            <Drawer.Screen name="Directions" component={Directions} options={{ headerShown: false }} />
         </Drawer.Navigator>
     )
 
@@ -87,6 +88,7 @@ const Routes = () => {
                     {!isLoading && isOnboarded && !isSignedIn && <AuthScreens />}
                     {!isLoading && isOnboarded && isSignedIn && !isLocationPermissionGranted && canAskAgainForLocation && <AskLocation />}
                     {!isLoading && isOnboarded && isSignedIn && !isLocationPermissionGranted && !canAskAgainForLocation && <DeniedLocation />}
+                    {!isLoading && isOnboarded && isSignedIn && isLocationPermissionGranted && !isLocationLoaded && <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}><Text>Location is loading</Text></View>}
                     {!isLoading && isOnboarded && isSignedIn && isLocationPermissionGranted && isLocationLoaded && <AppScreens />}
                 </View>
             </NavigationContainer>

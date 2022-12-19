@@ -16,7 +16,17 @@ const useMapService = () => {
             throw error;
         }
     }
-    return { autoComplete }
+
+    const goToPlace = async (currentLocation = { lat, lng }, destination) => {
+        try {
+            const authenticatedAxios = getAuthenticatedAxios('/maps', token);
+            const data = await authenticatedAxios.post('/go', { origin: { latitude: currentLocation.lat, longitude: currentLocation.lng }, destination })
+            return data;
+        } catch (error) {
+        }
+    }
+
+    return { autoComplete, goToPlace }
 }
 
 export default useMapService

@@ -20,9 +20,15 @@ const useLocationService = () => {
     }
 
     const getCurrentLocation = async () => {
-        const location = await Location.getCurrentPositionAsync({ accuracy: 4 });
-        const { latitude, longitude } = location.coords;
-        dispatch(updateLocation({ latitude, longitude }));
+        try {
+            const location = await Location.getCurrentPositionAsync({ accuracy: 4 });
+            const { latitude, longitude } = location.coords;
+            dispatch(updateLocation({ latitude, longitude }));
+        } catch (error) {
+        }
+        finally {
+            dispatch(setLocationLoaded());
+        }
     }
 
     const getLastSavedLocation = async () => {
@@ -33,9 +39,9 @@ const useLocationService = () => {
             dispatch(updateLastSavedLocation({ latitude, longitude }));
         } catch (error) {
         }
-        finally {
-            dispatch(setLocationLoaded());
-        }
+        // finally {
+        //     dispatch(setLocationLoaded());
+        // }
     }
 
     return { isPermissionGranted, askForLocationPermission, getCurrentLocation, getLastSavedLocation }

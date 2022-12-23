@@ -1,6 +1,6 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useDispatch } from "react-redux";
-import { loginUser, setLoaded, setLoading } from "../../store/reducers/authSlice";
+import { loginUser, logoutUser, setLoaded, setLoading } from "../../store/reducers/authSlice";
 import { getAuthenticatedAxios, getUnauthenticatedAxios } from "./baseConfig";
 
 const useAuthService = () => {
@@ -26,6 +26,10 @@ const useAuthService = () => {
             return token;
         } catch (error) {
         }
+    }
+
+    const logout = () => {
+        dispatch(logoutUser())
     }
 
     const forgot = async (email) => {
@@ -64,7 +68,7 @@ const useAuthService = () => {
         }
     }
 
-    return { login, signup, forgot, reset, getUserFromToken }
+    return { login, signup, logout, forgot, reset, getUserFromToken }
 }
 
 export default useAuthService;

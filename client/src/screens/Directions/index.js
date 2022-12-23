@@ -6,6 +6,7 @@ import { useSelector } from 'react-redux'
 import colors from '../../theme/colors'
 import useMapService from '../../hooks/api/mapService'
 import { Ionicons } from '@expo/vector-icons'
+import BottomSheetComponent from '../../components/BottomSheet'
 
 const Directions = ({ navigation, route }) => {
 
@@ -16,12 +17,16 @@ const Directions = ({ navigation, route }) => {
     const mapService = useMapService();
 
     const [points, setPoints] = useState([])
+    const [distance, setDistance] = useState('')
+    const [duration, setDuration] = useState('')
 
     const mapViewRef = useRef(null)
 
     const configureRoute = async (place_id) => {
         const data = await mapService.goToPlace({ lat: latitude, lng: longitude }, { "place_id": place_id })
         setPoints(data['polyline']['path'])
+        setDistance(data['distance']['text'])
+        setDuration(data['duration']['text'])
     }
 
     useEffect(() => {
@@ -59,9 +64,11 @@ const Directions = ({ navigation, route }) => {
                     {isLocationLoaded && <Marker coordinate={{ latitude, longitude }} image={require('../../assets/map_current.png')} />}
                     {points && points.length > 0 && <Marker coordinate={{ latitude: (points[points.length - 1]).latitude, longitude: (points[points.length - 1]).longitude }} image={require('../../assets/map_destination.png')} />
                     }
-                    {/* {points && points.length>0 && } */}
                     <Polyline coordinates={points} strokeWidth={5} strokeColor={colors.primary} lineDashPattern={[1, 15]} />
                 </MapView>
+                <View style={{ position: 'absolute', bottom: 0, height: '100%', width: '100%' }}>
+                    <BottomSheetComponent distance={distance} duration={duration} />
+                </View>
                 <TouchableOpacity style={{ position: 'absolute', top: 50, left: 10 }} onPress={() => navigation.goBack()}>
                     <Ionicons name="arrow-back" size={30} color="black" />
                 </TouchableOpacity>

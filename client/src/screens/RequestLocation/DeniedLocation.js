@@ -10,7 +10,7 @@ const DeniedLocation = () => {
      */
     return (
         <SafeAreaView style={{ alignItems: 'center', justifyContent: 'center', flex: 1 }}>
-            <Text>Please allow from settings</Text>
+            <Text>Please allow access to location from settings</Text>
         </SafeAreaView>
     )
 }

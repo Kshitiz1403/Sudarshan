@@ -18,6 +18,7 @@ import Search from "../screens/Search";
 import Welcome from "../screens/Welcome";
 import { createDrawerNavigator } from "@react-navigation/drawer";
 import Directions from "../screens/Directions";
+import CustomDrawer from "./Drawer";
 
 const Routes = () => {
 
@@ -70,10 +71,10 @@ const Routes = () => {
     )
 
     const AppScreens = () => (
-        <Drawer.Navigator >
+        <Drawer.Navigator drawerContent={props => <CustomDrawer {...props} />}>
             <Drawer.Screen name="Running" component={Running} options={{ headerShown: false }} />
-            <Drawer.Screen name="Search" component={Search} options={{ headerShown: false, unmountOnBlur: false }} />
-            <Drawer.Screen name="Directions" component={Directions} options={{ headerShown: false }} />
+            <Drawer.Screen name="Search" component={Search} options={{ headerShown: false, unmountOnBlur: false}} />
+            <Drawer.Screen name="Directions" component={Directions} options={{ headerShown: false,  }} />
         </Drawer.Navigator>
     )
 

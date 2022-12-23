@@ -10,6 +10,7 @@ export interface IUser {
   gender: 'Male' | 'Female' | 'Other';
   weightKG: number;
   heightCM: number;
+  isProfileCompleted: Boolean;
 }
 
 export interface IUserInputDTO {

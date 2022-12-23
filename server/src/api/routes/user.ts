@@ -1,4 +1,5 @@
 import { IRequest, IResponse } from '@/api/types/express';
+import { celebrate, Joi } from 'celebrate';
 import { Router } from 'express';
 import Container from 'typedi';
 import { UserController } from '../controllers/userController';
@@ -11,5 +12,20 @@ export default (app: Router) => {
 
   route.get('/me', middlewares.isAuth, ctrl.getUserDetails);
 
-  route.patch('/details', middlewares.isAuth, ctrl.completeDetails);
+  route.get('/profileStatus', middlewares.isAuth, ctrl.isProfileComplete);
+
+  route.patch(
+    '/details',
+    middlewares.isAuth,
+    celebrate({
+      body: Joi.object({
+        name: Joi.string().required(),
+        dob: Joi.date().required(),
+        gender: Joi.string().valid('Male', 'Female', 'Other').required(),
+        weightKG: Joi.number().required(),
+        heightCM: Joi.number().required(),
+      }),
+    }),
+    ctrl.completeDetails,
+  );
 };

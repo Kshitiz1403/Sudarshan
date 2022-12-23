@@ -24,6 +24,17 @@ export class UserController {
     }
   };
 
+  public isProfileComplete = async (req: IRequest, res: Response, next: NextFunction) => {
+    this.logger.debug('Calling Complete Details endpoint with query: %o', req.query);
+    try {
+      const isProfileComplete = await this.userServiceInstance.isProfileComplete(req.currentUser.userId);
+      return res.status(200).json(Result.success(isProfileComplete));
+    } catch (e) {
+      this.logger.error('🔥 error: %o', e);
+      return next(e);
+    }
+  };
+
   public completeDetails = async (req: IRequest, res: Response, next: NextFunction) => {
     this.logger.debug('Calling Complete Details endpoint with body: %o', req.body);
     try {

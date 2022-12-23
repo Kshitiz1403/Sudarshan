@@ -22,6 +22,15 @@ export default class UserService {
     }
   };
 
+  public isProfileComplete = async (userId: IUser['_id']) => {
+    try {
+      const isProfileComplete = await this.userRepositoryInstance.isProfileComplete(userId);
+      return { isProfileComplete };
+    } catch (e) {
+      throw e;
+    }
+  };
+
   public completeDetails = async (userId: IUser['_id'], userInputDTO: IUserDetails) => {
     try {
       const userRecord = await this.userRepositoryInstance.completeDetails(userId, userInputDTO);

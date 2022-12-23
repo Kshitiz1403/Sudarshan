@@ -47,9 +47,19 @@ export class UserRepository {
     }
   };
 
+  public isProfileComplete = async (userId: IUser['_id']) => {
+    try {
+      const record = await UserModel.findById(userId);
+      const userRecord = record.toObject();
+      return userRecord.isProfileCompleted;
+    } catch (error) {
+      throw error;
+    }
+  };
+
   public completeDetails = async (userId: IUser['_id'], userInputDTO: IUserDetails) => {
     try {
-      const status = await UserModel.updateOne({ _id: userId }, { ...userInputDTO });
+      const status = await UserModel.updateOne({ _id: userId }, { ...userInputDTO, isProfileCompleted: true });
       return userInputDTO;
     } catch (error) {
       throw error;

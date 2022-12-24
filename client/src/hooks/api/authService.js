@@ -75,7 +75,6 @@ const useAuthService = () => {
             if (!token) return
             const authenticatedAxios = getAuthenticatedAxios('/users', token);
             const { isProfileComplete } = await authenticatedAxios.get('/profileStatus');
-            console.log(isProfileComplete)
             if (isProfileComplete) dispatch(setProfileCompleted());
         } catch (error) {
         }

@@ -1,4 +1,4 @@
-import { StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native'
+import { BackHandler, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native'
 import React, { useState } from 'react'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import colors from '../../theme/colors'
@@ -66,6 +66,14 @@ const PersonalDetails = () => {
             <Text style={{ color: isSelected ? 'white' : colors.primary }}>{text}</Text>
         </TouchableOpacity>
     }
+
+    BackHandler.addEventListener("hardwareBackPress", () => {
+        if (isDatePickerVisible) {
+            setIsDatePickerVisible(false)
+            return true;
+        }
+        return false;
+    })
 
     return (
         <SafeAreaView style={{ flex: 1 }}>

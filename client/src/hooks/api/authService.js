@@ -1,10 +1,11 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { useDispatch } from "react-redux";
-import { loginUser, logoutUser, setLoaded, setLoading } from "../../store/reducers/authSlice";
+import { useDispatch, useSelector } from "react-redux";
+import { loginUser, logoutUser, setLoaded, setLoading, setProfileCompleted } from "../../store/reducers/authSlice";
 import { getAuthenticatedAxios, getUnauthenticatedAxios } from "./baseConfig";
 
 const useAuthService = () => {
     const dispatch = useDispatch();
+    const token = useSelector(state => state.auth.token)
 
     const login = async (email, password) => {
         try {
@@ -58,7 +59,7 @@ const useAuthService = () => {
             const token = await AsyncStorage.getItem('@token');
             if (!token) return;
             const authenticatedAxios = getAuthenticatedAxios('/users', token);
-            const user = await authenticatedAxios.get('/me').data;
+            const user = await authenticatedAxios.get('/me')
             dispatch(loginUser(token));
             return user;
         } catch (error) {
@@ -68,7 +69,29 @@ const useAuthService = () => {
         }
     }
 
-    return { login, signup, logout, forgot, reset, getUserFromToken }
+    const isProfileComplete = async () => {
+        try {
+            const token = await AsyncStorage.getItem('@token');
+            if (!token) return
+            const authenticatedAxios = getAuthenticatedAxios('/users', token);
+            const { isProfileComplete } = await authenticatedAxios.get('/profileStatus');
+            console.log(isProfileComplete)
+            if (isProfileComplete) dispatch(setProfileCompleted());
+        } catch (error) {
+        }
+    }
+
+    const completeProfile = async (name, dob, gender, weightKG, heightCM) => {
+        try {
+            const authenticatedAxios = getAuthenticatedAxios('/users', token);
+            const data = await authenticatedAxios.patch('/details', { name, dob, gender, weightKG, heightCM })
+            dispatch(setProfileCompleted());
+            return data;
+        } catch (error) {
+        }
+    }
+
+    return { login, signup, logout, forgot, reset, getUserFromToken, isProfileComplete, completeProfile }
 }
 
 export default useAuthService;

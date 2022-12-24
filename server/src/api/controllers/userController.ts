@@ -25,7 +25,7 @@ export class UserController {
   };
 
   public isProfileComplete = async (req: IRequest, res: Response, next: NextFunction) => {
-    this.logger.debug('Calling Complete Details endpoint with query: %o', req.query);
+    this.logger.debug('Calling isProfileComplete endpoint with query: %o', req.query);
     try {
       const isProfileComplete = await this.userServiceInstance.isProfileComplete(req.currentUser.userId);
       return res.status(200).json(Result.success(isProfileComplete));

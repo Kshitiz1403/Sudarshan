@@ -19,29 +19,36 @@ import Welcome from "../screens/Welcome";
 import { createDrawerNavigator } from "@react-navigation/drawer";
 import Directions from "../screens/Directions";
 import CustomDrawer from "./Drawer";
+import PersonalDetails from "../screens/Auth/PersonalDetails";
 
 const Routes = () => {
 
     const isLoading = useSelector(state => state.auth.isLoading)
     const isSignedIn = useSelector(state => state.auth.isLoggedIn);
+    const isProfileCompleted = useSelector(state => state.auth.isProfileComplete)
     const isOnboarded = useSelector(state => state.onboarding.isOnboarded)
     const isLocationPermissionGranted = useSelector(state => state.location.isPermissionGranted)
     const canAskAgainForLocation = useSelector(state => state.location.canAskAgain)
     const isLocationLoaded = useSelector(state => state.location.isLocationLoaded)
+
     const onboardingService = useOnboardingService(); //required for initializing onboarding state
     const authService = useAuthService();
     const locationService = useLocationService();
 
     const OnboardingStack = createNativeStackNavigator();
     const AuthStack = createNativeStackNavigator();
-    const AppStack = createNativeStackNavigator();
+    const ProfileCompletionStack = createNativeStackNavigator();
+
     const Drawer = createDrawerNavigator();
 
     const dispatch = useDispatch()
 
     useEffect(() => {
-        authService.getUserFromToken()
-        locationService.isPermissionGranted()
+        (async () => {
+            locationService.isPermissionGranted()
+            await authService.getUserFromToken()
+            await authService.isProfileComplete();
+        })();
     }, [])
 
     useEffect(() => {
@@ -73,9 +80,15 @@ const Routes = () => {
     const AppScreens = () => (
         <Drawer.Navigator drawerContent={props => <CustomDrawer {...props} />}>
             <Drawer.Screen name="Running" component={Running} options={{ headerShown: false }} />
-            <Drawer.Screen name="Search" component={Search} options={{ headerShown: false, unmountOnBlur: false}} />
-            <Drawer.Screen name="Directions" component={Directions} options={{ headerShown: false,  }} />
+            <Drawer.Screen name="Search" component={Search} options={{ headerShown: false, unmountOnBlur: false }} />
+            <Drawer.Screen name="Directions" component={Directions} options={{ headerShown: false, }} />
         </Drawer.Navigator>
+    )
+
+    const ProfileCompletionScreens = () => (
+        <ProfileCompletionStack.Navigator>
+            <ProfileCompletionStack.Screen name="ProfileComplete" component={PersonalDetails} options={{ headerShown: false }} />
+        </ProfileCompletionStack.Navigator>
     )
 
     return (
@@ -89,8 +102,9 @@ const Routes = () => {
                     {!isLoading && isOnboarded && !isSignedIn && <AuthScreens />}
                     {!isLoading && isOnboarded && isSignedIn && !isLocationPermissionGranted && canAskAgainForLocation && <AskLocation />}
                     {!isLoading && isOnboarded && isSignedIn && !isLocationPermissionGranted && !canAskAgainForLocation && <DeniedLocation />}
-                    {!isLoading && isOnboarded && isSignedIn && isLocationPermissionGranted && !isLocationLoaded && <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}><Text>Location is loading</Text></View>}
-                    {!isLoading && isOnboarded && isSignedIn && isLocationPermissionGranted && isLocationLoaded && <AppScreens />}
+                    {!isLoading && isOnboarded && isSignedIn && isLocationPermissionGranted && !isProfileCompleted && <ProfileCompletionScreens />}
+                    {!isLoading && isOnboarded && isSignedIn && isLocationPermissionGranted && isProfileCompleted && !isLocationLoaded && <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}><Text>Location is loading</Text></View>}
+                    {!isLoading && isOnboarded && isSignedIn && isLocationPermissionGranted && isProfileCompleted && isLocationLoaded && <AppScreens />}
                 </View>
             </NavigationContainer>
         </SafeAreaProvider>

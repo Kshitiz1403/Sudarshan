@@ -86,6 +86,77 @@ export class MapService {
     }
   };
 
+  public calculatePlaces = async({ origin , destination, waypoints }: IGoToPlaceInputDTO) => {
+    if (!this.validatePlace(origin) || !this.validatePlace(destination)) throw 'Please enter valid location';
+
+    if (waypoints && waypoints.length > 9) throw 'Waypoints cannot be more than 9'; // Google cloud charges extra for more than 10 waypoints - https://developers.google.com/maps/documentation/directions/usage-and-billing
+    let optimize_waypoints = false;
+    let waypoints_place = [];
+    if (waypoints && waypoints.length > 0) {
+      waypoints_place = this.getPlaces(waypoints);
+    }
+    if (waypoints_place.length > 0) optimize_waypoints = true;
+
+    try {
+      const data = await (
+        await this.googleMapAxiosInstance.get(GoogleMapsApiEndpoints.DIRECTIONS, {
+          params: {
+            origin: this.getPlace(origin),
+            destination: this.getPlace(destination),
+            units: 'metric',
+            mode: 'walking',
+            language: 'en',
+            optimize: optimize_waypoints,
+            waypoints: waypoints_place,
+          },
+        })
+      ).data;
+
+      let totalDistance = 0;
+      let totalTime = 0;
+      let maxLatitude = 0;
+      let minLatitude = 0;
+      let delta = 0.001;
+      const routes = data['routes'][0];
+      const steps = routes['legs'][0]['steps'];
+      const coordinatesInPath = this.getCoordinatesInPath(steps);
+      const obj = {};
+      const points = decode(routes.overview_polyline.points, 5);
+      const coords = points.map(point => {
+        return { latitude: point[0], longitude: point[1] };
+      });
+      obj['polyline'] = routes.overview_polyline;
+      obj['polyline']['path'] = coords;
+      const arr: String[] = [];
+      data.geocoded_waypoints.map(waypoint => {
+        arr.push(waypoint.place_id);
+      });
+
+      obj['waypoints'] = arr;
+      obj['waypoint_order'] = routes.waypoint_order;
+      routes.legs.map(leg => {
+        totalDistance += leg.distance.value;
+        totalTime += leg.duration.value;
+      });
+      obj['distance'] = {
+        text: this.meterToKm(totalDistance),
+        value: totalDistance,
+      };
+      obj['minLatitude'] = minLatitude;
+      obj['maxLatitude'] = maxLatitude;
+
+      obj['duration'] = {
+        text: this.secondsToHm(totalTime),
+        value: totalTime,
+      };
+      return obj;
+    } catch (e) {
+      this.logger.error(e);
+      throw 'Trip info could not be found';
+    }
+
+  }
+
   public goToPlace = async ({ origin, destination, waypoints }: IGoToPlaceInputDTO) => {
     if (!this.validatePlace(origin) || !this.validatePlace(destination)) throw 'Please enter valid location';
 
@@ -114,6 +185,9 @@ export class MapService {
 
       let totalDistance = 0;
       let totalTime = 0;
+      let maxLatitude = 0;
+      let minLatitude = 0;
+      let delta = 0.001;
       const routes = data['routes'][0];
       const steps = routes['legs'][0]['steps'];
       const coordinatesInPath = this.getCoordinatesInPath(steps);
@@ -122,32 +196,45 @@ export class MapService {
       const coords = points.map(point => {
         return { latitude: point[0], longitude: point[1] };
       });
-      obj['polyline'] = routes.overview_polyline;
-      obj['polyline']['path'] = coords;
-      const arr: String[] = [];
-      data.geocoded_waypoints.map(waypoint => {
-        arr.push(waypoint.place_id);
-      });
+      for(let i=0; i < coords.length; i++) {
+        maxLatitude = Math.max(maxLatitude, coords[i].latitude + delta)
+        minLatitude = Math.min(minLatitude, coords[i].latidue - delta)
+      }
+    // MAKE A MONGO REQUEST.
+      //
+    waypoints = SOME_MONGO_REQUEST()
 
-      obj['waypoints'] = arr;
-      obj['waypoint_order'] = routes.waypoint_order;
-      routes.legs.map(leg => {
-        totalDistance += leg.distance.value;
-        totalTime += leg.duration.value;
-      });
-      obj['distance'] = {
-        text: this.meterToKm(totalDistance),
-        value: totalDistance,
-      };
-      obj['duration'] = {
-        text: this.secondsToHm(totalTime),
-        value: totalTime,
-      };
-      return obj;
-    } catch (e) {
-      this.logger.error(e);
-      throw 'Trip info could not be found';
-    }
+    return calculatePlaces(origin, destination, waypoints)
+
+    //   obj['polyline'] = routes.overview_polyline;
+    //   obj['polyline']['path'] = coords;
+    //   const arr: String[] = [];
+    //   data.geocoded_waypoints.map(waypoint => {
+    //     arr.push(waypoint.place_id);
+    //   });
+    //
+    //   obj['waypoints'] = arr;
+    //   obj['waypoint_order'] = routes.waypoint_order;
+    //   routes.legs.map(leg => {
+    //     totalDistance += leg.distance.value;
+    //     totalTime += leg.duration.value;
+    //   });
+    //   obj['distance'] = {
+    //     text: this.meterToKm(totalDistance),
+    //     value: totalDistance,
+    //   };
+    //   obj['minLatitude'] = minLatitude;
+    //   obj['maxLatitude'] = maxLatitude;
+    //
+    //   obj['duration'] = {
+    //     text: this.secondsToHm(totalTime),
+    //     value: totalTime,
+    //   };
+    //   return obj;
+    // } catch (e) {
+    //   this.logger.error(e);
+    //   throw 'Trip info could not be found';
+    // }
   };
 
   public getCoordinatesInPath = steps => {

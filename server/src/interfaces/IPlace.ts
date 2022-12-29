@@ -23,6 +23,18 @@ export interface IGoToPlaceInputDTO {
 interface IBaseDataGoPlace {
   _id?: Types.ObjectId;
   start_address?: String;
+  start_location?: {
+    lat: number;
+    lng: number;
+  };
+  end_location?: {
+    lat: number;
+    lng: number;
+  };
+  dustbin_location?: {
+    lat: number;
+    lng: number;
+  };
   end_address?: String;
   dustbin_address?: String;
   polyline?: {

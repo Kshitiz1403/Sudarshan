@@ -16,7 +16,7 @@ const Search = ({ navigation }) => {
     const [predictions, setPredictions] = useState([])
 
     const PredictionItem = ({ main_text, secondary_text, place_id }) => (
-        <TouchableOpacity activeOpacity={0.5} style={{ borderBottomWidth: 1, borderColor: colors.tertiary, paddingBottom: 10, paddingRight: 50, marginVertical: 5 }} onPress={() => { navigation.navigate("Directions", { place_id }) }}>
+        <TouchableOpacity activeOpacity={0.5} style={{ borderBottomWidth: 1, borderColor: colors.tertiary, paddingBottom: 10, paddingRight: 50, marginVertical: 5 }} onPress={() => { navigation.navigate("Directions", { place_id, main_text, secondary_text }) }}>
             <Text style={{ fontSize: 15, fontWeight: '600' }}>{main_text}</Text>
             <Text numberOfLines={1}>{secondary_text}</Text>
         </TouchableOpacity>

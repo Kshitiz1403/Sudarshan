@@ -20,10 +20,15 @@ export class DustbinRepository {
     }
   };
 
-  public createDustbinAtLocation = async (coordinates: ILatLng, address: IDustbin['address']) => {
+  public createDustbinAtLocation = async (
+    coordinates: ILatLng,
+    name: IDustbin['name'],
+    address: IDustbin['address'],
+  ) => {
     try {
       const dustbin = await DustbinModel.create({
         location: { coordinates: [coordinates.longitude, coordinates.latitude] },
+        name,
         address,
       });
       if (dustbin) {

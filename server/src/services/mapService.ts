@@ -124,8 +124,7 @@ export class MapService {
         return generatedData;
       });
     });
-    const results = await Promise.all(requests).then(value => value);
-    return results;
+    return Promise.all(requests);
   };
 
   private transformDataFromGoToPlace = (data, isWaypoint: boolean, id?: IDataGoPlace['_id']): IDataGoPlace => {
@@ -135,19 +134,33 @@ export class MapService {
     if (id) obj._id = id;
 
     if (!isWaypoint) {
-      const start_address = routes['legs'][0]['start_address'] || 'some';
-      const end_address = routes['legs'][0]['end_address'] || 'some';
+      const start_address = routes['legs'][0]['start_address'];
+      const end_address = routes['legs'][0]['end_address'];
+
+      const start_location = routes['legs'][0]['start_location'];
+      const end_location = routes['legs'][0]['end_location'];
 
       obj.start_address = start_address;
+      obj.start_location = start_location;
+
       obj.end_address = end_address;
+      obj.end_location = end_location;
     } else {
-      const start_address = routes['legs'][0]['start_address'] || 'some';
-      const dustbin_address = routes['legs'][0]['end_address'] || 'some';
-      const end_address = routes['legs'][1]['end_address'] || 'some';
+      const start_address = routes['legs'][0]['start_address'];
+      const start_location = routes['legs'][0]['start_location'];
+
+      const dustbin_address = routes['legs'][0]['end_address'];
+      const dustbin_location = routes['legs'][0]['end_location'];
+
+      const end_address = routes['legs'][1]['end_address'];
+      const end_location = routes['legs'][1]['end_location'];
 
       obj.start_address = start_address;
+      obj.start_location = start_location;
       obj.dustbin_address = dustbin_address;
+      obj.dustbin_location = dustbin_location;
       obj.end_address = end_address;
+      obj.end_location = end_location;
     }
     const points = decode(routes.overview_polyline.points, 5);
     const coordinates = points.map(point => ({ latitude: point[0], longitude: point[1] }));

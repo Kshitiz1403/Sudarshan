@@ -19,8 +19,9 @@ export class DustbinController {
     this.logger.debug('Calling add dustbin endpoint with body: %o', req.body);
     try {
       const location = req.body as ILatLng;
+      const name = req.body.name as IDustbin['name'];
       const address = req.body.address as IDustbin['address'];
-      const dustbin = await this.dustbinServiceInstance.addDustbin(location, address);
+      const dustbin = await this.dustbinServiceInstance.addDustbin(location, name, address);
 
       return res.status(200).json(Result.success(dustbin));
     } catch (e) {

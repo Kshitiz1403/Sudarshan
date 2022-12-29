@@ -12,11 +12,11 @@ export default class DustbinService {
     this.dustbinRepositoryInstance = dustbinRepository;
   }
 
-  public addDustbin = async (location: ILatLng, address: IDustbin['address']) => {
+  public addDustbin = async (location: ILatLng, name: IDustbin['name'], address: IDustbin['address']) => {
     try {
       this.logger.silly('Creating dustbin record');
 
-      const dustbinRecord = await this.dustbinRepositoryInstance.createDustbinAtLocation(location, address);
+      const dustbinRecord = await this.dustbinRepositoryInstance.createDustbinAtLocation(location, name, address);
       return dustbinRecord;
     } catch (error) {
       throw error;

@@ -14,6 +14,7 @@ const Dustbin = new mongoose.Schema(
         required: true,
       },
     },
+    name: String,
     address: String,
   },
   { timestamps: true },

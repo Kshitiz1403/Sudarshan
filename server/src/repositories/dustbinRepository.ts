@@ -59,7 +59,7 @@ export class DustbinRepository {
             },
           },
         },
-      });
+      }).limit(9); // Google cloud charges extra for more than 10 waypoints - https://developers.google.com/maps/documentation/directions/usage-and-billing
     } catch (error) {
       throw error;
     }

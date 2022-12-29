@@ -4,14 +4,15 @@ export interface IDustbin {
   _id: Types.ObjectId;
   location: {
     type: 'Point';
-    coordinates: [Number, Number];
+    coordinates: [number, number];
   };
+  name: String;
   address: String;
 }
 
 export interface IDustbinRangeInputDTO {
-  minLatitude: Number;
-  minLongitude: Number;
-  maxLatitude: Number;
-  maxLongitude: Number;
+  minLatitude: number;
+  minLongitude: number;
+  maxLatitude: number;
+  maxLongitude: number;
 }

@@ -1,11 +1,12 @@
 import config from '@/config';
-import { IGoToPlaceInputDTO, ILatLng, IPlace } from '@/interfaces/IPlace';
+import { IDataGoPlace, IGoToPlaceInputDTO, ILatLng, IPlace } from '@/interfaces/IPlace';
 import axios, { AxiosInstance } from 'axios';
 import { Inject, Service } from 'typedi';
-import { decode, encode } from '@googlemaps/polyline-codec';
+import { decode } from '@googlemaps/polyline-codec';
 import { GeoDistance, GoogleMapsApiEndpoints } from '@/enums/MapsEnums';
 import { Logger } from 'winston';
 import { DustbinRepository } from '@/repositories/dustbinRepository';
+import { IDustbin } from '@/interfaces/IDustbin';
 
 @Service()
 export class MapService {
@@ -63,16 +64,8 @@ export class MapService {
     }
   };
 
-  public goToPlace = async ({ origin, destination, waypoints }: IGoToPlaceInputDTO) => {
+  public goToPlace = async ({ origin, destination }: IGoToPlaceInputDTO) => {
     if (!this.validatePlace(origin) || !this.validatePlace(destination)) throw 'Please enter valid location';
-
-    if (waypoints && waypoints.length > 9) throw 'Waypoints cannot be more than 9'; // Google cloud charges extra for more than 10 waypoints - https://developers.google.com/maps/documentation/directions/usage-and-billing
-    let optimize_waypoints = false;
-    let waypoints_place = [];
-    if (waypoints && waypoints.length > 0) {
-      waypoints_place = this.getPlaces(waypoints);
-    }
-    if (waypoints_place.length > 0) optimize_waypoints = true;
 
     try {
       const data = await (
@@ -83,22 +76,13 @@ export class MapService {
             units: 'metric',
             mode: 'walking',
             language: 'en',
-            optimize: optimize_waypoints,
-            waypoints: waypoints_place,
           },
         })
       ).data;
 
-      let totalDistance = 0;
-      let totalTime = 0;
+      const transformedData = this.transformDataFromGoToPlace(data, false);
 
-      const routes = data['routes'][0];
-      const steps = routes['legs'][0]['steps'];
-      const obj = {};
-      const points = decode(routes.overview_polyline.points, 5);
-      const coordinates = points.map(point => {
-        return { latitude: point[0], longitude: point[1] };
-      });
+      const coordinates = transformedData.polyline.path;
 
       const { minLatitude, minLongitude, maxLatitude, maxLongitude } = this.getMinMaxPoints(coordinates);
 
@@ -108,43 +92,86 @@ export class MapService {
         minLatitude,
         minLongitude,
       });
-      const dustbinPoints = dustbins.map(dustbin => {
-        return {
-          _id: dustbin._id,
-          address: dustbin.address,
-          latitude: dustbin.location.coordinates[1],
-          longitude: dustbin.location.coordinates[0],
-        };
-      });
 
-      obj['dustbins'] = dustbinPoints;
-      obj['polyline'] = routes.overview_polyline;
-      obj['polyline']['path'] = coordinates;
-      //   const arr: String[] = [];
-      //   data.geocoded_waypoints.map(waypoint => {
-      //     arr.push(waypoint.place_id);
-      //   });
-      //
-      //   obj['waypoints'] = arr;
-      //   obj['waypoint_order'] = routes.waypoint_order;
-      routes.legs.map(leg => {
-        totalDistance += leg.distance.value;
-        totalTime += leg.duration.value;
-      });
-      obj['distance'] = {
-        text: this.meterToKm(totalDistance),
-        value: totalDistance,
-      };
+      const waypoints = await this.getWayPointsForDustbins(origin, destination, dustbins);
+      transformedData.dustbins = waypoints;
 
-      obj['duration'] = {
-        text: this.secondsToHm(totalTime),
-        value: totalTime,
-      };
-      return obj;
+      return transformedData;
     } catch (e) {
       this.logger.error(e);
       throw 'Trip info could not be found';
     }
+  };
+
+  private getWayPointsForDustbins = async (start: IPlace, end: IPlace, dustbins: IDustbin[]) => {
+    const requests = dustbins.map(dustbin => {
+      const [longitude, latitude] = dustbin.location.coordinates;
+      const optimizeWaypoints = false; // Google cloud charges extra for more than 10 waypoints - https://developers.google.com/maps/documentation/directions/usage-and-billing
+      const request = this.googleMapAxiosInstance.get(GoogleMapsApiEndpoints.DIRECTIONS, {
+        params: {
+          origin: this.getPlace(start),
+          destination: this.getPlace(end),
+          units: 'metric',
+          mode: 'walking',
+          language: 'en',
+          optimize: optimizeWaypoints,
+          waypoints: this.getLatLng(latitude, longitude),
+        },
+      });
+      return request.then(request => {
+        const data = request.data;
+        const generatedData = this.transformDataFromGoToPlace(data, true, dustbin._id);
+        return generatedData;
+      });
+    });
+    const results = await Promise.all(requests).then(value => value);
+    return results;
+  };
+
+  private transformDataFromGoToPlace = (data, isWaypoint: boolean, id?: IDataGoPlace['_id']): IDataGoPlace => {
+    let obj: IDataGoPlace = {};
+    const routes = data['routes'][0];
+
+    if (id) obj._id = id;
+
+    if (!isWaypoint) {
+      const start_address = routes['legs'][0]['start_address'] || 'some';
+      const end_address = routes['legs'][0]['end_address'] || 'some';
+
+      obj.start_address = start_address;
+      obj.end_address = end_address;
+    } else {
+      const start_address = routes['legs'][0]['start_address'] || 'some';
+      const dustbin_address = routes['legs'][0]['end_address'] || 'some';
+      const end_address = routes['legs'][1]['end_address'] || 'some';
+
+      obj.start_address = start_address;
+      obj.dustbin_address = dustbin_address;
+      obj.end_address = end_address;
+    }
+    const points = decode(routes.overview_polyline.points, 5);
+    const coordinates = points.map(point => ({ latitude: point[0], longitude: point[1] }));
+    obj.polyline = routes.overview_polyline;
+    obj.polyline.path = coordinates;
+    let totalDistance = 0;
+    let totalTime = 0;
+    // https://developers.google.com/maps/documentation/directions/get-directions#influence-routes-with-stopover-and-pass-through-points
+
+    // Any waypoints based route has legs i.e. wherever user will stop. No waypoint routes will have only 1 element in the legs array.
+    routes.legs.map(leg => {
+      totalDistance += leg.distance.value;
+      totalTime += leg.duration.value;
+    });
+    obj.distance = {
+      text: this.meterToKm(totalDistance),
+      value: totalDistance,
+    };
+
+    obj.duration = {
+      text: this.secondsToHm(totalTime),
+      value: totalTime,
+    };
+    return obj;
   };
 
   private getMinMaxPoints = (coordinates: ILatLng[]) => {
@@ -195,10 +222,7 @@ export class MapService {
   private getPlaces = (places: IPlace[]) => {
     const arr = [];
     places.map(place => {
-      const place_id = this.getPlaceId(place.place_id);
-      const lat_lng = this.getLatLng(place.latitude, place.longitude);
-      if (place_id) arr.push(place_id);
-      else if (lat_lng) arr.push(lat_lng);
+      arr.push(this.getPlace(place));
     });
     return arr;
   };

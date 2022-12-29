@@ -1,5 +1,6 @@
 import { Router } from 'express';
 import auth from './routes/auth';
+import dustbin from './routes/dustbin';
 import map from './routes/map';
 import user from './routes/user';
 
@@ -9,6 +10,6 @@ export default () => {
   auth(app);
   user(app);
   map(app);
-
+  dustbin(app);
   return app;
 };

@@ -6,7 +6,13 @@ interface PlaceItem {
   place_id?: string;
 }
 
-export type IPlace = RequireExactlyOne<PlaceItem, ('latitude' & 'longitude')| 'place_id'>;
+export interface ILatLng {
+  latitude: number;
+  longitude: number;
+}
+
+
+export type IPlace = RequireExactlyOne<PlaceItem, ('latitude' & 'longitude') | 'place_id'>;
 
 export interface IGoToPlaceInputDTO {
   origin: IPlace;

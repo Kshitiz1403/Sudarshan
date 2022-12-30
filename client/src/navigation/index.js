@@ -20,13 +20,16 @@ import { createDrawerNavigator } from "@react-navigation/drawer";
 import Directions from "../screens/Directions";
 import CustomDrawer from "./Drawer";
 import PersonalDetails from "../screens/Auth/PersonalDetails";
+import QRScreen from "../screens/QRScreen";
 
 const Routes = () => {
 
-    const isLoading = useSelector(state => state.auth.isLoading)
+    const isAuthLoading = useSelector(state => state.auth.isLoading)
+    const isProfileCompleteLoading = useSelector(state => state.auth.isProfileCompleteLoading)
     const isSignedIn = useSelector(state => state.auth.isLoggedIn);
     const isProfileCompleted = useSelector(state => state.auth.isProfileComplete)
     const isOnboarded = useSelector(state => state.onboarding.isOnboarded)
+    const isLocationPermissionLoading = useSelector(state => state.location.isGrantLoading)
     const isLocationPermissionGranted = useSelector(state => state.location.isPermissionGranted)
     const canAskAgainForLocation = useSelector(state => state.location.canAskAgain)
     const isLocationLoaded = useSelector(state => state.location.isLocationLoaded)
@@ -82,6 +85,7 @@ const Routes = () => {
             <Drawer.Screen name="Running" component={Running} options={{ headerShown: false }} />
             <Drawer.Screen name="Search" component={Search} options={{ headerShown: false, unmountOnBlur: false }} />
             <Drawer.Screen name="Directions" component={Directions} options={{ headerShown: false, }} />
+            <Drawer.Screen name="QR" component={QRScreen} options={{ headerShown: false }} />
         </Drawer.Navigator>
     )
 
@@ -95,16 +99,22 @@ const Routes = () => {
         <SafeAreaProvider>
             <NavigationContainer>
                 <View style={{ flex: 1 }}>
-                    {isLoading && <View style={{ display: 'flex', flex: 1, justifyContent: 'center' }}>
+                    {isAuthLoading && <View style={{ display: 'flex', flex: 1, justifyContent: 'center' }}>
                         <Text style={{ textAlign: 'center', }}>Loading....</Text>
                     </View>}
-                    {!isLoading && !isOnboarded && <OnboardingScreens />}
-                    {!isLoading && isOnboarded && !isSignedIn && <AuthScreens />}
-                    {!isLoading && isOnboarded && isSignedIn && !isLocationPermissionGranted && canAskAgainForLocation && <AskLocation />}
-                    {!isLoading && isOnboarded && isSignedIn && !isLocationPermissionGranted && !canAskAgainForLocation && <DeniedLocation />}
-                    {!isLoading && isOnboarded && isSignedIn && isLocationPermissionGranted && !isProfileCompleted && <ProfileCompletionScreens />}
-                    {!isLoading && isOnboarded && isSignedIn && isLocationPermissionGranted && isProfileCompleted && !isLocationLoaded && <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}><Text>Location is loading</Text></View>}
-                    {!isLoading && isOnboarded && isSignedIn && isLocationPermissionGranted && isProfileCompleted && isLocationLoaded && <AppScreens />}
+                    {!isAuthLoading && !isOnboarded && <OnboardingScreens />}
+                    {!isAuthLoading && isOnboarded && !isSignedIn && <AuthScreens />}
+
+                    {!isAuthLoading && isOnboarded && isSignedIn && isLocationPermissionLoading && <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}><Text>Please wait while we are getting location permissions :)</Text></View>}
+
+                    {!isAuthLoading && isOnboarded && isSignedIn && !isLocationPermissionLoading && !isLocationPermissionGranted && canAskAgainForLocation && <AskLocation />}
+                    {!isAuthLoading && isOnboarded && isSignedIn && !isLocationPermissionLoading && !isLocationPermissionGranted && !canAskAgainForLocation && <DeniedLocation />}
+
+                    {!isAuthLoading && isOnboarded && isSignedIn && !isLocationPermissionLoading && isLocationPermissionGranted && isProfileCompleteLoading && <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}><Text>Profile Complete Screen Loading</Text></View>}
+                    {!isAuthLoading && isOnboarded && isSignedIn && !isLocationPermissionLoading && isLocationPermissionGranted && !isProfileCompleteLoading && !isProfileCompleted && <ProfileCompletionScreens />}
+
+                    {!isAuthLoading && isOnboarded && isSignedIn && !isLocationPermissionLoading && isLocationPermissionGranted && !isProfileCompleteLoading && isProfileCompleted && !isLocationLoaded && <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}><Text>Location is loading</Text></View>}
+                    {!isAuthLoading && isOnboarded && isSignedIn && !isLocationPermissionLoading && isLocationPermissionGranted && !isProfileCompleteLoading && isProfileCompleted && isLocationLoaded && <AppScreens />}
                 </View>
             </NavigationContainer>
         </SafeAreaProvider>

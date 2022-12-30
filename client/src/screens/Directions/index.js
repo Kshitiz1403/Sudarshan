@@ -29,7 +29,6 @@ const Directions = ({ navigation, route }) => {
 
     const configureRoute = async (place_id) => {
         const data = await mapService.goToPlace({ lat: latitude, lng: longitude }, { "place_id": place_id })
-        console.log(data)
         setPoints(data['polyline']['path'])
         setDistance(data['distance']['text'])
         setDuration(data['duration']['text'])
@@ -93,7 +92,7 @@ const Directions = ({ navigation, route }) => {
                     <Polyline coordinates={points} strokeWidth={5} strokeColor={colors.primary} lineDashPattern={[1, 15]} />
                 </MapView>
                 <View style={{ position: 'absolute', bottom: 0, height: '100%', width: '100%' }}>
-                    <BottomSheetComponent place_name={placeDetails.place_name} place_address={placeDetails.place_address} distance={distance} duration={duration} dustbins={dustbins} selectedDustbin={selectedDustbin} setSelectedDustbin={setSelectedDustbin} />
+                    <BottomSheetComponent place_name={placeDetails.place_name} place_address={placeDetails.place_address} distance={distance} duration={duration} dustbins={dustbins} selectedDustbin={selectedDustbin} setSelectedDustbin={setSelectedDustbin} navigation={navigation}/>
                 </View>
                 <TouchableOpacity style={{ position: 'absolute', top: 50, left: 10 }} onPress={() => navigation.goBack()}>
                     <Ionicons name="arrow-back" size={30} color="black" />

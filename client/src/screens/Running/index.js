@@ -1,7 +1,7 @@
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import React from 'react'
 import { SafeAreaView } from 'react-native-safe-area-context'
-import MapView, { Marker } from 'react-native-maps'
+import MapView, { Marker, PROVIDER_GOOGLE } from 'react-native-maps'
 import { useDispatch, useSelector } from 'react-redux'
 import { Feather, FontAwesome } from '@expo/vector-icons'
 import colors from '../../theme/colors'
@@ -23,6 +23,7 @@ const Running = ({ navigation, route }) => {
         <SafeAreaView style={styles.container}>
             <View style={styles.container}>
                 <MapView style={{ flex: 1, }}
+                    provider={PROVIDER_GOOGLE}
                     // initialRegion={{
                     //     latitude: lastSavedLocation.latitude,
                     //     longitude: lastSavedLocation.longitude

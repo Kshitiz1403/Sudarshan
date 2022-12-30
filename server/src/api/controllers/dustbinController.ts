@@ -28,4 +28,14 @@ export class DustbinController {
       return next(e);
     }
   };
+
+  public scanQR = async (req: IRequest, res: Response, next: INextFunction) => {
+    this.logger.debug('Calling Scan QR endpoint with body %o', req.body);
+    try {
+      const status = await this.dustbinServiceInstance.scanQR('');
+      return res.status(200).json(Result.success(status));
+    } catch (e) {
+      return next(e);
+    }
+  };
 }

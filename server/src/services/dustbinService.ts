@@ -22,4 +22,10 @@ export default class DustbinService {
       throw error;
     }
   };
+
+  public scanQR = async data => {
+    try {
+      return 'Accepted';
+    } catch (error) {}
+  };
 }

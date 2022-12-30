@@ -7,7 +7,9 @@ export const authSlice = createSlice({
         token: "",
         isLoading: true,
         isLoggedIn: false,
-        isProfileComplete: false
+        isProfileCompleteLoading: true,
+        isProfileComplete: false,
+        user: {}
     },
     reducers: {
         loginUser: (state, action) => {
@@ -16,6 +18,9 @@ export const authSlice = createSlice({
             const token = action.payload;
             state.token = token
             AsyncStorage.setItem('@token', token)
+        },
+        setUser: (state, action) => {
+            state.user = action.payload
         },
         logoutUser: (state) => {
             AsyncStorage.removeItem('@token')
@@ -28,12 +33,15 @@ export const authSlice = createSlice({
         setLoading: (state) => {
             state.isLoading = true;
         },
+        setProfileCompleteLoaded: (state) => {
+            state.isProfileCompleteLoading = false;
+        },
         setProfileCompleted: (state) => {
             state.isProfileComplete = true;
         }
     }
 })
 
-export const { loginUser, logoutUser, setLoaded, setLoading, setProfileCompleted } = authSlice.actions
+export const { loginUser, setUser, logoutUser, setLoaded, setLoading, setProfileCompleteLoaded, setProfileCompleted } = authSlice.actions
 
 export default authSlice.reducer

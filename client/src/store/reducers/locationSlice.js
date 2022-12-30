@@ -4,6 +4,7 @@ import { createSlice } from "@reduxjs/toolkit";
 export const locationSlice = createSlice({
     name: "location",
     initialState: {
+        isGrantLoading: true,
         isPermissionGranted: false,
         canAskAgain: true,
         status: "",
@@ -17,6 +18,9 @@ export const locationSlice = createSlice({
         isLocationLoaded: false
     },
     reducers: {
+        setGrantLoaded: (state) => {
+            state.isGrantLoading = false;
+        },
         updateLocationState: (state, action) => {
             const { canAskAgain, status, granted, expires } = action.payload
             state.canAskAgain = canAskAgain;
@@ -38,12 +42,12 @@ export const locationSlice = createSlice({
             const { latitude, longitude } = action.payload
             AsyncStorage.setItem('@last_location', JSON.stringify({ latitude, longitude }))
         },
-        setLocationLoaded: (state) =>{
+        setLocationLoaded: (state) => {
             state.isLocationLoaded = true;
         }
     }
 })
 
-export const { updateLocationState, updateLocation, updateLastSavedLocation, setLastSavedLocation, setLocationLoaded } = locationSlice.actions;
+export const { setGrantLoaded, updateLocationState, updateLocation, updateLastSavedLocation, setLastSavedLocation, setLocationLoaded } = locationSlice.actions;
 
 export default locationSlice.reducer;

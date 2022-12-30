@@ -28,6 +28,14 @@
     },
     "web": {
       "favicon": "./src/assets/favicon.png"
-    }
+    },
+    "plugins": [
+      [
+        "expo-image-picker",
+        {
+          "photosPermission": "The app accesses your photos for setting your profile picture."
+        }
+      ]
+    ]
   }
 }

@@ -5,7 +5,7 @@ import { Feather, FontAwesome5 } from '@expo/vector-icons';
 import colors from '../../theme/colors';
 import ListContainer from './ListContainer';
 
-const BottomSheetComponent = ({ place_name, place_address, distance, duration, dustbins = [], selectedDustbin, setSelectedDustbin }) => {
+const BottomSheetComponent = ({ place_name, place_address, distance, duration, dustbins = [], selectedDustbin, setSelectedDustbin, navigation }) => {
     const bottomSheetRef = useRef(null);
 
     const snapPoints = useMemo(() => ['15%', '42.5%'], [])
@@ -57,7 +57,7 @@ const BottomSheetComponent = ({ place_name, place_address, distance, duration, d
                         {dustbins && dustbins.length > 0 && selectedDustbin != -1 && <Text numberOfLines={2}>{dustbins[selectedDustbin].dustbin_address}</Text>}
                     </View>
                     {selectedDustbin != -1 &&
-                        <TouchableOpacity activeOpacity={0.7} style={styles.button}>
+                        <TouchableOpacity activeOpacity={0.7} style={styles.button} onPress={() => navigation.navigate("QR")}>
                             <Text style={styles.buttonText}>Start</Text>
                         </TouchableOpacity>
                     }

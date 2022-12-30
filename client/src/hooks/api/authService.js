@@ -1,7 +1,9 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useDispatch, useSelector } from "react-redux";
-import { loginUser, logoutUser, setLoaded, setLoading, setProfileCompleted } from "../../store/reducers/authSlice";
+import { loginUser, logoutUser, setLoaded, setLoading, setProfileCompleted, setProfileCompleteLoaded, setUser } from "../../store/reducers/authSlice";
 import { getAuthenticatedAxios, getUnauthenticatedAxios } from "./baseConfig";
+import mime from 'mime'
+import config from "../../config";
 
 const useAuthService = () => {
     const dispatch = useDispatch();
@@ -13,6 +15,7 @@ const useAuthService = () => {
             const data = await unauthenticatedAxios.post('/signin', { email, password });
             const token = `Bearer ${data['token']}`;
             dispatch(loginUser(token));
+            dispatch(setUser(data['user']))
             return token;
         } catch (error) {
         }
@@ -24,6 +27,7 @@ const useAuthService = () => {
             const data = await unauthenticatedAxios.post('/signup', { email, password });
             const token = `Bearer ${data['token']}`;
             dispatch(loginUser(token))
+            dispatch(setUser(data['user']))
             return token;
         } catch (error) {
         }
@@ -61,6 +65,7 @@ const useAuthService = () => {
             const authenticatedAxios = getAuthenticatedAxios('/users', token);
             const user = await authenticatedAxios.get('/me')
             dispatch(loginUser(token));
+            dispatch(setUser(user))
             return user;
         } catch (error) {
         }
@@ -76,17 +81,74 @@ const useAuthService = () => {
             const authenticatedAxios = getAuthenticatedAxios('/users', token);
             const { isProfileComplete } = await authenticatedAxios.get('/profileStatus');
             if (isProfileComplete) dispatch(setProfileCompleted());
-        } catch (error) {
+        } catch (error) { }
+        finally {
+            dispatch(setProfileCompleteLoaded())
         }
     }
 
-    const completeProfile = async (name, dob, gender, weightKG, heightCM) => {
+    const completeProfile = async (name, dob, gender, weightKG, heightCM, image) => {
         try {
-            const authenticatedAxios = getAuthenticatedAxios('/users', token);
-            const data = await authenticatedAxios.patch('/details', { name, dob, gender, weightKG, heightCM })
-            dispatch(setProfileCompleted());
+            const formData = new FormData();
+            formData.append('photo', { uri: 'file://' + image.URI, name: image.filename, type: mime.getType(image.URI) });
+            // formData.append('name', name)
+            // formData.append('dob', dob)
+            // formData.append('gender', gender)
+            // formData.append('weightKG', weightKG)
+            // formData.append('heightCM', heightCM)
+
+            console.log(token)
+
+            const response = await fetch(config.baseUrl + '/users/details', {
+                method: 'PATCH', body: formData, headers: {
+                    'Authorization': token,
+                    'Content-Type':'multipart/form-data'
+                }
+            })
+            const data = await response.json();
+            console.log(data)
+            // got
+
+            // const data = await rp({
+            //     uri: config.baseUrl + '/users/details',
+            //     method: 'PATCH',
+            //     form: {
+            //         photo: { uri: 'file://' + image.URI, name: image.filename, type: mime.getType(image.URI) },
+            //         name,
+            //         dob,
+            //         gender, weightKG, heightCM
+            //     },
+            //     headers: {
+            //         'content-type': 'multipart/form-data',
+            //         'Authorization': `Bearer ${token}`
+            //     }
+            // })
+            // const authenticatedAxios = getAuthenticatedAxios('/users', token);
+            // const data = await authenticatedAxios.patch('/details', { name, dob, gender, weightKG, heightCM })
+            // dispatch(setProfileCompleted());
             return data;
         } catch (error) {
+            console.error('%o', error)
+        }
+    }
+
+    const uploadImage = async (image) => {
+        try {
+
+            // const authenticatedAxios = getAuthenticatedAxios('/users', token, {
+            //     headers: {
+            //         'Content-Type': 'multipart/form-data',
+            //         "cache-control": "no-cache",
+            //         "mimeType": "multipart/form-data",
+            //     }
+            // });
+
+            const formData = new FormData();
+            formData.append('photo', { uri: 'file://' + image.URI, name: image.filename, type: mime.getType(image.URI) });
+
+            // const
+        } catch (error) {
+
         }
     }
 

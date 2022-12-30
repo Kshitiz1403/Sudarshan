@@ -1,16 +1,22 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import * as Location from 'expo-location'
 import { useDispatch } from 'react-redux';
-import { setLocationLoaded, updateLastSavedLocation, updateLocation, updateLocationState } from '../store/reducers/locationSlice';
+import { setGrantLoaded, setLocationLoaded, updateLastSavedLocation, updateLocation, updateLocationState } from '../store/reducers/locationSlice';
 
 const useLocationService = () => {
 
     const dispatch = useDispatch()
 
     const isPermissionGranted = async () => {
-        const status = await Location.getForegroundPermissionsAsync()
-        dispatch(updateLocationState({ ...status }))
-        return status.granted;
+        try {
+            const status = await Location.getForegroundPermissionsAsync()
+            dispatch(updateLocationState({ ...status }))
+            return status.granted;
+        } catch (error) {
+        }
+        finally {
+            dispatch(setGrantLoaded())
+        }
     }
     const askForLocationPermission = async () => {
         const response = await Location.requestForegroundPermissionsAsync()

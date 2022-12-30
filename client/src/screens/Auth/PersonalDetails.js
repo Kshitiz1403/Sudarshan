@@ -1,4 +1,4 @@
-import { BackHandler, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native'
+import { BackHandler, StyleSheet, Text, TextInput, TouchableOpacity, View, Image } from 'react-native'
 import React, { useState } from 'react'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import colors from '../../theme/colors'
@@ -7,15 +7,20 @@ import sharedStyles from './sharedStyles';
 import { useDispatch } from 'react-redux';
 import { setProfileCompleted } from '../../store/reducers/authSlice';
 import useAuthService from '../../hooks/api/authService';
+import { Feather, FontAwesome, MaterialIcons } from '@expo/vector-icons';
+import * as ImagePicker from 'expo-image-picker'
 
 const PersonalDetails = () => {
 
-    const [name, setName] = useState('')
-    const [dobRaw, setDOBRaw] = useState(null)
+    const [name, setName] = useState('Kshitizdemo')
+    const [dobRaw, setDOBRaw] = useState(new Date())
     const [dob, setDOB] = useState('')
-    const [height, setHeight] = useState(0)
-    const [weight, setWeight] = useState(0)
-    const [gender, setGender] = useState('')
+    const [height, setHeight] = useState('36')
+    const [weight, setWeight] = useState('24')
+    const [gender, setGender] = useState('Male')
+    const [image, setImage] = useState('')
+
+    const [imageData, setImageData] = useState({})
 
     const [isDatePickerVisible, setIsDatePickerVisible] = useState(false)
 
@@ -42,8 +47,43 @@ const PersonalDetails = () => {
         setWeight(t.replace(/[^0-9.]/g, '').replace(/^0[^.]/, '0'))
     }
 
+    const pickImage = async (result) => {
+        if (result.canceled) return;
+
+        let imageURI = result.assets[0].uri;
+        let type = result.assets[0].type
+
+        setImage(imageURI);
+
+        const filename = imageURI.split('/').pop();
+        setImageData({ URI: imageURI, filename, type })
+        // const formData = new FormData();
+        // formData.append('photo', { uri: result.assets[0].uri, name: filename, type })
+    }
+
+    const pickFromCamera = async () => {
+        let result = await ImagePicker.launchCameraAsync({
+            mediaTypes: ImagePicker.MediaTypeOptions.Images,
+            allowsEditing: true,
+            aspect: [1, 1],
+            quality: 1,
+
+        })
+        await pickImage(result);
+    }
+
+    const pickFromGallery = async () => {
+        let result = await ImagePicker.launchImageLibraryAsync({
+            mediaTypes: ImagePicker.MediaTypeOptions.Images,
+            allowsEditing: true,
+            aspect: [1, 1],
+            quality: 1,
+        });
+        await pickImage(result)
+    }
+
     const submit = () => {
-        authService.completeProfile(name, dobRaw, gender, weight, height)
+        authService.completeProfile(name, dobRaw, gender, weight, height, imageData)
     }
 
     const skip = () => {
@@ -88,6 +128,18 @@ const PersonalDetails = () => {
                 <View style={styles.itemContainer}>
                     <Text style={styles.itemTitle}>Name</Text>
                     <TextInput placeholder='Enter name' placeholderTextColor={colors.primary} style={styles.itemValue} value={name} onChangeText={(t) => setName(t)} />
+                </View>
+                <View style={styles.itemContainer}>
+                    <Text style={styles.itemTitle}>Profile Pic <Text style={{ color: colors.secondary, fontSize: 16 }}>(optional)</Text></Text>
+                    <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                        {image && <Image source={{ uri: image }} style={{ width: 50, aspectRatio: 1, marginRight: 10 }} />}
+                        <TouchableOpacity onPress={pickFromGallery} style={{ marginRight: 10 }}>
+                            <MaterialIcons name="photo-library" size={24} color={colors.primary} />
+                        </TouchableOpacity>
+                        <TouchableOpacity onPress={pickFromCamera}>
+                            <Feather name="camera" size={24} color={colors.primary} />
+                        </TouchableOpacity>
+                    </View>
                 </View>
                 <View style={styles.itemContainer}>
                     <Text style={styles.itemTitle}>Birthday</Text>

@@ -21,6 +21,7 @@ import Directions from "../screens/Directions";
 import CustomDrawer from "./Drawer";
 import PersonalDetails from "../screens/Auth/PersonalDetails";
 import QRScreen from "../screens/QRScreen";
+import Navigate from "../screens/Navigate";
 
 const Routes = () => {
 
@@ -85,7 +86,8 @@ const Routes = () => {
             <Drawer.Screen name="Running" component={Running} options={{ headerShown: false }} />
             <Drawer.Screen name="Search" component={Search} options={{ headerShown: false, unmountOnBlur: false }} />
             <Drawer.Screen name="Directions" component={Directions} options={{ headerShown: false, }} />
-            <Drawer.Screen name="QR" component={QRScreen} options={{ headerShown: false }} />
+            <Drawer.Screen name="Navigate" component={Navigate} options={{ headerShown: false, unmountOnBlur: true }} />
+            <Drawer.Screen name="QR" component={QRScreen} options={{ headerShown: false, unmountOnBlur: true }} />
         </Drawer.Navigator>
     )
 

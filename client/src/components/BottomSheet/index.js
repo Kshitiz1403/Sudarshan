@@ -4,9 +4,17 @@ import BottomSheet, { BottomSheetScrollView } from '@gorhom/bottom-sheet'
 import { Feather, FontAwesome5 } from '@expo/vector-icons';
 import colors from '../../theme/colors';
 import ListContainer from './ListContainer';
+import { useDispatch, useSelector } from 'react-redux';
+import { selectDustbin } from '../../store/reducers/dustbinSlice';
 
-const BottomSheetComponent = ({ place_name, place_address, distance, duration, dustbins = [], selectedDustbin, setSelectedDustbin, navigation }) => {
+const BottomSheetComponent = ({ place_name, place_address, distance, duration, navigation }) => {
     const bottomSheetRef = useRef(null);
+
+    const dispatch = useDispatch();
+
+    const dustbins = useSelector(state => state.dustbin.dustbins);
+    const selectedDustbin = useSelector(state => state.dustbin.selectedDustbin);
+    const selectedIndex = useSelector(state => state.dustbin.selectedIndex);
 
     const snapPoints = useMemo(() => ['15%', '42.5%'], [])
     return (
@@ -46,18 +54,18 @@ const BottomSheetComponent = ({ place_name, place_address, distance, duration, d
                                 const distance = dustbin.distance.text;
                                 const duration = dustbin.duration.text;
 
-                                const isFocused = index == selectedDustbin;
+                                const isFocused = index == selectedIndex;
 
-                                return <TouchableOpacity key={dustbin._id} activeOpacity={0.7} onPress={() => setSelectedDustbin(index)}><ListContainer duration={duration} distance={distance} isFocused={isFocused} /></TouchableOpacity>
+                                return <TouchableOpacity key={dustbin._id} activeOpacity={0.7} onPress={() => dispatch(selectDustbin({ index }))}><ListContainer duration={duration} distance={distance} isFocused={isFocused} /></TouchableOpacity>
 
                             })}
                         </BottomSheetScrollView>
                     </View>
                     <View style={{ marginTop: 10 }}>
-                        {dustbins && dustbins.length > 0 && selectedDustbin != -1 && <Text numberOfLines={2}>{dustbins[selectedDustbin].dustbin_address}</Text>}
+                        {dustbins && dustbins.length > 0 && selectedDustbin['dustbin_address'] && <Text numberOfLines={2}>{selectedDustbin.dustbin_address}</Text>}
                     </View>
-                    {selectedDustbin != -1 &&
-                        <TouchableOpacity activeOpacity={0.7} style={styles.button} onPress={() => navigation.navigate("QR")}>
+                    {selectedIndex != -1 &&
+                        <TouchableOpacity activeOpacity={0.7} style={styles.button} onPress={() => navigation.navigate("Navigate")}>
                             <Text style={styles.buttonText}>Start</Text>
                         </TouchableOpacity>
                     }

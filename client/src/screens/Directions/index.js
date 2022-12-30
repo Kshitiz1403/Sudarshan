@@ -2,11 +2,12 @@ import { StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import React, { useEffect, useRef, useState } from 'react'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import MapView, { Marker, Polyline, PROVIDER_GOOGLE } from 'react-native-maps'
-import { useSelector } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import colors from '../../theme/colors'
 import useMapService from '../../hooks/api/mapService'
 import { Ionicons } from '@expo/vector-icons'
 import BottomSheetComponent from '../../components/BottomSheet'
+import { resetDustbin, selectDustbin, setDustbins } from '../../store/reducers/dustbinSlice'
 
 const Directions = ({ navigation, route }) => {
 
@@ -16,14 +17,17 @@ const Directions = ({ navigation, route }) => {
 
     const mapService = useMapService();
 
+    const dispatch = useDispatch();
+
     const [isFirstTimeLoaded, setIsFirstTimeLoaded] = useState(true)
     const [placeDetails, setPlaceDetails] = useState({ place_name: "", place_address: "" })
     const [points, setPoints] = useState([])
     const [distance, setDistance] = useState('')
     const [duration, setDuration] = useState('')
-    const [dustbins, setDustbins] = useState([])
-    const [selectedDustbin, setSelectedDustbin] = useState(-1)
 
+    const dustbins = useSelector(state => state.dustbin.dustbins);
+    const selectedDustbin = useSelector(state => state.dustbin.selectedDustbin);
+    const selectedIndex = useSelector(state => state.dustbin.selectedIndex);
 
     const mapViewRef = useRef(null)
 
@@ -32,26 +36,24 @@ const Directions = ({ navigation, route }) => {
         setPoints(data['polyline']['path'])
         setDistance(data['distance']['text'])
         setDuration(data['duration']['text'])
-        setDustbins(data['dustbins'])
+        dispatch(setDustbins(data['dustbins']))
         setIsFirstTimeLoaded(false)
     }
 
     useEffect(() => {
-        if (selectedDustbin != -1) {
-            const dustbin = dustbins[selectedDustbin];
-            setPoints(dustbin['polyline']['path'])
+        if (selectedIndex != -1) {
+            setPoints(selectedDustbin['polyline']['path'])
         }
-    }, [selectedDustbin])
+    }, [selectedIndex])
 
 
     useEffect(() => {
-        setSelectedDustbin(-1) // resets the selected dustbin
+        dispatch(resetDustbin()) // resets the selected dustbin
         if (route['params'] && route.params['place_id']) {
             configureRoute(route.params['place_id'])
         }
         if (route['params'] && route.params['main_text']) {
             setPlaceDetails(prev => ({ ...prev, place_name: route.params.main_text }))
-
         }
         if (route['params'] && route.params['secondary_text']) {
             setPlaceDetails(prev => ({ ...prev, place_address: route.params.secondary_text }))
@@ -88,11 +90,11 @@ const Directions = ({ navigation, route }) => {
                     {isLocationLoaded && <Marker coordinate={{ latitude, longitude }} image={require('../../assets/map_current.png')} />}
                     {points && points.length > 0 && <Marker coordinate={{ latitude: (points[points.length - 1]).latitude, longitude: (points[points.length - 1]).longitude }} image={require('../../assets/map_destination.png')} />
                     }
-                    {dustbins && dustbins.length > 0 && selectedDustbin != -1 && <Marker coordinate={{ latitude: dustbins[selectedDustbin]['dustbin_location']['lat'], longitude: dustbins[selectedDustbin]['dustbin_location']['lng'] }} image={require('../../assets/litter.png')} />}
+                    {dustbins && dustbins.length > 0 && selectedIndex != -1 && <Marker coordinate={{ latitude: selectedDustbin['dustbin_location']['lat'], longitude: selectedDustbin['dustbin_location']['lng'] }} image={require('../../assets/litter.png')} />}
                     <Polyline coordinates={points} strokeWidth={5} strokeColor={colors.primary} lineDashPattern={[1, 15]} />
                 </MapView>
                 <View style={{ position: 'absolute', bottom: 0, height: '100%', width: '100%' }}>
-                    <BottomSheetComponent place_name={placeDetails.place_name} place_address={placeDetails.place_address} distance={distance} duration={duration} dustbins={dustbins} selectedDustbin={selectedDustbin} setSelectedDustbin={setSelectedDustbin} navigation={navigation}/>
+                    <BottomSheetComponent place_name={placeDetails.place_name} place_address={placeDetails.place_address} distance={distance} duration={duration} navigation={navigation} />
                 </View>
                 <TouchableOpacity style={{ position: 'absolute', top: 50, left: 10 }} onPress={() => navigation.goBack()}>
                     <Ionicons name="arrow-back" size={30} color="black" />

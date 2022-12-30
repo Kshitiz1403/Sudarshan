@@ -3,7 +3,7 @@ import { SafeAreaView } from 'react-native-safe-area-context'
 import React, { useEffect, useState } from 'react'
 import colors from '../../theme/colors'
 import { StatusBar } from 'expo-status-bar'
-import { Ionicons } from '@expo/vector-icons'
+import { Ionicons, MaterialIcons } from '@expo/vector-icons'
 import { Camera } from 'expo-camera'
 import { CameraType } from 'expo-camera/build/Camera.types'
 import useDustbinService from '../../hooks/api/dustbinService'
@@ -31,7 +31,7 @@ const QRScreen = ({ navigation }) => {
     function toggleCameraType() {
         setType(current => (current === CameraType.back ? CameraType.front : CameraType.back));
     }
-    const handleBarCodeScanned =async ({ type, data }) => {
+    const handleBarCodeScanned = async ({ type, data }) => {
         if (scanned) return
         setScanned(true);
         const response = await dustbinService.scan(data);
@@ -48,14 +48,8 @@ const QRScreen = ({ navigation }) => {
                 <Camera type={type} style={{ width: '100%', aspectRatio: 1 }} ratio={'1:1'} onBarCodeScanned={handleBarCodeScanned} />
                 <View style={{ marginTop: 20, flexDirection: 'row', justifyContent: 'space-evenly', width: '100%' }}>
                     <TouchableOpacity onPress={toggleCameraType}>
-                        <Text>Flip Camera</Text>
+                        <MaterialIcons name="flip-camera-android" size={24} color="black" />
                     </TouchableOpacity>
-                    {/* <TouchableOpacity >
-                        <Text>Click</Text>
-                    </TouchableOpacity>
-                    <TouchableOpacity >
-                        <Text>Click</Text>
-                    </TouchableOpacity> */}
                 </View>
             </View>
             <TouchableOpacity style={{ position: 'absolute', top: 50, left: 10 }} onPress={() => navigation.goBack()}>

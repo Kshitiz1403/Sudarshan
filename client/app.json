@@ -1,7 +1,7 @@
 {
   "expo": {
-    "name": "client",
-    "slug": "client",
+    "name": "Sudarshan",
+    "slug": "Sudarshan",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./src/assets/icon.png",
@@ -18,13 +18,18 @@
       "**/*"
     ],
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "com.kshitiz1403.Sudarshan"
     },
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./src/assets/adaptive-icon.png",
         "backgroundColor": "#FFFFFF"
-      }
+      },
+      "permissions": [
+        "android.permission.RECORD_AUDIO"
+      ],
+      "package": "com.kshitiz1403.Sudarshan"
     },
     "web": {
       "favicon": "./src/assets/favicon.png"
@@ -36,6 +41,11 @@
           "photosPermission": "The app accesses your photos for setting your profile picture."
         }
       ]
-    ]
+    ],
+    "extra": {
+      "eas": {
+        "projectId": "bbba688d-fede-4963-ae67-828995791435"
+      }
+    }
   }
 }

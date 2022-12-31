@@ -19,5 +19,5 @@ export default (app: Router) => {
 
   route.get('/profileStatus', middlewares.isAuth, ctrl.isProfileComplete);
 
-  route.patch('/details', middlewares.isAuth, upload.single('photo'), ctrl.completeDetails);
+  route.patch('/details', middlewares.isAuth,  ctrl.completeDetails);
 };

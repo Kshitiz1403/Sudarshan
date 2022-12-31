@@ -28,8 +28,8 @@ const PersonalDetails = () => {
         updateDate(user.dob)
       }
       if (user['gender']) setGender(user.gender)
-      if (user['heightCM']) setHeight(user.heightCM)
-      if (user['weightKG']) setWeight(user.weightKG);
+      if (user['heightCM']) setHeight(`${user.heightCM}`)
+      if (user['weightKG']) setWeight(`${user.weightKG}`);
     }, [user])
     
 

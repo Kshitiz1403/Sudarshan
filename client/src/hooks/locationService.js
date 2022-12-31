@@ -31,6 +31,7 @@ const useLocationService = () => {
             const { latitude, longitude } = location.coords;
             dispatch(updateLocation({ latitude, longitude }));
         } catch (error) {
+            console.error(error)
         }
         finally {
             dispatch(setLocationLoaded());

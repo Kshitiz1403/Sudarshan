@@ -58,7 +58,7 @@ const Routes = () => {
     useEffect(() => {
         if (isLocationPermissionGranted) {
             (async () => {
-                await locationService.getLastSavedLocation();
+                // await locationService.getLastSavedLocation();
                 await locationService.getCurrentLocation();
                 // dispatch(setLastSavedLocation({ latitude, longitude }))
             })();

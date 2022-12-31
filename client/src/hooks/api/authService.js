@@ -2,7 +2,6 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useDispatch, useSelector } from "react-redux";
 import { loginUser, logoutUser, setLoaded, setLoading, setProfileCompleted, setProfileCompleteLoaded, setUser } from "../../store/reducers/authSlice";
 import { getAuthenticatedAxios, getUnauthenticatedAxios } from "./baseConfig";
-import mime from 'mime'
 import config from "../../config";
 
 const useAuthService = () => {

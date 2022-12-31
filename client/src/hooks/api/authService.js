@@ -87,70 +87,16 @@ const useAuthService = () => {
         }
     }
 
-    const completeProfile = async (name, dob, gender, weightKG, heightCM, image) => {
+    const completeProfile = async (name, dob, gender, weightKG, heightCM) => {
         try {
-            const formData = new FormData();
-            formData.append('photo', { uri: 'file://' + image.URI, name: image.filename, type: mime.getType(image.URI) });
-            // formData.append('name', name)
-            // formData.append('dob', dob)
-            // formData.append('gender', gender)
-            // formData.append('weightKG', weightKG)
-            // formData.append('heightCM', heightCM)
-
-            console.log(token)
-
-            const response = await fetch(config.baseUrl + '/users/details', {
-                method: 'PATCH', body: formData, headers: {
-                    'Authorization': token,
-                    'Content-Type':'multipart/form-data'
-                }
-            })
-            const data = await response.json();
-            console.log(data)
-            // got
-
-            // const data = await rp({
-            //     uri: config.baseUrl + '/users/details',
-            //     method: 'PATCH',
-            //     form: {
-            //         photo: { uri: 'file://' + image.URI, name: image.filename, type: mime.getType(image.URI) },
-            //         name,
-            //         dob,
-            //         gender, weightKG, heightCM
-            //     },
-            //     headers: {
-            //         'content-type': 'multipart/form-data',
-            //         'Authorization': `Bearer ${token}`
-            //     }
-            // })
-            // const authenticatedAxios = getAuthenticatedAxios('/users', token);
-            // const data = await authenticatedAxios.patch('/details', { name, dob, gender, weightKG, heightCM })
-            // dispatch(setProfileCompleted());
+            const authenticatedAxios = getAuthenticatedAxios('/users', token);
+            const data = await authenticatedAxios.patch('/details', { name, dob, gender, weightKG, heightCM })
+            dispatch(setProfileCompleted());
             return data;
         } catch (error) {
-            console.error('%o', error)
         }
     }
 
-    const uploadImage = async (image) => {
-        try {
-
-            // const authenticatedAxios = getAuthenticatedAxios('/users', token, {
-            //     headers: {
-            //         'Content-Type': 'multipart/form-data',
-            //         "cache-control": "no-cache",
-            //         "mimeType": "multipart/form-data",
-            //     }
-            // });
-
-            const formData = new FormData();
-            formData.append('photo', { uri: 'file://' + image.URI, name: image.filename, type: mime.getType(image.URI) });
-
-            // const
-        } catch (error) {
-
-        }
-    }
 
     return { login, signup, logout, forgot, reset, getUserFromToken, isProfileComplete, completeProfile }
 }

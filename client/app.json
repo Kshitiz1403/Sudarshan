@@ -11,6 +11,7 @@
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },
+    "android.config.googleMaps.apiKey": "AIzaSyABVqDzvUgtKcJgxETF02mWvhpSCbk2F1Y",
     "updates": {
       "fallbackToCacheTimeout": 0
     },
@@ -34,14 +35,6 @@
     "web": {
       "favicon": "./src/assets/favicon.png"
     },
-    "plugins": [
-      [
-        "expo-image-picker",
-        {
-          "photosPermission": "The app accesses your photos for setting your profile picture."
-        }
-      ]
-    ],
     "extra": {
       "eas": {
         "projectId": "bbba688d-fede-4963-ae67-828995791435"

@@ -21,7 +21,7 @@
     "axios": "^1.2.1",
     "expo": "~47.0.8",
     "expo-camera": "~13.1.0",
-    "expo-image-picker": "~14.0.2",
+    "expo-dev-client": "~2.0.1",
     "expo-location": "~15.0.1",
     "expo-status-bar": "~1.4.2",
     "lodash.debounce": "^4.0.8",

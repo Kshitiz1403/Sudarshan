@@ -17,7 +17,7 @@ export default (app: Router) => {
     '/signup',
     celebrate({
       body: Joi.object({
-        email: Joi.string().required(),
+        email: Joi.string().email({ tlds: { allow: true } }).required(),
         password: Joi.string().required(),
       }),
     }),
@@ -36,7 +36,7 @@ export default (app: Router) => {
   );
 
   route.post('/forgot', ctrl.forgot);
-  
+
   route.post('/reset', ctrl.reset);
 
   /**

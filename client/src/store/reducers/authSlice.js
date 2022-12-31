@@ -38,7 +38,7 @@ export const authSlice = createSlice({
         },
         setProfileCompleted: (state) => {
             state.isProfileComplete = true;
-            state.isProfileCompleteLoading = true;
+            state.isProfileCompleteLoading = false;
         }
     }
 })

@@ -11,7 +11,6 @@
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },
-    "android.config.googleMaps.apiKey": "AIzaSyABVqDzvUgtKcJgxETF02mWvhpSCbk2F1Y",
     "updates": {
       "fallbackToCacheTimeout": 0
     },
@@ -26,6 +25,11 @@
       "adaptiveIcon": {
         "foregroundImage": "./src/assets/adaptive-icon.png",
         "backgroundColor": "#FFFFFF"
+      },
+      "config": {
+        "googleMaps": {
+          "apiKey": "AIzaSyABVqDzvUgtKcJgxETF02mWvhpSCbk2F1Y"
+        }
       },
       "permissions": [
         "android.permission.RECORD_AUDIO"

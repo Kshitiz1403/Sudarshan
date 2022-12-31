@@ -1,24 +1,37 @@
 import { BackHandler, StyleSheet, Text, TextInput, TouchableOpacity, View, Image } from 'react-native'
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import colors from '../../theme/colors'
 import DatePicker from 'react-native-modern-datepicker';
 import sharedStyles from './sharedStyles';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { setProfileCompleted } from '../../store/reducers/authSlice';
 import useAuthService from '../../hooks/api/authService';
 import { Feather, FontAwesome, MaterialIcons } from '@expo/vector-icons';
 
 const PersonalDetails = () => {
 
-    const [name, setName] = useState('Kshitizdemo')
-    const [dobRaw, setDOBRaw] = useState(new Date())
+    const user = useSelector(state => state.auth.user);
+
+    const [name, setName] = useState("")
+    const [dobRaw, setDOBRaw] = useState(null)
     const [dob, setDOB] = useState('')
-    const [height, setHeight] = useState('36')
-    const [weight, setWeight] = useState('24')
-    const [gender, setGender] = useState('Male')
+    const [height, setHeight] = useState("")
+    const [weight, setWeight] = useState("")
+    const [gender, setGender] = useState("")
 
     const [isDatePickerVisible, setIsDatePickerVisible] = useState(false)
+
+    useEffect(() => {
+      if (user['name'])setName(user.name);
+      if (user['dob']) {
+        updateDate(user.dob)
+      }
+      if (user['gender']) setGender(user.gender)
+      if (user['heightCM']) setHeight(user.heightCM)
+      if (user['weightKG']) setWeight(user.weightKG);
+    }, [user])
+    
 
     const authService = useAuthService();
     const dispatch = useDispatch();

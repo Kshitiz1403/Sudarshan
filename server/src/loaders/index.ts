@@ -14,6 +14,6 @@ export default async ({ expressApp }) => {
   await expressLoader({ app: expressApp });
   Logger.info('✌️ Express loaded');
 
-  await cache.connect();
-  Logger.info('✌️ Redis Connected');
+  // await cache.connect();
+  // Logger.info('✌️ Redis Connected');
 };

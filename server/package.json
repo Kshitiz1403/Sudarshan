@@ -1,5 +1,5 @@
 {
-  "name": "Sudarshan-Backend",
+  "name": "sudarshan_backend",
   "version": "1.0.0",
   "description": "sudarshan to the 🚀",
   "main": "src/app.ts",
@@ -16,20 +16,21 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/santiq/bulletproof-nodejs.git"
+    "url": "git+https://github.com/Kshitiz1403/Sudarshan.git"
   },
   "keywords": [
-    "boilerplay",
-    "cron",
-    "jobs",
-    "js",
+    "plogging",
+    "running",
+    "fitness",
+    "dustbins",
+    "eco-walks",
+    "health",
     "javascript",
     "typescript",
     "node",
     "express"
   ],
-  "author": "Santiago Quinteros",
-  "license": "ISC",
+  "author": "Kshitiz Agrawal",
   "dependencies": {
     "@azure/communication-email": "^1.0.0-beta.1",
     "@googlemaps/google-maps-services-js": "^3.3.16",
@@ -74,7 +75,7 @@
     "typescript": "^4.0.3"
   },
   "bugs": {
-    "url": "https://github.com/santiq/bulletproof-nodejs/issues"
+    "url": "https://github.com/Kshitiz1403/Sudarshan/issues"
   },
-  "homepage": "https://github.com/santiq/bulletproof-nodejs#readme"
+  "homepage": "https://github.com/Kshitiz1403/Sudarshan#readme"
 }

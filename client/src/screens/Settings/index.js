@@ -1,6 +1,5 @@
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import React from 'react'
-import SwitchSelector from "react-native-switch-selector";
 import colors from '../../theme/colors'
 import { useTheme } from '@react-navigation/native'
 import { useState } from 'react';

@@ -1,8 +1,8 @@
-import { NavigationContainer } from "@react-navigation/native";
+import { DarkTheme, DefaultTheme, NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { createDrawerNavigator } from "@react-navigation/drawer";
 import { useEffect } from "react";
-import { Text, View } from "react-native";
+import { Text, useColorScheme, View } from "react-native";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 import { useDispatch, useSelector } from "react-redux";
 import useAuthService from "../hooks/api/authService";
@@ -22,6 +22,8 @@ import CustomDrawer from "./Drawer.js";
 import PersonalDetails from "../screens/Auth/PersonalDetails";
 import QRScreen from "../screens/QRScreen";
 import Navigate from "../screens/Navigate";
+import colors from "../theme/colors";
+import Settings from "../screens/Settings";
 
 const Routes = () => {
 
@@ -83,12 +85,12 @@ const Routes = () => {
 
     const AppScreens = () => (
         <Drawer.Navigator drawerContent={props => <CustomDrawer {...props} />}>
-            {/* <Drawer.Screen name="Tasdas" component={()=><View><Text>Hello</Text></View>}/> */}
             <Drawer.Screen name="Running" component={Running} options={{ headerShown: false }} />
             <Drawer.Screen name="Search" component={Search} options={{ headerShown: false, unmountOnBlur: false }} />
             <Drawer.Screen name="Directions" component={Directions} options={{ headerShown: false, }} />
             <Drawer.Screen name="Navigate" component={Navigate} options={{ headerShown: false, unmountOnBlur: true }} />
             <Drawer.Screen name="QR" component={QRScreen} options={{ headerShown: false, unmountOnBlur: true }} />
+            <Drawer.Screen name="Settings" component={Settings}/>
         </Drawer.Navigator>
     )
 
@@ -98,9 +100,27 @@ const Routes = () => {
         </ProfileCompletionStack.Navigator>
     )
 
+    const scheme = useColorScheme();
+
+    const MyDarkTheme = {
+        ...DarkTheme,
+        colors: {
+            ...DarkTheme.colors,
+            primary: colors.primary,
+        }
+    }
+
+    const MyLightTheme = {
+        ...DefaultTheme,
+        colors: {
+            ...DefaultTheme.colors,
+            primary: colors.primary
+        }
+    }
+
     return (
         <SafeAreaProvider>
-            <NavigationContainer>
+            <NavigationContainer theme={scheme == 'dark' ? MyDarkTheme : MyLightTheme}>
                 <View style={{ flex: 1 }}>
                     {isAuthLoading && <View style={{ display: 'flex', flex: 1, justifyContent: 'center' }}>
                         <Text style={{ textAlign: 'center', }}>Loading....</Text>

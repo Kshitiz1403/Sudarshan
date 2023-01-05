@@ -4,6 +4,7 @@ import Progress from '../../components/Progress';
 import GestureRecognizer from 'react-native-swipe-gestures';
 import useAuthService from '../../hooks/api/authService';
 import colors from '../../theme/colors';
+import { useTheme } from '@react-navigation/native';
 
 const Auth = ({ navigation, route }) => {
     const [email, setEmail] = useState("");
@@ -24,6 +25,8 @@ const Auth = ({ navigation, route }) => {
         authService.signup(email, password)
     };
 
+    const themeColors = useTheme().colors;
+
     return (
         <View style={styles.container}>
             <GestureRecognizer style={{ flex: 1 }} onSwipeRight={() => navigation.navigate("Welcome")}>
@@ -35,10 +38,10 @@ const Auth = ({ navigation, route }) => {
                     />
                     <View style={styles.actionButtonsContainer}>
                         <TouchableOpacity activeOpacity={0.8} onPress={() => setIsRegistering(false)} style={{ ...styles.actionButton, borderBottomWidth: isRegistering ? 0 : 3 }}>
-                            <Text style={styles.actionText}>Login</Text>
+                            <Text style={{ ...styles.actionText, color: themeColors.text }}>Login</Text>
                         </TouchableOpacity>
                         <TouchableOpacity activeOpacity={0.8} onPress={() => setIsRegistering(true)} style={{ ...styles.actionButton, borderBottomWidth: isRegistering ? 3 : 0 }}>
-                            <Text style={styles.actionText}>Register</Text>
+                            <Text style={{ ...styles.actionText, color: themeColors.text }}>Register</Text>
                         </TouchableOpacity>
                     </View>
                 </View>
@@ -46,8 +49,9 @@ const Auth = ({ navigation, route }) => {
                 <View style={styles.bottomContainer}>
                     <View style={styles.inputContainer}>
                         <View style={styles.subInputContainer}>
-                            <Text style={styles.inputTitle}>Email address</Text>
-                            <TextInput style={styles.input}
+                            <Text style={{ ...styles.inputTitle, color: themeColors.text }}>Email address</Text>
+                            <TextInput style={{ ...styles.input, color: themeColors.text }}
+                                placeholderTextColor={colors.secondary}
                                 placeholder="Email"
                                 textContentType="email"
                                 autoCorrect={false}
@@ -57,9 +61,10 @@ const Auth = ({ navigation, route }) => {
                             />
                         </View>
                         <View style={styles.subInputContainer}>
-                            <Text style={styles.inputTitle}>Password</Text>
+                            <Text style={{ ...styles.inputTitle, color: themeColors.text }}>Password</Text>
                             <TextInput
-                                style={styles.input}
+                                style={{ ...styles.input, color: themeColors.text }}
+                                placeholderTextColor={colors.secondary}
                                 placeholder="Password"
                                 secureTextEntry
                                 autoCapitalize="none"
@@ -73,7 +78,7 @@ const Auth = ({ navigation, route }) => {
                     </View>
                     <View style={styles.buttonContainer}>
                         <TouchableOpacity style={styles.button} onPress={isRegistering ? signUp : signIn}>
-                            <Text style={styles.buttonText}>{isRegistering ? "Register" : "Login"}</Text>
+                            <Text style={{ ...styles.buttonText }}>{isRegistering ? "Register" : "Login"}</Text>
                         </TouchableOpacity>
                         <Progress length={2} activeIndex={1} unselectedColor='#949397' selectedColor='#56CCF2' />
                     </View>
@@ -89,7 +94,6 @@ export default Auth
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: "#E0E0E000",
     },
     stepText: {
         alignSelf: "center",
@@ -103,7 +107,7 @@ const styles = StyleSheet.create({
     topContainer: {
         width: '100%',
         display: 'flex',
-        backgroundColor: 'white',
+        // backgroundColor: 'white',
         flex: 0.5
     },
     image: {

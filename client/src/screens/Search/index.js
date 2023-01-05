@@ -7,6 +7,7 @@ import colors from '../../theme/colors'
 import _debounce from 'lodash.debounce'
 import useMapService from '../../hooks/api/mapService'
 import { useSelector } from 'react-redux'
+import { useTheme } from '@react-navigation/native'
 
 const Search = ({ navigation }) => {
 
@@ -20,10 +21,12 @@ const Search = ({ navigation }) => {
 
     const [predictions, setPredictions] = useState([])
 
+    const themeColors = useTheme().colors;
+
     const PredictionItem = ({ main_text, secondary_text, place_id }) => (
         <TouchableOpacity activeOpacity={0.5} style={{ borderBottomWidth: 1, borderColor: colors.tertiary, paddingBottom: 10, paddingRight: 50, marginVertical: 5 }} onPress={() => { navigation.navigate("Directions", { place_id, main_text, secondary_text }) }}>
-            <Text style={{ fontSize: 15, fontWeight: '600' }}>{main_text}</Text>
-            <Text numberOfLines={1}>{secondary_text}</Text>
+            <Text style={{ fontSize: 15, fontWeight: '600', color: themeColors.text }}>{main_text}</Text>
+            <Text style={{ color: themeColors.text }} numberOfLines={1}>{secondary_text}</Text>
         </TouchableOpacity>
     )
 
@@ -54,10 +57,10 @@ const Search = ({ navigation }) => {
             <View style={styles.topContainer}>
                 <View style={styles.searchContainer}>
                     <TouchableOpacity onPress={() => navigation.goBack()} style={{ marginRight: 10 }}>
-                        <Ionicons name="arrow-back" size={30} color="black" />
+                        <Ionicons name="arrow-back" size={30} color={colors.secondary} />
                     </TouchableOpacity>
                     <FontAwesome name='search' size={22} color={colors.secondary} style={styles.searchIcon} />
-                    <TextInput placeholder='Search for a place' autoCapitalize='sentences' value={searchTerm} onChangeText={handleTextInput} autoCorrect={false} style={styles.searchInput} autoFocus={true} />
+                    <TextInput placeholder='Search for a place' autoCapitalize='sentences' value={searchTerm} onChangeText={handleTextInput} autoCorrect={false} placeholderTextColor={colors.secondary} style={{ ...styles.searchInput, color: themeColors.text }} autoFocus={true} />
                 </View>
                 <ScrollView style={styles.predictionsContainer} overScrollMode="never" keyboardShouldPersistTaps='always'>
                     {predictions.map(prediction => <PredictionItem main_text={prediction.structured_formatting.main_text} secondary_text={prediction.structured_formatting.secondary_text} place_id={prediction.place_id} key={prediction.reference} />)}

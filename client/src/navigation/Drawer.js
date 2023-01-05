@@ -5,6 +5,7 @@ import colors from '../theme/colors'
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons'
 import Octicons from 'react-native-vector-icons/Octicons'
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5'
+import Feather from 'react-native-vector-icons/Feather'
 import useAuthService from '../hooks/api/authService'
 
 const CustomDrawer = ({ navigation, ...props }) => {
@@ -19,6 +20,7 @@ const CustomDrawer = ({ navigation, ...props }) => {
         const menuItems = [];
         menuItems.push(getMenuItem("Home", () => <Octicons name="home" size={24} color={colors.secondary} />, count++, "Home"))
         menuItems.push(getMenuItem("Running", () => <FontAwesome5 name="running" size={24} color={colors.secondary} />, count++, "Running"))
+        menuItems.push(getMenuItem("Settings", () => <Feather name="settings" size={24} color={colors.secondary} />, count++, "Settings"))
 
         return menuItems;
     }

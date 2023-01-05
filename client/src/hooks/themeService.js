@@ -3,6 +3,7 @@ import { useColorScheme } from "react-native";
 import { useDispatch, useSelector } from "react-redux";
 import { setDarkMode, setLightMode, setSystemDefaultMode } from "../store/reducers/themeSlice";
 import mapDarkTheme from "./mapDarkTheme";
+import SystemNavigationBar from 'react-native-system-navigation-bar';
 
 const useThemeService = () => {
 
@@ -15,16 +16,24 @@ const useThemeService = () => {
     const mountTheme = async () => {
         const theme = await AsyncStorage.getItem('@theme');
         if (theme == null || theme == 'default') {
-            if (defaultDeviceScheme == 'dark') dispatch(setSystemDefaultMode({ isDark: true }));
-            else dispatch(setSystemDefaultMode({ isDark: false }));
+            if (defaultDeviceScheme == 'dark') {
+                dispatch(setSystemDefaultMode({ isDark: true }));
+                SystemNavigationBar.setNavigationColor('black')
+            }
+            else {
+                dispatch(setSystemDefaultMode({ isDark: false }));
+                SystemNavigationBar.setNavigationColor('rgb(242, 242, 242)')
+            }
             return
         }
         if (theme == 'dark') {
             dispatch(setDarkMode());
+            SystemNavigationBar.setNavigationColor('black')
             return;
         }
         if (theme == 'light') {
             dispatch(setLightMode());
+            SystemNavigationBar.setNavigationColor('rgb(242, 242, 242)')
             return;
         }
     }
@@ -32,17 +41,24 @@ const useThemeService = () => {
     const updateThemePreference = async ({ system_default = false, dark = false, light = false }) => {
         if (system_default) {
             AsyncStorage.setItem('@theme', 'default');
-            if (defaultDeviceScheme == 'dark') dispatch(setSystemDefaultMode({ isDark: true }));
-            else dispatch(setSystemDefaultMode({ isDark: false }));
+            if (defaultDeviceScheme == 'dark') {
+                dispatch(setSystemDefaultMode({ isDark: true }));
+                SystemNavigationBar.setNavigationColor('black')
+            }
+            else {
+                dispatch(setSystemDefaultMode({ isDark: false }));
+                SystemNavigationBar.setNavigationColor('rgb(242, 242, 242)')
+            }
         }
         else if (dark) {
             AsyncStorage.setItem('@theme', 'dark');
             dispatch(setDarkMode());
+            SystemNavigationBar.setNavigationColor('black')
         }
         else if (light) {
             AsyncStorage.setItem('@theme', 'light');
             dispatch(setLightMode());
-            return;
+            SystemNavigationBar.setNavigationColor('rgb(242, 242, 242)')
         }
     }
 

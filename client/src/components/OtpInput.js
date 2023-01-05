@@ -1,6 +1,7 @@
 import { Pressable, StyleSheet, Text, TextInput, View } from 'react-native'
 import React, { useEffect, useRef, useState } from 'react'
 import colors from '../theme/colors';
+import { useTheme } from '@react-navigation/native';
 
 const OtpInput = ({ code, setCode, maximumLength, setIsPinReady }) => {
     const boxArray = new Array(maximumLength).fill(0);
@@ -44,10 +45,13 @@ const OtpInput = ({ code, setCode, maximumLength, setIsPinReady }) => {
             isInputBoxFocused && isValueFocused ? SplitBoxesFocused : SplitBoxes;
         return (
             <StyledSplitBoxes key={index}>
-                <Text style={{ fontSize: 20, textAlign: 'center', color: 'black' }}>{digit}</Text>
+                <Text style={{ fontSize: 20, textAlign: 'center', color: themeColors.text}}>{digit}</Text>
             </StyledSplitBoxes>
         );
     };
+
+    const themeColors = useTheme().colors;
+
     return (
         <View style={{ justifyContent: 'center', alignItems: 'center' }}>
             <Pressable style={{ width: '100%', flexDirection: 'row', justifyContent: 'space-evenly' }} onPress={handleOnPress}>

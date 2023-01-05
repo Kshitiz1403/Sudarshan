@@ -7,6 +7,8 @@ import FontAwesome from 'react-native-vector-icons/FontAwesome'
 import Feather from 'react-native-vector-icons/Feather'
 import colors from '../../theme/colors'
 import useMapService from '../../hooks/api/mapService'
+import { useTheme } from '@react-navigation/native'
+import useThemeService from '../../hooks/themeService'
 
 const Running = ({ navigation, route }) => {
 
@@ -19,6 +21,9 @@ const Running = ({ navigation, route }) => {
     const isLocationLoaded = useSelector(state => state.location.isLocationLoaded);
 
     const mapService = useMapService();
+    const themeService = useThemeService();
+
+    const themeColors = useTheme().colors;
 
     return (
         <SafeAreaView style={styles.container}>
@@ -35,14 +40,15 @@ const Running = ({ navigation, route }) => {
                         latitudeDelta: 0.0122,
                         longitudeDelta: 0.0122,
                     }}
+                    customMapStyle={themeService.themeForMap()}
                 >
                     <Marker coordinate={{ latitude, longitude }} image={require('../../assets/map_current.png')} />
                 </MapView>
                 <View style={styles.topContainer}>
                     <TouchableOpacity onPress={() => navigation.openDrawer()} style={styles.hamburgerContainer}>
-                        <Feather name="menu" size={34} color="black" />
+                        <Feather name="menu" size={34} color='black' />
                     </TouchableOpacity>
-                    <TouchableOpacity activeOpacity={0.8} style={{ ...styles.searchContainer, padding: 10 }} onPress={() => navigation.navigate("Search")}>
+                    <TouchableOpacity activeOpacity={0.8} style={{ ...styles.searchContainer, padding: 10, backgroundColor: themeColors.card }} onPress={() => navigation.navigate("Search")}>
                         <FontAwesome name='search' size={22} color={colors.secondary} style={{ marginHorizontal: 10 }} />
                         <Text style={{ fontWeight: '500', color: colors.secondary }}>Where are you going to?</Text>
                     </TouchableOpacity>

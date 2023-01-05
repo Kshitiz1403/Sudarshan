@@ -3,6 +3,7 @@ import React from 'react'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import colors from '../../theme/colors'
 import useLocationService from '../../hooks/locationService'
+import { useTheme } from '@react-navigation/native'
 
 const AskLocation = () => {
     /**
@@ -14,12 +15,14 @@ const AskLocation = () => {
         locationService.askForLocationPermission()
     }
 
+    const themeColors = useTheme().colors;
+
     return (
-        <SafeAreaView style={styles.container}>
+        <SafeAreaView style={{ ...styles.container, backgroundColor: themeColors.background }}>
             <View style={styles.topContainer}>
                 <Text style={styles.subtitle}>Last thing and we are done</Text>
-                <Text style={styles.title}>We need access to Location</Text>
-                <Text style={styles.description}>Your location helps our system to map down dustbin drop locations.</Text>
+                <Text style={{ ...styles.title, color: themeColors.text }}>We need access to Location</Text>
+                <Text style={styles.description}>Your location helps our system to show you the nearest dustbin drop locations.</Text>
             </View>
             <View style={styles.midContainer}>
                 <Image source={require("../../assets/map_marker.png")} style={{ resizeMode: "contain", width: '15%' }} />

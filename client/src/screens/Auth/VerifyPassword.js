@@ -4,6 +4,7 @@ import sharedStyles from './sharedStyles'
 import colors from '../../theme/colors'
 import OtpInput from '../../components/OtpInput'
 import useAuthService from '../../hooks/api/authService'
+import { useTheme } from '@react-navigation/native'
 
 const VerifyPassword = ({ navigation, route }) => {
 
@@ -34,17 +35,20 @@ const VerifyPassword = ({ navigation, route }) => {
     authService.forgot(email)
   }
 
+  const themeColors = useTheme().colors;
+
   return (
     <View style={sharedStyles.container}>
       <View style={{ ...sharedStyles.topContainer, flex: 0.7 }}>
-        <Text style={sharedStyles.titleText}>Enter Verification Code</Text>
+        <Text style={{ ...sharedStyles.titleText, color: themeColors.text }}>Enter Verification Code</Text>
         <View style={{ marginTop: 20, marginBottom: 40 }}>
           <OtpInput code={otpCode} setCode={setOTPCode} maximumLength={maximumCodeLength} setIsPinReady={setIsPinReady} />
         </View>
         <Text style={{ ...sharedStyles.titleText, marginBottom: 5 }}>New Password</Text>
-        <TextInput style={sharedStyles.input}
+        <TextInput style={{ ...sharedStyles.input, color: themeColors.text }}
           ref={passwordRef}
           placeholder="Password"
+          placeholderTextColor={colors.secondary}
           secureTextEntry
           autoCapitalize="none"
           autoCorrect={false}
@@ -62,7 +66,7 @@ const VerifyPassword = ({ navigation, route }) => {
       </View>
       <View style={{ ...sharedStyles.bottomContainer, flex: 0.1 }}>
         <Text style={{ ...sharedStyles.actionText, fontSize: 14 }}>Don't have an account?</Text>
-        <TouchableOpacity style={{ ...sharedStyles.button, backgroundColor: 'white', borderWidth: 1, borderStyle: "solid", borderColor: colors.secondary }} onPress={() => { navigation.navigate("Auth", { signIn: false, register: true }) }}>
+        <TouchableOpacity style={{ ...sharedStyles.button, backgroundColor: themeColors.background, borderWidth: 1, borderStyle: "solid", borderColor: colors.secondary }} onPress={() => { navigation.navigate("Auth", { signIn: false, register: true }) }}>
           <Text style={{ ...sharedStyles.buttonText, color: colors.secondary }}>Sign up</Text>
         </TouchableOpacity>
       </View>

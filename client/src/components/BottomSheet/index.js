@@ -7,6 +7,7 @@ import colors from '../../theme/colors';
 import ListContainer from './ListContainer';
 import { useDispatch, useSelector } from 'react-redux';
 import { selectDustbin } from '../../store/reducers/dustbinSlice';
+import { useTheme } from '@react-navigation/native'
 
 const BottomSheetComponent = ({ place_name, place_address, distance, duration, navigation }) => {
     const bottomSheetRef = useRef(null);
@@ -18,15 +19,18 @@ const BottomSheetComponent = ({ place_name, place_address, distance, duration, n
     const selectedIndex = useSelector(state => state.dustbin.selectedIndex);
 
     const snapPoints = useMemo(() => ['15%', '42.5%'], [])
+
+    const themeColors = useTheme().colors;
+
     return (
         <View style={styles.wrapper}>
-            <BottomSheet ref={bottomSheetRef} snapPoints={snapPoints} >
+            <BottomSheet ref={bottomSheetRef} snapPoints={snapPoints} backgroundStyle={{ backgroundColor: themeColors.background }} >
                 <View style={styles.topContainer}>
                     {/* <View style={styles.leftContainer}>
                     </View> */}
                     <View style={styles.rightContainer}>
                         <View>
-                            <Text style={styles.title}>{place_name}</Text>
+                            <Text style={{ ...styles.title, color: themeColors.text }}>{place_name}</Text>
                         </View>
                         <View>
                             <Text style={styles.address} numberOfLines={2}>{place_address}</Text>
@@ -63,7 +67,7 @@ const BottomSheetComponent = ({ place_name, place_address, distance, duration, n
                         </BottomSheetScrollView>
                     </View>
                     <View style={{ marginTop: 10 }}>
-                        {dustbins && dustbins.length > 0 && selectedDustbin['dustbin_address'] && <Text numberOfLines={2}>{selectedDustbin.dustbin_address}</Text>}
+                        {dustbins && dustbins.length > 0 && selectedDustbin['dustbin_address'] && <Text numberOfLines={2} style={{ color: themeColors.text }}>{selectedDustbin.dustbin_address}</Text>}
                     </View>
                     {selectedIndex != -1 &&
                         <TouchableOpacity activeOpacity={0.7} style={styles.button} onPress={() => navigation.navigate("Navigate")}>
@@ -80,7 +84,7 @@ export default BottomSheetComponent
 
 const styles = StyleSheet.create({
     wrapper: {
-        height: '100%'
+        height: '100%',
     },
     topContainer: {
         // flex: 1,
@@ -100,7 +104,6 @@ const styles = StyleSheet.create({
     title: {
         fontWeight: 'bold',
         fontSize: 18,
-        color:'black'
     },
     address: {
         color: colors.secondary,

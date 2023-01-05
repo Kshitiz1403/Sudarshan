@@ -3,6 +3,7 @@ import React, { useState } from 'react'
 import colors from '../../theme/colors'
 import useAuthService from '../../hooks/api/authService'
 import sharedStyles from './sharedStyles'
+import { useTheme } from '@react-navigation/native'
 const ForgotPassword = ({ navigation }) => {
   const [email, setEmail] = useState('')
 
@@ -13,12 +14,15 @@ const ForgotPassword = ({ navigation }) => {
     navigation.navigate("Verification", { email })
   }
 
+  const themeColors = useTheme().colors;
+
   return (
     <View style={sharedStyles.container}>
       <View style={sharedStyles.topContainer}>
-        <Text style={sharedStyles.titleText}>Enter Email Address</Text>
+        <Text style={{ ...sharedStyles.titleText, color: themeColors.text }}>Enter Email Address</Text>
         <TextInput
-          style={sharedStyles.input}
+          style={{ ...sharedStyles.input, color: themeColors.text }}
+          placeholderTextColor={colors.secondary}
           placeholder="name@example.com"
           textContentType="emailAddress"
           autoCorrect={false}
@@ -37,7 +41,7 @@ const ForgotPassword = ({ navigation }) => {
 
       <View style={sharedStyles.bottomContainer}>
         <Text style={{ ...sharedStyles.actionText, fontSize: 14 }}>Don't have an account?</Text>
-        <TouchableOpacity style={{ ...sharedStyles.button, backgroundColor: 'white', borderWidth: 1, borderStyle: "solid", borderColor: colors.secondary }} onPress={() => { navigation.navigate("Auth", { signIn: false, register: true }) }}>
+        <TouchableOpacity style={{ ...sharedStyles.button, backgroundColor: themeColors.background, borderWidth: 1, borderStyle: "solid", borderColor: colors.secondary }} onPress={() => { navigation.navigate("Auth", { signIn: false, register: true }) }}>
           <Text style={{ ...sharedStyles.buttonText, color: colors.secondary }}>Sign up</Text>
         </TouchableOpacity>
       </View>

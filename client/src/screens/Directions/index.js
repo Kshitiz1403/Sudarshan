@@ -8,6 +8,7 @@ import useMapService from '../../hooks/api/mapService'
 import Ionicons from 'react-native-vector-icons/Ionicons'
 import BottomSheetComponent from '../../components/BottomSheet'
 import { resetDustbin, selectDustbin, setDustbins } from '../../store/reducers/dustbinSlice'
+import useThemeService from '../../hooks/themeService'
 
 const Directions = ({ navigation, route }) => {
 
@@ -16,6 +17,7 @@ const Directions = ({ navigation, route }) => {
     const isLocationLoaded = useSelector(state => state.location.isLocationLoaded);
 
     const mapService = useMapService();
+    const themeService = useThemeService();
 
     const dispatch = useDispatch();
 
@@ -86,6 +88,7 @@ const Directions = ({ navigation, route }) => {
                         longitudeDelta: 0.0122,
                     }}
                     ref={mapViewRef}
+                    customMapStyle={themeService.themeForMap()}
                 >
                     {isLocationLoaded && <Marker coordinate={{ latitude, longitude }} image={require('../../assets/map_current.png')} />}
                     {points && points.length > 0 && <Marker coordinate={{ latitude: (points[points.length - 1]).latitude, longitude: (points[points.length - 1]).longitude }} image={require('../../assets/map_destination.png')} />

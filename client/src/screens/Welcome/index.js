@@ -3,8 +3,11 @@ import React from 'react'
 import Progress from '../../components/Progress'
 import GestureRecognizer from 'react-native-swipe-gestures'
 import colors from '../../theme/colors'
+import { useTheme } from '@react-navigation/native'
 
 const Welcome = ({ navigation }) => {
+    const themeColors = useTheme().colors;
+
     return (
         <View style={styles.onBoardingContainer}>
             <GestureRecognizer style={{ flex: 1 }} onSwipeLeft={() => navigation.navigate("Auth")} >
@@ -15,12 +18,12 @@ const Welcome = ({ navigation }) => {
                 />
 
                 <View style={styles.welcome}>
-                    <Text style={styles.welcomeText}>Welcome to</Text>
-                    <Text style={styles.welcomeText}>SUDARSHAN</Text>
+                    <Text style={{ ...styles.welcomeText, color:themeColors.text}}>Welcome to</Text>
+                    <Text style={{...styles.welcomeText, color:themeColors.text}}>SUDARSHAN</Text>
                 </View>
 
                 <View style={styles.subtitle}>
-                    <Text style={styles.subtitleText}>
+                    <Text style={{...styles.subtitleText, color:themeColors.text}}>
                         Our app is based on the concept of plogging and helps to calculate
                         calories burnt
                     </Text>

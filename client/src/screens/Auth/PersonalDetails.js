@@ -7,6 +7,7 @@ import sharedStyles from './sharedStyles';
 import { useDispatch, useSelector } from 'react-redux';
 import { setProfileCompleted } from '../../store/reducers/authSlice';
 import useAuthService from '../../hooks/api/authService';
+import { useTheme } from '@react-navigation/native';
 
 const PersonalDetails = () => {
 
@@ -22,15 +23,15 @@ const PersonalDetails = () => {
     const [isDatePickerVisible, setIsDatePickerVisible] = useState(false)
 
     useEffect(() => {
-      if (user['name'])setName(user.name);
-      if (user['dob']) {
-        updateDate(user.dob)
-      }
-      if (user['gender']) setGender(user.gender)
-      if (user['heightCM']) setHeight(`${user.heightCM}`)
-      if (user['weightKG']) setWeight(`${user.weightKG}`);
+        if (user['name']) setName(user.name);
+        if (user['dob']) {
+            updateDate(user.dob)
+        }
+        if (user['gender']) setGender(user.gender)
+        if (user['heightCM']) setHeight(`${user.heightCM}`)
+        if (user['weightKG']) setWeight(`${user.weightKG}`);
     }, [user])
-    
+
 
     const authService = useAuthService();
     const dispatch = useDispatch();
@@ -55,7 +56,7 @@ const PersonalDetails = () => {
         setWeight(t.replace(/[^0-9.]/g, '').replace(/^0[^.]/, '0'))
     }
 
-   
+
 
     const submit = () => {
         authService.completeProfile(name, dobRaw, gender, weight, height)
@@ -90,43 +91,47 @@ const PersonalDetails = () => {
         return false;
     })
 
+    const themeColors = useTheme().colors;
+
+    const Label = ({ label }) => <Text style={{ ...styles.itemTitle, color: themeColors.text }}>{label}</Text>
+
     return (
         <SafeAreaView style={{ flex: 1 }}>
             <TouchableOpacity style={styles.skipContainer} onPress={skip}>
                 <Text style={styles.skipText}>Skip</Text>
             </TouchableOpacity>
             <View style={styles.titleContainer}>
-                <Text style={styles.title}>Personal Details</Text>
+                <Text style={{ ...styles.title, color: themeColors.text }}>Personal Details</Text>
                 <Text style={styles.subText}>Let us know about you to speed up the result, get fit with your personal workout plan.</Text>
             </View>
             <View style={styles.itemsWrapper}>
                 <View style={styles.itemContainer}>
-                    <Text style={styles.itemTitle}>Name</Text>
+                    <Label label="Name" />
                     <TextInput placeholder='Enter name' placeholderTextColor={colors.primary} style={styles.itemValue} value={name} onChangeText={(t) => setName(t)} />
                 </View>
                 <View style={styles.itemContainer}>
-                    <Text style={styles.itemTitle}>Birthday</Text>
+                    <Label label="Birthday" />
                     <TouchableOpacity onPress={() => setIsDatePickerVisible(prev => !prev)} >
                         <Text style={styles.itemValue}>{dob ? dob : 'Select date'}</Text>
                     </TouchableOpacity>
                 </View>
-                {isDatePickerVisible && <DatePicker mode='calendar' onSelectedChange={updateDate} options={{ mainColor: colors.primary }} />}
+                {isDatePickerVisible && <DatePicker mode='calendar' onSelectedChange={updateDate} options={{ mainColor: colors.primary, backgroundColor: themeColors.card, textDefaultColor: themeColors.text, textHeaderColor: themeColors.primary }} />}
                 <View style={styles.itemContainer}>
-                    <Text style={styles.itemTitle}>Height</Text>
+                    <Label label="Height" />
                     <View style={{ flexDirection: 'row', alignItems: 'center' }}>
                         <TextInput placeholder={height ? "  " : 'Enter height (cm)'} placeholderTextColor={colors.primary} style={styles.itemValue} value={height} onChangeText={updateHeight} keyboardType='numeric' />
                         <Text style={styles.itemValue}>{height ? " cm" : ""}</Text>
                     </View>
                 </View>
                 <View style={styles.itemContainer}>
-                    <Text style={styles.itemTitle}>Weight</Text>
+                    <Label label="Weight" />
                     <View style={{ flexDirection: 'row', alignItems: 'center' }}>
                         <TextInput placeholder={weight ? "  " : 'Enter weight (kg)'} placeholderTextColor={colors.primary} style={styles.itemValue} value={weight} onChangeText={updateWeight} keyboardType='numeric' />
                         <Text style={styles.itemValue}>{weight ? " kg" : ""}</Text>
                     </View>
                 </View>
                 <View style={{ ...styles.itemContainer, paddingBottom: 10 }}>
-                    <Text style={styles.itemTitle}>Gender</Text>
+                    <Label label="Gender" />
                     <View style={{ flexDirection: 'row', alignItems: 'center', height: '100%', }}>
                         <GenderBox text="Male" isLeft={true} />
                         <GenderBox text="Female" />

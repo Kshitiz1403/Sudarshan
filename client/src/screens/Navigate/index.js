@@ -5,18 +5,21 @@ import colors from '../../theme/colors'
 const Navigate = ({ navigation }) => {
 
     const [timer, setTimer] = useState(5)
+    const [intervalId, setIntervalId] = useState(null)
 
     useEffect(() => {
         if (timer == 0) {
             navigation.navigate("QR");
+            clearInterval(intervalId)
             return
         }
     }, [timer])
 
     useEffect(() => {
-        setInterval(() => {
+        const id = setInterval(() => {
             setTimer(prev => prev - 1);
         }, 1000);
+        setIntervalId(id)
     }, [])
 
     return (

@@ -1,4 +1,4 @@
-import { DarkTheme, DefaultTheme, NavigationContainer } from "@react-navigation/native";
+import { DarkTheme, DefaultTheme, NavigationContainer, useTheme } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { createDrawerNavigator } from "@react-navigation/drawer";
 import { useEffect } from "react";
@@ -24,6 +24,8 @@ import QRScreen from "../screens/QRScreen";
 import Navigate from "../screens/Navigate";
 import colors from "../theme/colors";
 import Settings from "../screens/Settings";
+import Loading from "../components/Loading";
+import useThemeService from "../hooks/themeService";
 
 const Routes = () => {
 
@@ -36,20 +38,26 @@ const Routes = () => {
     const isLocationPermissionGranted = useSelector(state => state.location.isPermissionGranted)
     const canAskAgainForLocation = useSelector(state => state.location.canAskAgain)
     const isLocationLoaded = useSelector(state => state.location.isLocationLoaded)
+    const theme = useSelector(state => state.theme.scheme)
 
     const onboardingService = useOnboardingService(); //required for initializing onboarding state
     const authService = useAuthService();
     const locationService = useLocationService();
+    const themeService = useThemeService();
 
     const OnboardingStack = createNativeStackNavigator();
     const AuthStack = createNativeStackNavigator();
+    const AppStack = createNativeStackNavigator();
     const ProfileCompletionStack = createNativeStackNavigator();
 
     const Drawer = createDrawerNavigator();
 
     const dispatch = useDispatch()
 
+    const themeColors = useTheme().colors;
+
     useEffect(() => {
+        themeService.mountTheme();
         (async () => {
             locationService.checkPermissionGranted();
             await authService.getUserFromToken()
@@ -83,15 +91,21 @@ const Routes = () => {
         </AuthStack.Navigator>
     )
 
-    const AppScreens = () => (
+    const DrawerScreens = () => (
         <Drawer.Navigator drawerContent={props => <CustomDrawer {...props} />}>
             <Drawer.Screen name="Running" component={Running} options={{ headerShown: false }} />
-            <Drawer.Screen name="Search" component={Search} options={{ headerShown: false, unmountOnBlur: false }} />
             <Drawer.Screen name="Directions" component={Directions} options={{ headerShown: false, }} />
-            <Drawer.Screen name="Navigate" component={Navigate} options={{ headerShown: false, unmountOnBlur: true }} />
-            <Drawer.Screen name="QR" component={QRScreen} options={{ headerShown: false, unmountOnBlur: true }} />
-            <Drawer.Screen name="Settings" component={Settings}/>
+            <Drawer.Screen name="Settings" component={Settings} options={{ headerTitleAlign: 'center', headerStyle: { backgroundColor: colors.primary }, headerTintColor: 'white' }} />
         </Drawer.Navigator>
+    )
+
+    const AppScreens = () => (
+        <AppStack.Navigator screenOptions={{ animation: "slide_from_right" }}>
+            <AppStack.Screen name="Home" component={DrawerScreens} options={{ headerShown: false }} />
+            <AppStack.Screen name="Search" component={Search} options={{ headerShown: false, unmountOnBlur: false }} />
+            <AppStack.Screen name="Navigate" component={Navigate} options={{ headerShown: false, unmountOnBlur: true }} />
+            <AppStack.Screen name="QR" component={QRScreen} options={{ headerTitleAlign: 'center', headerTitle: 'Scan QR Code', headerStyle: { backgroundColor: colors.primary }, headerTintColor: 'white', unmountOnBlur: true }} />
+        </AppStack.Navigator>
     )
 
     const ProfileCompletionScreens = () => (
@@ -120,23 +134,21 @@ const Routes = () => {
 
     return (
         <SafeAreaProvider>
-            <NavigationContainer theme={scheme == 'dark' ? MyDarkTheme : MyLightTheme}>
+            <NavigationContainer theme={theme == 'dark' ? MyDarkTheme : MyLightTheme}>
                 <View style={{ flex: 1 }}>
-                    {isAuthLoading && <View style={{ display: 'flex', flex: 1, justifyContent: 'center' }}>
-                        <Text style={{ textAlign: 'center', }}>Loading....</Text>
-                    </View>}
+                    {isAuthLoading && <Loading />}
                     {!isAuthLoading && !isOnboarded && <OnboardingScreens />}
                     {!isAuthLoading && isOnboarded && !isSignedIn && <AuthScreens />}
 
-                    {!isAuthLoading && isOnboarded && isSignedIn && isLocationPermissionLoading && <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}><Text>Please wait while we are getting location permissions :)</Text></View>}
+                    {!isAuthLoading && isOnboarded && isSignedIn && isLocationPermissionLoading && <Loading title="Please wait while we are getting location permissions :)" />}
 
                     {!isAuthLoading && isOnboarded && isSignedIn && !isLocationPermissionLoading && !isLocationPermissionGranted && canAskAgainForLocation && <AskLocation />}
                     {!isAuthLoading && isOnboarded && isSignedIn && !isLocationPermissionLoading && !isLocationPermissionGranted && !canAskAgainForLocation && <DeniedLocation />}
 
-                    {!isAuthLoading && isOnboarded && isSignedIn && !isLocationPermissionLoading && isLocationPermissionGranted && isProfileCompleteLoading && <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}><Text>Profile Complete Screen Loading</Text></View>}
+                    {!isAuthLoading && isOnboarded && isSignedIn && !isLocationPermissionLoading && isLocationPermissionGranted && isProfileCompleteLoading && <Loading title="Profile Complete Screen Loading..." />}
                     {!isAuthLoading && isOnboarded && isSignedIn && !isLocationPermissionLoading && isLocationPermissionGranted && !isProfileCompleteLoading && !isProfileCompleted && <ProfileCompletionScreens />}
 
-                    {!isAuthLoading && isOnboarded && isSignedIn && !isLocationPermissionLoading && isLocationPermissionGranted && !isProfileCompleteLoading && isProfileCompleted && !isLocationLoaded && <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}><Text>Location is loading</Text></View>}
+                    {!isAuthLoading && isOnboarded && isSignedIn && !isLocationPermissionLoading && isLocationPermissionGranted && !isProfileCompleteLoading && isProfileCompleted && !isLocationLoaded && <Loading title="Location is loading" />}
                     {!isAuthLoading && isOnboarded && isSignedIn && !isLocationPermissionLoading && isLocationPermissionGranted && !isProfileCompleteLoading && isProfileCompleted && isLocationLoaded && <AppScreens />}
                 </View>
             </NavigationContainer>

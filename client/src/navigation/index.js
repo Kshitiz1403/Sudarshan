@@ -38,7 +38,7 @@ const Routes = () => {
     const isLocationPermissionGranted = useSelector(state => state.location.isPermissionGranted)
     const canAskAgainForLocation = useSelector(state => state.location.canAskAgain)
     const isLocationLoaded = useSelector(state => state.location.isLocationLoaded)
-    const theme = useSelector(state => state.theme.scheme)
+    const isDark = useSelector(state => state.theme.isDark)
 
     const onboardingService = useOnboardingService(); //required for initializing onboarding state
     const authService = useAuthService();
@@ -134,7 +134,7 @@ const Routes = () => {
 
     return (
         <SafeAreaProvider>
-            <NavigationContainer theme={theme == 'dark' ? MyDarkTheme : MyLightTheme}>
+            <NavigationContainer theme={isDark ? MyDarkTheme : MyLightTheme}>
                 <View style={{ flex: 1 }}>
                     {isAuthLoading && <Loading />}
                     {!isAuthLoading && !isOnboarded && <OnboardingScreens />}

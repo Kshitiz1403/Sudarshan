@@ -6,9 +6,8 @@ export const locationSlice = createSlice({
     initialState: {
         isGrantLoading: true,
         isPermissionGranted: false,
+        isDisabled: false, //Location service is disabled
         canAskAgain: true,
-        status: "",
-        expires: "",
         latitude: 0,
         longitude: 0,
         lastSavedLocation: {
@@ -22,11 +21,10 @@ export const locationSlice = createSlice({
             state.isGrantLoading = false;
         },
         updateLocationState: (state, action) => {
-            const { canAskAgain, status, granted, expires } = action.payload
+            const { isPermissionGranted = state.isPermissionGranted, canAskAgain = state.canAskAgain, isDisabled = state.isDisabled } = action.payload
+            state.isPermissionGranted = isPermissionGranted;
             state.canAskAgain = canAskAgain;
-            state.status = status;
-            state.isPermissionGranted = granted;
-            state.expires = expires;
+            state.isDisabled = isDisabled
         },
         updateLocation: (state, action) => {
             const { latitude, longitude } = action.payload

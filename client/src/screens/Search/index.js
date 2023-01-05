@@ -1,13 +1,18 @@
 import { StyleSheet, Text, TextInput, View, ScrollView, TouchableOpacity } from 'react-native'
 import React, { useCallback, useState } from 'react'
 import { SafeAreaView } from 'react-native-safe-area-context'
-import { FontAwesome, Ionicons } from '@expo/vector-icons'
+import Ionicons from 'react-native-vector-icons/Ionicons'
+import FontAwesome from 'react-native-vector-icons/FontAwesome'
 import colors from '../../theme/colors'
 import _debounce from 'lodash.debounce'
 import useMapService from '../../hooks/api/mapService'
-import * as Location from 'expo-location'
+import { useSelector } from 'react-redux'
 
 const Search = ({ navigation }) => {
+
+    const latitude = useSelector(state => state.location.latitude)
+    const longitude = useSelector(state => state.location.longitude)
+
     const [searchTerm, setSearchTerm] = useState("")
     const [errorState, setErrorState] = useState({ isShown: false, message: "" })
 
@@ -25,8 +30,7 @@ const Search = ({ navigation }) => {
     const handleDebounceFn = async (input) => {
         if (!input) return;
         try {
-            const location = await Location.getCurrentPositionAsync({ accuracy: 1 })
-            const data = await mapService.autoComplete({ lat: location.coords.latitude, lng: location.coords.longitude }, input)
+            const data = await mapService.autoComplete({ lat: latitude, lng: longitude }, input)
             setPredictions(data)
         } catch (error) {
             if (error.status === 429) {

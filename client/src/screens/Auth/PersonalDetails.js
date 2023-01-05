@@ -7,7 +7,6 @@ import sharedStyles from './sharedStyles';
 import { useDispatch, useSelector } from 'react-redux';
 import { setProfileCompleted } from '../../store/reducers/authSlice';
 import useAuthService from '../../hooks/api/authService';
-import { Feather, FontAwesome, MaterialIcons } from '@expo/vector-icons';
 
 const PersonalDetails = () => {
 

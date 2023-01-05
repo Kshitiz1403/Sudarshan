@@ -2,7 +2,9 @@ import { Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import React from 'react'
 import { DrawerContentScrollView, DrawerItem } from '@react-navigation/drawer'
 import colors from '../theme/colors'
-import { FontAwesome5, MaterialIcons, Octicons } from '@expo/vector-icons'
+import MaterialIcons from 'react-native-vector-icons/MaterialIcons'
+import Octicons from 'react-native-vector-icons/Octicons'
+import FontAwesome5 from 'react-native-vector-icons/FontAwesome5'
 import useAuthService from '../hooks/api/authService'
 
 const CustomDrawer = ({ navigation, ...props }) => {

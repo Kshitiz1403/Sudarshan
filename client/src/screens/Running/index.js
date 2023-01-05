@@ -3,7 +3,8 @@ import React from 'react'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import MapView, { Marker, PROVIDER_GOOGLE } from 'react-native-maps'
 import { useDispatch, useSelector } from 'react-redux'
-import { Feather, FontAwesome } from '@expo/vector-icons'
+import FontAwesome from 'react-native-vector-icons/FontAwesome'
+import Feather from 'react-native-vector-icons/Feather'
 import colors from '../../theme/colors'
 import useMapService from '../../hooks/api/mapService'
 
@@ -29,12 +30,11 @@ const Running = ({ navigation, route }) => {
                     //     longitude: lastSavedLocation.longitude
                     // }}
                     region={{
-                        latitude,
-                        longitude,
+                        latitude: parseFloat(latitude),
+                        longitude: parseFloat(longitude),
                         latitudeDelta: 0.0122,
                         longitudeDelta: 0.0122,
                     }}
-                    camera={{ center: { latitude, longitude } }}
                 >
                     <Marker coordinate={{ latitude, longitude }} image={require('../../assets/map_current.png')} />
                 </MapView>
@@ -51,6 +51,7 @@ const Running = ({ navigation, route }) => {
         </SafeAreaView>
     )
 }
+
 
 export default Running
 

@@ -1,6 +1,6 @@
 import React from "react";
 import { View, StyleSheet, Text } from "react-native";
-import { FontAwesome } from "@expo/vector-icons";
+import FontAwesome from "react-native-vector-icons/FontAwesome";
 
 const Progress = ({ length, activeIndex, unselectedColor = "rgba(255,255,255,0.5)", selectedColor = 'white' }) => {
   const bars = new Array(length);

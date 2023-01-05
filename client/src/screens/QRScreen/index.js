@@ -1,42 +1,60 @@
 import { StyleSheet, Text, View, TouchableOpacity } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import colors from '../../theme/colors'
-import { StatusBar } from 'expo-status-bar'
-import { Ionicons, MaterialIcons } from '@expo/vector-icons'
-import { Camera } from 'expo-camera'
-import { CameraType } from 'expo-camera/build/Camera.types'
+import MaterialIcons from 'react-native-vector-icons/MaterialIcons'
+import Ionicons from 'react-native-vector-icons/Ionicons'
 import useDustbinService from '../../hooks/api/dustbinService'
+import { Camera, useCameraDevices } from 'react-native-vision-camera'
+import { useIsFocused } from '@react-navigation/native'
+import { BarcodeFormat, useScanBarcodes } from 'vision-camera-code-scanner'
 
 const QRScreen = ({ navigation }) => {
 
     const dustbinService = useDustbinService();
 
-    const [type, setType] = useState(CameraType.back);
-    const [permission, requestPermission] = Camera.useCameraPermissions();
+    const camera = useRef(null);
+    const [hasPermission, setHasPermission] = useState(false);
 
-    // const [hasPermission, setHasPermission] = useState(null);
-    const [scanned, setScanned] = useState(false);
+    const devices = useCameraDevices();
+    const [device, setDevice] = useState(null)
+    const [isBarcodeScanned, setIsBarcodeScanned] = useState(false);
+    const [selectedBarcode, setSelectedBarcode] = useState({})
+
+    const [frameProcessor, barcodes] = useScanBarcodes([BarcodeFormat.ALL_FORMATS], { checkInverted: true, });
 
     useEffect(() => {
-        // const getBarCodeScannerPermissions = async () => {
-        //     const { status } = await BarCodeScanner.requestPermissionsAsync();
-        //     setHasPermission(status === 'granted');
-        // };
+        setDevice(devices.back)
+    }, [devices])
 
-        // getBarCodeScannerPermissions();
 
-        requestPermission();
-    }, []);
-    function toggleCameraType() {
-        setType(current => (current === CameraType.back ? CameraType.front : CameraType.back));
+
+    const flipCamera = () => {
+        if (device == devices.back) {
+            setDevice(devices.front)
+            return
+        }
+        if (device == devices.front) {
+            setDevice(devices.back);
+            return;
+        }
     }
-    const handleBarCodeScanned = async ({ type, data }) => {
-        if (scanned) return
-        setScanned(true);
-        const response = await dustbinService.scan(data);
-        navigation.navigate("Running")
-    };
+
+    useEffect(() => {
+        (async () => {
+            const status = await Camera.requestCameraPermission()
+            setHasPermission(status == 'authorized')
+        })();
+    }, []);
+
+    useEffect(() => {
+        if (!barcodes || !barcodes.length > 0 || isBarcodeScanned) return;
+        setIsBarcodeScanned(true)
+        setSelectedBarcode(barcodes[0].displayValue)
+    }, [barcodes])
+
+
+    const isFocused = useIsFocused();
 
     return (
         <View style={{ flex: 1 }}>
@@ -44,14 +62,16 @@ const QRScreen = ({ navigation }) => {
             <View style={{ height: 75, backgroundColor: colors.primary, justifyContent: 'center' }}>
                 <Text style={{ color: 'white', fontWeight: '600', textAlign: 'center', width: '100%', fontSize: 18 }}>Scan QR Code</Text>
             </View>
-            <View style={{ flex: 1, alignItems: 'center' }}>
-                <Camera type={type} style={{ width: '100%', aspectRatio: 1 }} ratio={'1:1'} onBarCodeScanned={handleBarCodeScanned} />
+            {!isBarcodeScanned && <View style={{ flex: 1, alignItems: 'center' }}>
+                {hasPermission && device != null &&
+                    <Camera style={{ width: '100%', aspectRatio: 1 }} device={device} isActive={isFocused} frameProcessor={frameProcessor} frameProcessorFps={5} />
+                }
                 <View style={{ marginTop: 20, flexDirection: 'row', justifyContent: 'space-evenly', width: '100%' }}>
-                    <TouchableOpacity onPress={toggleCameraType}>
+                    <TouchableOpacity onPress={flipCamera}>
                         <MaterialIcons name="flip-camera-android" size={24} color="black" />
                     </TouchableOpacity>
                 </View>
-            </View>
+            </View>}
             <TouchableOpacity style={{ position: 'absolute', top: 50, left: 10 }} onPress={() => navigation.goBack()}>
                 <Ionicons name="arrow-back" size={30} color="white" />
             </TouchableOpacity>

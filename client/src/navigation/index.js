@@ -1,5 +1,6 @@
 import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
+import { createDrawerNavigator } from "@react-navigation/drawer";
 import { useEffect } from "react";
 import { Text, View } from "react-native";
 import { SafeAreaProvider } from "react-native-safe-area-context";
@@ -16,9 +17,8 @@ import DeniedLocation from "../screens/RequestLocation/DeniedLocation";
 import Running from "../screens/Running";
 import Search from "../screens/Search";
 import Welcome from "../screens/Welcome";
-import { createDrawerNavigator } from "@react-navigation/drawer";
 import Directions from "../screens/Directions";
-import CustomDrawer from "./Drawer";
+import CustomDrawer from "./Drawer.js";
 import PersonalDetails from "../screens/Auth/PersonalDetails";
 import QRScreen from "../screens/QRScreen";
 import Navigate from "../screens/Navigate";
@@ -49,7 +49,7 @@ const Routes = () => {
 
     useEffect(() => {
         (async () => {
-            locationService.isPermissionGranted()
+            locationService.checkPermissionGranted();
             await authService.getUserFromToken()
             await authService.isProfileComplete();
         })();
@@ -83,6 +83,7 @@ const Routes = () => {
 
     const AppScreens = () => (
         <Drawer.Navigator drawerContent={props => <CustomDrawer {...props} />}>
+            {/* <Drawer.Screen name="Tasdas" component={()=><View><Text>Hello</Text></View>}/> */}
             <Drawer.Screen name="Running" component={Running} options={{ headerShown: false }} />
             <Drawer.Screen name="Search" component={Search} options={{ headerShown: false, unmountOnBlur: false }} />
             <Drawer.Screen name="Directions" component={Directions} options={{ headerShown: false, }} />

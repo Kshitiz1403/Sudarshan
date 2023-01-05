@@ -5,7 +5,7 @@ import MapView, { Marker, Polyline, PROVIDER_GOOGLE } from 'react-native-maps'
 import { useDispatch, useSelector } from 'react-redux'
 import colors from '../../theme/colors'
 import useMapService from '../../hooks/api/mapService'
-import { Ionicons } from '@expo/vector-icons'
+import Ionicons from 'react-native-vector-icons/Ionicons'
 import BottomSheetComponent from '../../components/BottomSheet'
 import { resetDustbin, selectDustbin, setDustbins } from '../../store/reducers/dustbinSlice'
 
@@ -48,6 +48,7 @@ const Directions = ({ navigation, route }) => {
 
 
     useEffect(() => {
+        setIsFirstTimeLoaded(true)
         dispatch(resetDustbin()) // resets the selected dustbin
         if (route['params'] && route.params['place_id']) {
             configureRoute(route.params['place_id'])
@@ -84,7 +85,6 @@ const Directions = ({ navigation, route }) => {
                         latitudeDelta: 0.0122,
                         longitudeDelta: 0.0122,
                     }}
-                    camera={{ center: { latitude, longitude } }}
                     ref={mapViewRef}
                 >
                     {isLocationLoaded && <Marker coordinate={{ latitude, longitude }} image={require('../../assets/map_current.png')} />}

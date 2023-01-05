@@ -1,7 +1,8 @@
 import { StyleSheet, Text, View, ScrollView, TouchableOpacity } from 'react-native'
 import React, { useMemo, useRef } from 'react'
 import BottomSheet, { BottomSheetScrollView } from '@gorhom/bottom-sheet'
-import { Feather, FontAwesome5 } from '@expo/vector-icons';
+import FontAwesome5 from 'react-native-vector-icons/FontAwesome5'
+import Feather from 'react-native-vector-icons/Feather'
 import colors from '../../theme/colors';
 import ListContainer from './ListContainer';
 import { useDispatch, useSelector } from 'react-redux';
@@ -98,7 +99,8 @@ const styles = StyleSheet.create({
     },
     title: {
         fontWeight: 'bold',
-        fontSize: 18
+        fontSize: 18,
+        color:'black'
     },
     address: {
         color: colors.secondary,

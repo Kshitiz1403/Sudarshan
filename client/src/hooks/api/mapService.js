@@ -1,6 +1,5 @@
 import { useSelector } from "react-redux"
 import { getAuthenticatedAxios } from "./baseConfig"
-import { Linking } from "react-native"
 
 const useMapService = () => {
     const token = useSelector(state => state.auth.token)
@@ -28,37 +27,7 @@ const useMapService = () => {
         }
     }
 
-    const navigate = () => {
-        const params = [
-            {
-                key: "travelmode",
-                value: "walking"        // may be "walking", "bicycling" or "transit" as well
-            },
-            {
-                key: "dir_action",
-                value: "navigate"       // this instantly initializes navigation using the given travel mode
-            },
-            {
-                key: "destination",
-                value: `${selectedDustbin.dustbin_location.lat},${selectedDustbin.dustbin_location.lng}`
-            }
-        ]
-
-        const getParams = (params = []) => {
-            return params.map(({ key, value }) => {
-                const encodedKey = encodeURIComponent(key)
-                const encodedValue = encodeURIComponent(value)
-                return `${encodedKey}=${encodedValue}`
-            })
-                .join('&')
-        }
-        const url = `https://www.google.com/maps/dir/?api=1&${getParams(params)}`
-        Linking.canOpenURL(url).then(supported => {
-            if (supported) Linking.openURL(url)
-        })
-    }
-
-    return { autoComplete, goToPlace, navigate }
+    return { autoComplete, goToPlace }
 }
 
 export default useMapService

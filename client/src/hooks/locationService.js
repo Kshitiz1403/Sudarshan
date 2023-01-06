@@ -1,8 +1,6 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
-// import * as Location from 'expo-location'
-import { PermissionsAndroid } from 'react-native';
 import { useDispatch } from 'react-redux';
-import { setGrantLoaded, setLocationLoaded, updateLastSavedLocation, updateLocation, updateLocationState } from '../store/reducers/locationSlice';
+import { setGrantLoaded, setLocationLoaded, updateLocation, updateLocationState } from '../store/reducers/locationSlice';
 import Geolocation from 'react-native-geolocation-service';
 import { check, PERMISSIONS, request } from 'react-native-permissions';
 
@@ -50,39 +48,49 @@ const useLocationService = () => {
         }
     }
 
-    const getCurrentLocation = async () => {
-        try {
-            return Geolocation.getCurrentPosition((position) => {
+    const watchCurrentLocation = async () => {
+        return new Promise((resolve, reject) => {
+            return Geolocation.watchPosition((position) => {
                 const { latitude, longitude } = position.coords;
                 dispatch(updateLocation({ latitude, longitude }));
-                return { latitude, longitude };
+                dispatch(setLocationLoaded());
+                return resolve({ latitude, longitude });
             }, (err) => {
-                throw err
+                return reject(err);
             }, {
-                enableHighAccuracy: true
+                enableHighAccuracy: true,
+                interval: 5000,
+                distanceFilter: 0
             })
-        } catch (error) {
-            console.error(error)
+        })
+    }
+
+    const updateLastSavedLocationInStorage = ({ latitude, longitude }) => {
+        if (latitude && longitude) {
+            AsyncStorage.setItem('@last_location', JSON.stringify({ latitude, longitude }));
         }
-        finally {
-            dispatch(setLocationLoaded());
-        }
+    }
+
+    const triggerUpdatingLastLocation = async ({ latitude, longitude }) => {
+        updateLastSavedLocationInStorage({ latitude, longitude })
+        const intervalId = setInterval(() => {
+            updateLastSavedLocationInStorage({ latitude, longitude });
+        }, 30000); //30 sec
+        return intervalId;
     }
 
     const getLastSavedLocation = async () => {
         try {
             const lastSavedLocation = await AsyncStorage.getItem('@last_location');
-            if (!lastSavedLocation) return;
+            if (lastSavedLocation == null) return;
             const { latitude, longitude } = JSON.parse(lastSavedLocation);
-            dispatch(updateLastSavedLocation({ latitude, longitude }));
+            dispatch(updateLocation({ latitude, longitude }));
+            dispatch(setLocationLoaded())
         } catch (error) {
         }
-        // finally {
-        //     dispatch(setLocationLoaded());
-        // }
     }
 
-    return { checkPermissionGranted, askForLocationPermission, getCurrentLocation, getLastSavedLocation }
+    return { checkPermissionGranted, askForLocationPermission, watchCurrentLocation, triggerUpdatingLastLocation, getLastSavedLocation }
 
 }
 

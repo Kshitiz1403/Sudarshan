@@ -21,7 +21,6 @@ export class TripController {
     try {
       const dustbinId = req.body.dustbinId as ITripStartInputDTO['dustbinId'];
       const source = req.body.sourceLocation as ITripStartInputDTO['source'];
-      const dustbinLocation = req.body.dustbinLocation as ITripStartInputDTO['dustbinLocation'];
       const destinationLocation = req.body.destinationLocation as ITripStartInputDTO['destination'];
       const distance = req.body.distance as ITripStartInputDTO['distanceMeter'];
 
@@ -30,7 +29,6 @@ export class TripController {
         userId: req.currentUser.userId,
         distanceMeter: distance,
         dustbinId,
-        dustbinLocation,
         source,
       });
       return res.status(200).json(Result.success(trip));

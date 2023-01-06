@@ -58,19 +58,23 @@ const Routes = () => {
 
     useEffect(() => {
         themeService.mountTheme();
+        locationService.checkPermissionGranted();
+    }, [])
+
+    useEffect(() => {
         (async () => {
-            locationService.checkPermissionGranted();
             await authService.getUserFromToken()
             await authService.isProfileComplete();
         })();
-    }, [])
+    }, [isSignedIn])
+
 
     useEffect(() => {
         if (isLocationPermissionGranted) {
             (async () => {
-                // await locationService.getLastSavedLocation();
-                await locationService.getCurrentLocation();
-                // dispatch(setLastSavedLocation({ latitude, longitude }))
+                await locationService.getLastSavedLocation();
+                const { latitude, longitude } = await locationService.watchCurrentLocation();
+                const lastLocationUpdateTimerId = locationService.triggerUpdatingLastLocation({ latitude, longitude });
             })();
         }
     }, [isLocationPermissionGranted])

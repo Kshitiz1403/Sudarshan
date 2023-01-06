@@ -9,11 +9,13 @@ import { useDispatch, useSelector } from 'react-redux';
 import { selectDustbin } from '../../store/reducers/dustbinSlice';
 import { useTheme } from '@react-navigation/native'
 import useMapService from '../../hooks/api/mapService'
+import useTripService from '../../hooks/api/tripService'
 
 const BottomSheetComponent = ({ place_name, place_address, distance, duration, navigation }) => {
     const bottomSheetRef = useRef(null);
 
     const mapService = useMapService();
+    const tripService = useTripService();
     const dispatch = useDispatch();
 
     const dustbins = useSelector(state => state.dustbin.dustbins);
@@ -72,7 +74,7 @@ const BottomSheetComponent = ({ place_name, place_address, distance, duration, n
                         {dustbins && dustbins.length > 0 && selectedDustbin['dustbin_address'] && <Text numberOfLines={2} style={{ color: themeColors.text }}>{selectedDustbin.dustbin_address}</Text>}
                     </View>
                     {selectedIndex != -1 &&
-                        <TouchableOpacity activeOpacity={0.7} style={styles.button} onPress={mapService.navigate}>
+                        <TouchableOpacity activeOpacity={0.7} style={styles.button} onPress={tripService.startTrip}>
                             <Text style={styles.buttonText}>Start</Text>
                         </TouchableOpacity>
                     }

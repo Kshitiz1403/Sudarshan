@@ -10,11 +10,11 @@ export const locationSlice = createSlice({
         canAskAgain: true,
         latitude: 0,
         longitude: 0,
-        lastSavedLocation: {
-            latitude: 0,
-            longitude: 0
-        },
-        isLocationLoaded: false
+        isLocationLoaded: false,
+        destinationLocation: {
+            latitude: null,
+            longitude: null
+        }
     },
     reducers: {
         setGrantLoaded: (state) => {
@@ -31,21 +31,17 @@ export const locationSlice = createSlice({
             state.latitude = latitude
             state.longitude = longitude
         },
-        updateLastSavedLocation: (state, action) => {
-            const { latitude, longitude } = action.payload;
-            state.lastSavedLocation.latitude = latitude;
-            state.lastSavedLocation.longitude = longitude;
-        },
-        setLastSavedLocation: (state, action) => {
-            const { latitude, longitude } = action.payload
-            AsyncStorage.setItem('@last_location', JSON.stringify({ latitude, longitude }))
-        },
         setLocationLoaded: (state) => {
             state.isLocationLoaded = true;
+        },
+        setDestinationLocation: (state, action) => {
+            const { latitude, longitude } = action.payload;
+            state.destinationLocation.latitude = latitude;
+            state.destinationLocation.longitude = longitude;
         }
     }
 })
 
-export const { setGrantLoaded, updateLocationState, updateLocation, updateLastSavedLocation, setLastSavedLocation, setLocationLoaded } = locationSlice.actions;
+export const { setGrantLoaded, updateLocationState, updateLocation, setLocationLoaded, setDestinationLocation } = locationSlice.actions;
 
 export default locationSlice.reducer;

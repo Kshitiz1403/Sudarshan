@@ -17,7 +17,6 @@ export const authSlice = createSlice({
             state.isLoading = false;
             const token = action.payload;
             state.token = token
-            AsyncStorage.setItem('@token', token)
         },
         setUser: (state, action) => {
             state.user = action.payload

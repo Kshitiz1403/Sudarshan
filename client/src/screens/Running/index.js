@@ -5,39 +5,44 @@ import MapView, { Marker, PROVIDER_GOOGLE } from 'react-native-maps'
 import { useDispatch, useSelector } from 'react-redux'
 import FontAwesome from 'react-native-vector-icons/FontAwesome'
 import Feather from 'react-native-vector-icons/Feather'
+import MaterialIcons from 'react-native-vector-icons/MaterialIcons'
 import colors from '../../theme/colors'
-import useMapService from '../../hooks/api/mapService'
 import { useTheme } from '@react-navigation/native'
 import useThemeService from '../../hooks/themeService'
+import { useRef } from 'react'
 
 const Running = ({ navigation, route }) => {
 
     const dispatch = useDispatch();
 
-    const lastSavedLocation = useSelector(state => state.location.lastSavedLocation);
-
     const latitude = useSelector(state => state.location.latitude)
     const longitude = useSelector(state => state.location.longitude)
-    const isLocationLoaded = useSelector(state => state.location.isLocationLoaded);
     const isDarkMode = useSelector(state => state.theme.isDark)
 
-    const mapService = useMapService();
     const themeService = useThemeService();
 
     const themeColors = useTheme().colors;
+
+    const mapViewRef = useRef(null)
+
+    const resetCameraToMyPosition = () => {
+        mapViewRef.current.animateToRegion({
+            latitude,
+            longitude,
+            latitudeDelta: 0.0122,
+            longitudeDelta: 0.0122,
+        })
+    }
 
     return (
         <SafeAreaView style={styles.container}>
             <View style={styles.container}>
                 <MapView style={{ flex: 1, }}
+                    ref={mapViewRef}
                     provider={PROVIDER_GOOGLE}
-                    // initialRegion={{
-                    //     latitude: lastSavedLocation.latitude,
-                    //     longitude: lastSavedLocation.longitude
-                    // }}
-                    region={{
-                        latitude: parseFloat(latitude),
-                        longitude: parseFloat(longitude),
+                    initialRegion={{
+                        latitude: latitude,
+                        longitude: longitude,
                         latitudeDelta: 0.0122,
                         longitudeDelta: 0.0122,
                     }}
@@ -54,6 +59,9 @@ const Running = ({ navigation, route }) => {
                         <Text style={{ fontWeight: '500', color: colors.secondary }}>Where are you going to?</Text>
                     </TouchableOpacity>
                 </View>
+                <TouchableOpacity activeOpacity={0.7} onPress={resetCameraToMyPosition} style={{ position: 'absolute', backgroundColor: themeColors.card, borderRadius: 50, height: 50, width: 50, bottom: 20, right: 10, alignItems: 'center', justifyContent: 'center' }}>
+                    <MaterialIcons name='my-location' color={themeColors.text} size={24} />
+                </TouchableOpacity>
             </View>
         </SafeAreaView>
     )

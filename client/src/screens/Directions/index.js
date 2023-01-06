@@ -9,6 +9,8 @@ import Ionicons from 'react-native-vector-icons/Ionicons'
 import BottomSheetComponent from '../../components/BottomSheet'
 import { resetDustbin, selectDustbin, setDustbins } from '../../store/reducers/dustbinSlice'
 import useThemeService from '../../hooks/themeService'
+import { useTheme } from '@react-navigation/native'
+import { setDestinationLocation } from '../../store/reducers/locationSlice'
 
 const Directions = ({ navigation, route }) => {
 
@@ -18,6 +20,8 @@ const Directions = ({ navigation, route }) => {
 
     const mapService = useMapService();
     const themeService = useThemeService();
+
+    const themeColors = useTheme().colors;
 
     const dispatch = useDispatch();
 
@@ -30,6 +34,8 @@ const Directions = ({ navigation, route }) => {
     const dustbins = useSelector(state => state.dustbin.dustbins);
     const selectedDustbin = useSelector(state => state.dustbin.selectedDustbin);
     const selectedIndex = useSelector(state => state.dustbin.selectedIndex);
+
+    const destinationLocation = useSelector(state => state.location.destinationLocation);
 
     const mapViewRef = useRef(null)
 
@@ -75,6 +81,16 @@ const Directions = ({ navigation, route }) => {
     }, [points])
 
 
+    useEffect(() => {
+        if (points && points.length > 0) {
+            const lat = (points[points.length - 1]).latitude;
+            const lng = (points[points.length - 1]).longitude;
+            dispatch(setDestinationLocation({ latitude: lat, longitude: lng }))
+        }
+    }, [points])
+
+
+
     return (
         <SafeAreaView style={styles.container}>
             <View style={styles.container}>
@@ -91,8 +107,7 @@ const Directions = ({ navigation, route }) => {
                     customMapStyle={themeService.themeForMap()}
                 >
                     {isLocationLoaded && <Marker coordinate={{ latitude, longitude }} image={require('../../assets/map_current.png')} />}
-                    {points && points.length > 0 && <Marker coordinate={{ latitude: (points[points.length - 1]).latitude, longitude: (points[points.length - 1]).longitude }} image={require('../../assets/map_destination.png')} />
-                    }
+                    {destinationLocation.latitude && destinationLocation.longitude && <Marker coordinate={{ latitude: destinationLocation.latitude, longitude: destinationLocation.longitude }} image={require('../../assets/map_destination.png')} />}
                     {dustbins && dustbins.length > 0 && selectedIndex != -1 && <Marker coordinate={{ latitude: selectedDustbin['dustbin_location']['lat'], longitude: selectedDustbin['dustbin_location']['lng'] }} image={require('../../assets/litter.png')} />}
                     <Polyline coordinates={points} strokeWidth={5} strokeColor={colors.primary} lineDashPattern={[1, 15]} />
                 </MapView>
@@ -100,7 +115,7 @@ const Directions = ({ navigation, route }) => {
                     <BottomSheetComponent place_name={placeDetails.place_name} place_address={placeDetails.place_address} distance={distance} duration={duration} navigation={navigation} />
                 </View>
                 <TouchableOpacity style={{ position: 'absolute', top: 50, left: 10 }} onPress={() => navigation.goBack()}>
-                    <Ionicons name="arrow-back" size={30} color="black" />
+                    <Ionicons name="arrow-back" size={30} color={themeColors.text} />
                 </TouchableOpacity>
             </View>
         </SafeAreaView>

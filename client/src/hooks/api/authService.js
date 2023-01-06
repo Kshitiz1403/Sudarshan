@@ -13,6 +13,7 @@ const useAuthService = () => {
             const unauthenticatedAxios = getUnauthenticatedAxios('/auth');
             const data = await unauthenticatedAxios.post('/signin', { email, password });
             const token = `Bearer ${data['token']}`;
+            await AsyncStorage.setItem('@token', token)
             dispatch(loginUser(token));
             dispatch(setUser(data['user']))
             return token;
@@ -25,6 +26,7 @@ const useAuthService = () => {
             const unauthenticatedAxios = getUnauthenticatedAxios('/auth')
             const data = await unauthenticatedAxios.post('/signup', { email, password });
             const token = `Bearer ${data['token']}`;
+            await AsyncStorage.setItem('@token', token)
             dispatch(loginUser(token))
             dispatch(setUser(data['user']))
             return token;
@@ -80,10 +82,8 @@ const useAuthService = () => {
             const authenticatedAxios = getAuthenticatedAxios('/users', token);
             const { isProfileComplete } = await authenticatedAxios.get('/profileStatus');
             if (isProfileComplete) dispatch(setProfileCompleted());
-        } catch (error) { }
-        finally {
             dispatch(setProfileCompleteLoaded())
-        }
+        } catch (error) { }
     }
 
     const completeProfile = async (name, dob, gender, weightKG, heightCM) => {

@@ -19,6 +19,7 @@ const Running = ({ navigation, route }) => {
     const latitude = useSelector(state => state.location.latitude)
     const longitude = useSelector(state => state.location.longitude)
     const isLocationLoaded = useSelector(state => state.location.isLocationLoaded);
+    const isDarkMode = useSelector(state => state.theme.isDark)
 
     const mapService = useMapService();
     const themeService = useThemeService();
@@ -46,9 +47,9 @@ const Running = ({ navigation, route }) => {
                 </MapView>
                 <View style={styles.topContainer}>
                     <TouchableOpacity onPress={() => navigation.openDrawer()} style={styles.hamburgerContainer}>
-                        <Feather name="menu" size={34} color='black' />
+                        <Feather name="menu" size={34} color={themeColors.text} />
                     </TouchableOpacity>
-                    <TouchableOpacity activeOpacity={0.8} style={{ ...styles.searchContainer, padding: 10, backgroundColor: themeColors.card }} onPress={() => navigation.navigate("Search")}>
+                    <TouchableOpacity activeOpacity={0.8} style={{ ...styles.searchContainer, padding: 10, backgroundColor: isDarkMode ? '#e2e2e2e8' : '#323232e8' }} onPress={() => navigation.navigate("Search")}>
                         <FontAwesome name='search' size={22} color={colors.secondary} style={{ marginHorizontal: 10 }} />
                         <Text style={{ fontWeight: '500', color: colors.secondary }}>Where are you going to?</Text>
                     </TouchableOpacity>

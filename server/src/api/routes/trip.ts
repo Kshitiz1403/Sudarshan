@@ -18,7 +18,6 @@ export default (app: Router) => {
       body: Joi.object({
         dustbinId: Joi.string().required(),
         sourceLocation: Joi.object({ latitude: Joi.number(), longitude: Joi.number() }),
-        dustbinLocation: Joi.object({ latitude: Joi.number(), longitude: Joi.number() }),
         destinationLocation: Joi.object({ latitude: Joi.number(), longitude: Joi.number() }),
         distance: Joi.number().required(),
       }),

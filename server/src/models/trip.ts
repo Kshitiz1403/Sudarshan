@@ -1,17 +1,6 @@
 import { ITrip } from '@/interfaces/ITrip';
 import mongoose from 'mongoose';
 
-const SourceSchema = new mongoose.Schema({
-  latitude: {
-    type: Number,
-    required: true,
-  },
-  longitude: {
-    type: Number,
-    required: true,
-  },
-});
-
 const Trip = new mongoose.Schema(
   {
     userId: {
@@ -23,12 +12,26 @@ const Trip = new mongoose.Schema(
       required: true,
     },
     source: {
-      type: SourceSchema,
-      required: true,
+      type: {
+        type: 'String',
+        default: 'Point',
+        required: true,
+      },
+      coordinates: {
+        type: [Number],
+        required: true,
+      },
     },
     destination: {
-      latitude: Number,
-      longitude: Number,
+      type: {
+        type: 'String',
+        default: 'Point',
+        required: true,
+      },
+      coordinates: {
+        type: [Number],
+        required: true,
+      },
     },
     isDumped: {
       type: Boolean,

@@ -8,8 +8,19 @@ export class TripRepository {
 
   public createTrip = async (startTripInputDTO: ITripStartInputDTO) => {
     try {
-      const trip = await TripModel.create({ ...startTripInputDTO });
-      if (trip) return trip.toObject();
+      const { userId, dustbinId, distanceMeter, source, destination } = startTripInputDTO;
+      const tripRecord = await TripModel.create({
+        userId,
+        dustbinId,
+        distanceMeter,
+        source: {
+          coordinates: [source.longitude, source.latitude],
+        },
+        destination: {
+          coordinates: [destination.longitude, destination.latitude],
+        },
+      });
+      if (tripRecord) return tripRecord.toObject();
       return null;
     } catch (e) {
       throw 'Trip cannot be created';

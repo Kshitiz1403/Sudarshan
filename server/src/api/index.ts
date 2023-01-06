@@ -2,6 +2,7 @@ import { Router } from 'express';
 import auth from './routes/auth';
 import dustbin from './routes/dustbin';
 import map from './routes/map';
+import trip from './routes/trip';
 import user from './routes/user';
 
 // guaranteed to get dependencies
@@ -11,5 +12,6 @@ export default () => {
   user(app);
   map(app);
   dustbin(app);
+  trip(app);
   return app;
 };

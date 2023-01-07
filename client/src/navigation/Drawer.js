@@ -32,7 +32,7 @@ const CustomDrawer = ({ navigation, ...props }) => {
 
     return (
         <DrawerContentScrollView {...props}>
-            <View style={profileStyles.container}>
+            <TouchableOpacity activeOpacity={0.8} onPress={() => navigation.navigate("Profile", { isCalledFromProfile: true })} style={profileStyles.container}>
                 <View style={profileStyles.imageWrapper}>
                     <View style={profileStyles.imageContainer}>
                         <Image style={profileStyles.image} source={{ uri: 'https://sudarshanstorage.blob.core.windows.net/store/profile_pic.jpg' }} />
@@ -41,7 +41,7 @@ const CustomDrawer = ({ navigation, ...props }) => {
                 <View style={profileStyles.nameContainer}>
                     <Text style={profileStyles.name} numberOfLines={2}>Kshitiz Agrawal</Text>
                 </View>
-            </View>
+            </TouchableOpacity>
             {getMenuItems().map(item =>
                 <DrawerItem activeTintColor={colors.primary} label={item.label} key={item.key} onPress={item.onPress} icon={item.icon} inactiveTintColor={colors.secondary} labelStyle={{ fontSize: 15 }} pressColor={colors.tertiary} />
             )}

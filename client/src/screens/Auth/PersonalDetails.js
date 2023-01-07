@@ -9,9 +9,11 @@ import { setProfileCompleted } from '../../store/reducers/authSlice';
 import useAuthService from '../../hooks/api/authService';
 import { useTheme } from '@react-navigation/native';
 
-const PersonalDetails = () => {
+const PersonalDetails = ({ navigation, route }) => {
 
     const user = useSelector(state => state.auth.user);
+
+    const [isCalledFromProfile, setIsCalledFromProfile] = useState(false)
 
     const [name, setName] = useState("")
     const [dobRaw, setDOBRaw] = useState(null)
@@ -32,6 +34,11 @@ const PersonalDetails = () => {
         if (user['weightKG']) setWeight(`${user.weightKG}`);
     }, [user])
 
+    useEffect(() => {
+        if (route.params && route.params['isCalledFromProfile'] == true) {
+            setIsCalledFromProfile(true)
+        }
+    }, [route])
 
     const authService = useAuthService();
     const dispatch = useDispatch();
@@ -58,8 +65,9 @@ const PersonalDetails = () => {
 
 
 
-    const submit = () => {
-        authService.completeProfile(name, dobRaw, gender, weight, height)
+    const submit = async () => {
+        await authService.completeProfile(name, dobRaw, gender, weight, height)
+        if (isCalledFromProfile) navigation.goBack();
     }
 
     const skip = () => {
@@ -97,9 +105,9 @@ const PersonalDetails = () => {
 
     return (
         <SafeAreaView style={{ flex: 1 }}>
-            <TouchableOpacity style={styles.skipContainer} onPress={skip}>
+            {!isCalledFromProfile && <TouchableOpacity style={styles.skipContainer} onPress={skip}>
                 <Text style={styles.skipText}>Skip</Text>
-            </TouchableOpacity>
+            </TouchableOpacity>}
             <View style={styles.titleContainer}>
                 <Text style={{ ...styles.title, color: themeColors.text }}>Personal Details</Text>
                 <Text style={styles.subText}>Let us know about you to speed up the result, get fit with your personal workout plan.</Text>
@@ -109,9 +117,9 @@ const PersonalDetails = () => {
                     <Label label="Name" />
                     <TextInput placeholder='Enter name' placeholderTextColor={colors.primary} style={styles.itemValue} value={name} onChangeText={(t) => setName(t)} />
                 </View>
-                <View style={styles.itemContainer}>
+                <View style={{ ...styles.itemContainer, paddingVertical: 10 }}>
                     <Label label="Birthday" />
-                    <TouchableOpacity onPress={() => setIsDatePickerVisible(prev => !prev)} >
+                    <TouchableOpacity onPress={() => setIsDatePickerVisible(prev => !prev)}>
                         <Text style={styles.itemValue}>{dob ? dob : 'Select date'}</Text>
                     </TouchableOpacity>
                 </View>
@@ -159,7 +167,7 @@ const styles = StyleSheet.create({
     subText: { textAlign: 'center', color: colors.secondary },
     itemsWrapper: { marginTop: 20, marginHorizontal: 20 },
     itemContainer: { flexDirection: 'row', justifyContent: 'space-between', borderBottomWidth: 1, borderColor: colors.tertiary, marginBottom: 50 },
-    itemTitle: { fontSize: 18, fontWeight: '600', flex: 1 },
+    itemTitle: { fontSize: 18, fontWeight: '600', flex: 1, alignSelf: 'center' },
     itemValue: { color: colors.primary, fontSize: 16, }
 })
 

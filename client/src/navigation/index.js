@@ -114,11 +114,11 @@ const Routes = () => {
 
     const AppScreens = () => (
         <AppStack.Navigator screenOptions={{ animation: "slide_from_right" }}>
-           
             <AppStack.Screen name="Home" component={DrawerScreens} options={{ headerShown: false }} />
             <AppStack.Screen name="Search" component={Search} options={{ headerShown: false, unmountOnBlur: false }} />
             <AppStack.Screen name="Navigate" component={Navigate} options={{ headerShown: false, unmountOnBlur: true }} />
             <AppStack.Screen name="QR" component={QRScreen} options={{ headerTitleAlign: 'center', headerTitle: 'Scan QR Code', headerStyle: { backgroundColor: colors.primary }, headerTintColor: 'white', unmountOnBlur: true }} />
+            <AppStack.Screen name="Profile" component={PersonalDetails} options={{ headerShown: false }} />
         </AppStack.Navigator>
     )
 

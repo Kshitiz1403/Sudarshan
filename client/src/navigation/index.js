@@ -26,6 +26,7 @@ import colors from "../theme/colors";
 import Settings from "../screens/Settings";
 import Loading from "../components/Loading";
 import useThemeService from "../hooks/themeService";
+import Report from "../screens/Report";
 
 const Routes = () => {
 
@@ -96,15 +97,24 @@ const Routes = () => {
     )
 
     const DrawerScreens = () => (
-        <Drawer.Navigator drawerContent={props => <CustomDrawer {...props} />}>
+        <Drawer.Navigator drawerContent={props => <CustomDrawer {...props} />} >
             <Drawer.Screen name="Running" component={Running} options={{ headerShown: false }} />
             <Drawer.Screen name="Directions" component={Directions} options={{ headerShown: false, }} />
             <Drawer.Screen name="Settings" component={Settings} options={{ headerTitleAlign: 'center', headerStyle: { backgroundColor: colors.primary }, headerTintColor: 'white' }} />
+            <Drawer.Screen name="Report" component={Report}
+                options={{
+                    headerTitleAlign: 'center',
+                    headerStyle: { backgroundColor: colors.primary },
+                    headerShadowVisible: false,
+                    headerTintColor: 'white',
+                    headerTitle: 'Running Report',
+                }} />
         </Drawer.Navigator>
     )
 
     const AppScreens = () => (
         <AppStack.Navigator screenOptions={{ animation: "slide_from_right" }}>
+           
             <AppStack.Screen name="Home" component={DrawerScreens} options={{ headerShown: false }} />
             <AppStack.Screen name="Search" component={Search} options={{ headerShown: false, unmountOnBlur: false }} />
             <AppStack.Screen name="Navigate" component={Navigate} options={{ headerShown: false, unmountOnBlur: true }} />

@@ -21,6 +21,7 @@ const CustomDrawer = ({ navigation, ...props }) => {
         menuItems.push(getMenuItem("Home", () => <Octicons name="home" size={24} color={colors.secondary} />, count++, "Home"))
         menuItems.push(getMenuItem("Running", () => <FontAwesome5 name="running" size={24} color={colors.secondary} />, count++, "Running"))
         menuItems.push(getMenuItem("Settings", () => <Feather name="settings" size={24} color={colors.secondary} />, count++, "Settings"))
+        menuItems.push(getMenuItem("Report", () => <Feather name="settings" size={24} color={colors.secondary} />, count++, "Report"))
 
         return menuItems;
     }

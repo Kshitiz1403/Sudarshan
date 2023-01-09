@@ -27,6 +27,7 @@ import Settings from "../screens/Settings";
 import Loading from "../components/Loading";
 import useThemeService from "../hooks/themeService";
 import Report from "../screens/Report";
+import Rewards from "../screens/Rewards";
 
 const Routes = () => {
 
@@ -100,6 +101,7 @@ const Routes = () => {
         <Drawer.Navigator drawerContent={props => <CustomDrawer {...props} />} >
             <Drawer.Screen name="Running" component={Running} options={{ headerShown: false }} />
             <Drawer.Screen name="Directions" component={Directions} options={{ headerShown: false, }} />
+            <Drawer.Screen name="Rewards" component={Rewards} options={{ headerTitleAlign: 'center', headerStyle: { backgroundColor: isDark ? "#010101" : "#f2f2f2", }, headerShadowVisible: false, headerTintColor: colors.primary }} />
             <Drawer.Screen name="Settings" component={Settings} options={{ headerTitleAlign: 'center', headerStyle: { backgroundColor: colors.primary }, headerTintColor: 'white' }} />
             <Drawer.Screen name="Report" component={Report}
                 options={{

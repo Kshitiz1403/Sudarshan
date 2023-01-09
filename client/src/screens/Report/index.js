@@ -9,6 +9,7 @@ import MaterialIcons from 'react-native-vector-icons/MaterialIcons'
 import colors from '../../theme/colors';
 import ThemedText from '../../components/ThemedText';
 import sharedStyles from '../Auth/sharedStyles';
+import _debounce from 'lodash.debounce'
 
 const Report = () => {
     const themeColors = useTheme().colors;
@@ -17,6 +18,10 @@ const Report = () => {
     const [slider, setSlider] = useState(1)
 
     const [selected, setSelected] = useState('calories')
+
+    const sliderValueChange = (v) =>{
+        _debounce(()=>setSlider(v), 33);
+    }
 
     return (
         <View style={{ flex: 1 }}>
@@ -29,7 +34,7 @@ const Report = () => {
                     </View>
                     <Slider
                         value={slider}
-                        onValueChange={v => setSlider(v)}
+                        onValueChange={sliderValueChange}
                         style={{ width: '80%', height: 50 }}
                         minimumValue={0}
                         maximumValue={1}

@@ -27,9 +27,9 @@ const Settings = () => {
             return
         }
     }
-    const Item = ({ children }) => (
-        <View style={{ height: 70, flexDirection: 'row', justifyContent: 'space-between', marginHorizontal: 10, alignItems: 'center', marginBottom: 10, borderBottomWidth: 0.5, borderBottomColor: colors.secondary }}>
-            <Text style={{ color: colors.secondary, fontSize: 16, fontWeight: '500' }}>Theme</Text>
+    const Item = ({ children, label }) => (
+        <View style={itemStyles.container}>
+            <Text style={itemStyles.title}>{label}</Text>
             {children}
         </View>
     )
@@ -56,7 +56,7 @@ const Settings = () => {
         </TouchableOpacity>
     }
     const ThemeItem = () => (
-        <Item>
+        <Item label="Theme">
             <View style={{ flexDirection: 'row' }}>
                 <ThemeSelector text="Light" value="light" isLeft />
                 <ThemeSelector text="System Default" value="default" />
@@ -68,11 +68,17 @@ const Settings = () => {
     return (
         <View>
             <ThemeItem />
-            <Text>Settings</Text>
         </View>
     )
 }
 
 export default Settings
+
+const itemStyles = StyleSheet.create({
+    container: {
+        height: 70, flexDirection: 'row', justifyContent: 'space-between', marginHorizontal: 10, alignItems: 'center', marginBottom: 10, borderBottomWidth: 0.5, borderBottomColor: colors.secondary
+    },
+    title: { color: colors.secondary, fontSize: 16, fontWeight: '500' }
+})
 
 const styles = StyleSheet.create({})

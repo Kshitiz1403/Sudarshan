@@ -28,7 +28,7 @@ const BottomSheetComponent = ({ place_name, place_address, distance, duration, n
 
     return (
         <View style={styles.wrapper}>
-            <BottomSheet ref={bottomSheetRef} snapPoints={snapPoints} backgroundStyle={{ backgroundColor: themeColors.background }} >
+            <BottomSheet ref={bottomSheetRef} snapPoints={snapPoints} backgroundStyle={{ backgroundColor: themeColors.card }} >
                 <View style={styles.topContainer}>
                     {/* <View style={styles.leftContainer}>
                     </View> */}

@@ -10,6 +10,7 @@ import colors from '../../theme/colors'
 import { useTheme } from '@react-navigation/native'
 import useThemeService from '../../hooks/themeService'
 import { useRef } from 'react'
+import HomeBottomSheet from './HomeBottomSheet'
 
 const Running = ({ navigation, route }) => {
 
@@ -24,6 +25,9 @@ const Running = ({ navigation, route }) => {
     const themeColors = useTheme().colors;
 
     const mapViewRef = useRef(null)
+    const bottomSheetRef = useRef(null);
+
+    const closeBottomSheet = () => bottomSheetRef.current.snapToIndex(0);
 
     const resetCameraToMyPosition = () => {
         mapViewRef.current.animateToRegion({
@@ -47,6 +51,7 @@ const Running = ({ navigation, route }) => {
                         longitudeDelta: 0.0122,
                     }}
                     customMapStyle={themeService.themeForMap()}
+                    onRegionChange={closeBottomSheet}
                 >
                     <Marker coordinate={{ latitude, longitude }} image={require('../../assets/map_current.png')} />
                 </MapView>
@@ -59,9 +64,13 @@ const Running = ({ navigation, route }) => {
                         <Text style={{ fontWeight: '500', color: colors.secondary }}>Where are you going to?</Text>
                     </TouchableOpacity>
                 </View>
-                <TouchableOpacity activeOpacity={0.7} onPress={resetCameraToMyPosition} style={{ position: 'absolute', backgroundColor: themeColors.card, borderRadius: 50, height: 50, width: 50, bottom: 20, right: 10, alignItems: 'center', justifyContent: 'center' }}>
+                <TouchableOpacity activeOpacity={0.7} onPress={resetCameraToMyPosition} style={{ position: 'absolute', backgroundColor: themeColors.card, borderRadius: 50, height: 50, width: 50, bottom: 25, right: 10, alignItems: 'center', justifyContent: 'center' }}>
                     <MaterialIcons name='my-location' color={themeColors.text} size={24} />
                 </TouchableOpacity>
+                <View style={{ position: 'absolute', bottom: 0, height: '100%', width: '100%' }}>
+                    <HomeBottomSheet bottomSheetRef={bottomSheetRef} navigation={navigation} />
+
+                </View>
             </View>
         </SafeAreaView>
     )

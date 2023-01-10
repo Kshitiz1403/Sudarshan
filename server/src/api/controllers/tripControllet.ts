@@ -1,4 +1,4 @@
-import { ITripStartInputDTO } from '@/interfaces/ITrip';
+import { ITrip, ITripStartInputDTO } from '@/interfaces/ITrip';
 import { TripService } from '@/services/tripService';
 import { Inject, Service } from 'typedi';
 import { Logger } from 'winston';
@@ -32,6 +32,34 @@ export class TripController {
         source,
       });
       return res.status(200).json(Result.success(trip));
+    } catch (e) {
+      this.logger.error('🔥 error: %o', e);
+      return next(e);
+    }
+  };
+
+  public endTrip = async (req: IRequest, res: IResponse, next: INextFunction) => {
+    this.logger.debug('Calling end trip endpoint with body %o', req.body);
+
+    try {
+      const tripId = req.body.tripId as ITrip['_id'];
+      const userId = req.currentUser.userId;
+      
+      const trip = await this.tripServiceInstance.endTrip(userId, tripId);
+      return res.status(200).json(Result.success(trip));
+    } catch (e) {
+      this.logger.error('🔥 error: %o', e);
+      return next(e);
+    }
+  };
+
+  public scanQR = async (req: IRequest, res: IResponse, next: INextFunction) => {
+    this.logger.debug('Calling scan QR endpoint with body %o', req.body);
+
+    try {
+      const qr = this.tripServiceInstance.scanQR();
+
+      return res.status(200).json(Result.success(qr));
     } catch (e) {
       this.logger.error('🔥 error: %o', e);
       return next(e);

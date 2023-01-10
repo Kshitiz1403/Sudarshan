@@ -28,6 +28,7 @@ import Loading from "../components/Loading";
 import useThemeService from "../hooks/themeService";
 import Report from "../screens/Report";
 import Rewards from "../screens/Rewards";
+import OngoingTrip from "../screens/OngoingTrip";
 
 const Routes = () => {
 
@@ -121,6 +122,7 @@ const Routes = () => {
             <AppStack.Screen name="Navigate" component={Navigate} options={{ headerShown: false, unmountOnBlur: true }} />
             <AppStack.Screen name="QR" component={QRScreen} options={{ headerTitleAlign: 'center', headerTitle: 'Scan QR Code', headerStyle: { backgroundColor: colors.primary }, headerTintColor: 'white', unmountOnBlur: true }} />
             <AppStack.Screen name="Profile" component={PersonalDetails} options={{ headerShown: false }} />
+            <AppStack.Screen name="OngoingTrip" component={OngoingTrip} options={{ headerShown: false }} />
         </AppStack.Navigator>
     )
 

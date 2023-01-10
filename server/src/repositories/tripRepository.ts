@@ -1,6 +1,7 @@
-import { ITripStartInputDTO } from '@/interfaces/ITrip';
+import { ITrip, ITripStartInputDTO } from '@/interfaces/ITrip';
 import { Service } from 'typedi';
 import TripModel from '@/models/trip';
+import { IUser } from '@/interfaces/IUser';
 
 @Service()
 export class TripRepository {
@@ -25,5 +26,12 @@ export class TripRepository {
     } catch (e) {
       throw 'Trip cannot be created';
     }
+  };
+
+  public endTrip = async (id: ITrip['_id']) => {
+    return TripModel.findOneAndUpdate({ _id: id }, { $set: { isCompleted: true } }, { new: true }, (err, doc) => {
+      if (err) throw err;
+      return doc.toObject();
+    });
   };
 }

@@ -4,6 +4,7 @@ import dustbinReducer from "./reducers/dustbinSlice";
 import locationReducer from "./reducers/locationSlice";
 import onboardingReducer from "./reducers/onboardingSlice";
 import themeReducer from "./reducers/themeSlice";
+import tripReducer from "./reducers/tripSlice";
 
 export default configureStore({
     reducer: {
@@ -11,6 +12,7 @@ export default configureStore({
         onboarding: onboardingReducer,
         location: locationReducer,
         dustbin: dustbinReducer,
-        theme: themeReducer
+        theme: themeReducer,
+        trip: tripReducer
     },
 });

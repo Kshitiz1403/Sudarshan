@@ -12,5 +12,8 @@ export default (app: Router) => {
 
   route.post('/add', middlewares.isAuth, ctrl.addDustbin);
 
+  /**
+   * @TODO To be removed 
+   */
   route.post('/scan', middlewares.isAuth, ctrl.scanQR);
 };

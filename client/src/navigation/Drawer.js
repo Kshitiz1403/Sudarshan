@@ -3,7 +3,6 @@ import React from 'react'
 import { DrawerContentScrollView, DrawerItem } from '@react-navigation/drawer'
 import colors from '../theme/colors'
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons'
-import Octicons from 'react-native-vector-icons/Octicons'
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5'
 import Feather from 'react-native-vector-icons/Feather'
 import useAuthService from '../hooks/api/authService'
@@ -18,8 +17,7 @@ const CustomDrawer = ({ navigation, ...props }) => {
     const getMenuItems = () => {
         let count = 0;
         const menuItems = [];
-        menuItems.push(getMenuItem("Home", () => <Octicons name="home" size={24} color={colors.secondary} />, count++, "Home"))
-        menuItems.push(getMenuItem("Running", () => <FontAwesome5 name="running" size={24} color={colors.secondary} />, count++, "Running"))
+        menuItems.push(getMenuItem("Home", () => <FontAwesome5 name="running" size={24} color={colors.secondary} />, count++, "Running"))
         menuItems.push(getMenuItem("Settings", () => <Feather name="settings" size={24} color={colors.secondary} />, count++, "Settings"))
         menuItems.push(getMenuItem("Report", () => <Feather name="settings" size={24} color={colors.secondary} />, count++, "Report"))
         menuItems.push(getMenuItem("Rewards", () => <Image source={require("../assets/money-bag.png")} style={{ height: 24, width: 24 }} />, count++, "Rewards"))

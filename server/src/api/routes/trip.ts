@@ -24,4 +24,15 @@ export default (app: Router) => {
     }),
     ctrl.startTrip,
   );
+
+  route.post(
+    '/end',
+    middlewares.isAuth,
+    celebrate({
+      body: Joi.object({
+        tripId: Joi.string().required(),
+      }),
+    }),
+    ctrl.endTrip,
+  );
 };

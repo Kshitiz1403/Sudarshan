@@ -75,7 +75,7 @@ const BottomSheetComponent = ({ place_name, place_address, distance, duration, n
                         {dustbins && dustbins.length > 0 && selectedDustbin['dustbin_address'] && <Text numberOfLines={2} style={{ color: themeColors.text }}>{selectedDustbin.dustbin_address}</Text>}
                     </View>
                     {selectedIndex != -1 &&
-                        <TouchableOpacity activeOpacity={0.7} style={styles.button} onPress={tripService.startTrip}>
+                        <TouchableOpacity activeOpacity={0.7} style={styles.button} onPress={() => tripService.startTrip(navigation)}>
                             <Text style={styles.buttonText}>Start</Text>
                         </TouchableOpacity>
                     }

@@ -29,6 +29,7 @@ export class DustbinController {
     }
   };
 
+  /**@TODO to be removed */
   public scanQR = async (req: IRequest, res: Response, next: INextFunction) => {
     this.logger.debug('Calling Scan QR endpoint with body %o', req.body);
     try {

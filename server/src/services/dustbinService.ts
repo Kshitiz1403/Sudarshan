@@ -23,6 +23,7 @@ export default class DustbinService {
     }
   };
 
+  /**@TODO to be removed */
   public scanQR = async data => {
     try {
       return 'Accepted';

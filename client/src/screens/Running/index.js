@@ -53,7 +53,7 @@ const Running = ({ navigation, route }) => {
                     customMapStyle={themeService.themeForMap()}
                     onRegionChange={closeBottomSheet}
                 >
-                    <Marker coordinate={{ latitude, longitude }} image={require('../../assets/map_current.png')} />
+                    <Marker coordinate={{ latitude, longitude }} image={require('../../assets/map_current.png')} style={{width:64, height:64}}/>
                 </MapView>
                 <View style={styles.topContainer}>
                     <TouchableOpacity onPress={() => navigation.openDrawer()} style={styles.hamburgerContainer}>

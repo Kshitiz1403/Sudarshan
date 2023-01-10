@@ -10,6 +10,7 @@ import { selectDustbin } from '../../store/reducers/dustbinSlice';
 import { useTheme } from '@react-navigation/native'
 import useMapService from '../../hooks/api/mapService'
 import useTripService from '../../hooks/api/tripService'
+import ThemedText from '../ThemedText'
 
 const BottomSheetComponent = ({ place_name, place_address, distance, duration, navigation }) => {
     const bottomSheetRef = useRef(null);
@@ -28,7 +29,7 @@ const BottomSheetComponent = ({ place_name, place_address, distance, duration, n
 
     return (
         <View style={styles.wrapper}>
-            <BottomSheet ref={bottomSheetRef} snapPoints={snapPoints} backgroundStyle={{ backgroundColor: themeColors.card }} >
+            <BottomSheet ref={bottomSheetRef} snapPoints={snapPoints} backgroundStyle={{ backgroundColor: themeColors.card }} handleIndicatorStyle={{ backgroundColor: colors.primary }}>
                 <View style={styles.topContainer}>
                     {/* <View style={styles.leftContainer}>
                     </View> */}
@@ -56,7 +57,7 @@ const BottomSheetComponent = ({ place_name, place_address, distance, duration, n
                     </View>
                 </View>
                 <View style={styles.bottomContainer}>
-                    <Text style={styles.dustbinText}>Dustbins</Text>
+                    <ThemedText style={{ ...styles.dustbinText }}>Dustbins</ThemedText>
                     <View style={{ height: 55 }}>
                         <BottomSheetScrollView horizontal={true} contentContainerStyle={{ marginBottom: 5, }} >
                             {dustbins.map((dustbin, index) => {

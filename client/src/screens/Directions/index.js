@@ -106,9 +106,9 @@ const Directions = ({ navigation, route }) => {
                     ref={mapViewRef}
                     customMapStyle={themeService.themeForMap()}
                 >
-                    {isLocationLoaded && <Marker coordinate={{ latitude, longitude }} image={require('../../assets/map_current.png')} />}
-                    {destinationLocation.latitude && destinationLocation.longitude && <Marker coordinate={{ latitude: destinationLocation.latitude, longitude: destinationLocation.longitude }} image={require('../../assets/map_destination.png')} />}
-                    {dustbins && dustbins.length > 0 && selectedIndex != -1 && <Marker coordinate={{ latitude: selectedDustbin['dustbin_location']['lat'], longitude: selectedDustbin['dustbin_location']['lng'] }} image={require('../../assets/litter.png')} />}
+                    {isLocationLoaded && <Marker coordinate={{ latitude, longitude }} image={require('../../assets/map_current.png')} style={{ width: 64, height: 64 }} />}
+                    {destinationLocation.latitude && destinationLocation.longitude && <Marker coordinate={{ latitude: destinationLocation.latitude, longitude: destinationLocation.longitude }} image={require('../../assets/map_destination.png')} style={{ width: 48, height: 48 }} />}
+                    {dustbins && dustbins.length > 0 && selectedIndex != -1 && <Marker coordinate={{ latitude: selectedDustbin['dustbin_location']['lat'], longitude: selectedDustbin['dustbin_location']['lng'] }} image={require('../../assets/litter.png')} style={{ width: 68, height: 68 }} />}
                     <Polyline coordinates={points} strokeWidth={5} strokeColor={colors.primary} lineDashPattern={[1, 15]} />
                 </MapView>
                 <View style={{ position: 'absolute', bottom: 0, height: '100%', width: '100%' }}>

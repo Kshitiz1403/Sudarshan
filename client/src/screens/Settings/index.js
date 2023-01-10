@@ -1,8 +1,6 @@
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import React from 'react'
 import colors from '../../theme/colors'
-import { useTheme } from '@react-navigation/native'
-import { useState } from 'react';
 import { useSelector } from 'react-redux';
 import useThemeService from '../../hooks/themeService';
 
@@ -10,8 +8,6 @@ import useThemeService from '../../hooks/themeService';
 const Settings = () => {
     const themeService = useThemeService();
     const theme = useSelector(state => state.theme.scheme)
-
-    const themeColors = useTheme().colors;
 
     const handleThemeSelection = (value) => {
         if (value == 'default') {

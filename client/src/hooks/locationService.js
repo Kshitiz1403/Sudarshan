@@ -59,7 +59,7 @@ const useLocationService = () => {
                 return reject(err);
             }, {
                 enableHighAccuracy: true,
-                interval: 5000,
+                interval: 10000,
                 distanceFilter: 25
             })
         })

@@ -6,10 +6,12 @@ import useDustbinService from '../../hooks/api/dustbinService'
 import { Camera, useCameraDevices } from 'react-native-vision-camera'
 import { useIsFocused, useTheme } from '@react-navigation/native'
 import { BarcodeFormat, useScanBarcodes } from 'vision-camera-code-scanner'
+import useTripService from '../../hooks/api/tripService'
 
 const QRScreen = ({ navigation }) => {
 
     const dustbinService = useDustbinService();
+    const tripService = useTripService();
 
     const camera = useRef(null);
     const [hasPermission, setHasPermission] = useState(false);
@@ -17,7 +19,7 @@ const QRScreen = ({ navigation }) => {
     const devices = useCameraDevices();
     const [device, setDevice] = useState(null)
     const [isBarcodeScanned, setIsBarcodeScanned] = useState(false);
-    const [selectedBarcode, setSelectedBarcode] = useState({})
+    const [selectedBarcode, setSelectedBarcode] = useState()
 
     const [frameProcessor, barcodes] = useScanBarcodes([BarcodeFormat.ALL_FORMATS], { checkInverted: true, });
 
@@ -26,6 +28,14 @@ const QRScreen = ({ navigation }) => {
     }, [devices])
 
 
+    useEffect(() => {
+        (async () => {
+            if (selectedBarcode && isBarcodeScanned) {
+                await tripService.scanQR(selectedBarcode);
+                navigation.navigate("Running")
+            }
+        })();
+    }, [selectedBarcode, isBarcodeScanned])
 
     const flipCamera = () => {
         if (device == devices.back) {

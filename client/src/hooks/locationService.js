@@ -60,7 +60,7 @@ const useLocationService = () => {
             }, {
                 enableHighAccuracy: true,
                 interval: 10000,
-                distanceFilter: 25
+                distanceFilter: 50
             })
         })
     }

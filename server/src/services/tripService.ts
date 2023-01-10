@@ -37,8 +37,13 @@ export class TripService {
     }
   };
 
-  public scanQR = async () => {
+  public scanQR = async (id: ITrip['_id'], payload) => {
+    this.logger.silly('Updating trip record');
     try {
+      console.log(payload)
+      const tripRecord = await this.tripRepositoryInstance.scanQR(id);
+      
+      return tripRecord;
     } catch (e) {
       throw e;
     }

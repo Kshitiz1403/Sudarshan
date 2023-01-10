@@ -1,7 +1,7 @@
 import { celebrate, Joi } from 'celebrate';
 import { Router } from 'express';
 import Container from 'typedi';
-import { TripController } from '../controllers/tripControllet';
+import { TripController } from '../controllers/tripController';
 import middlewares from '../middlewares';
 
 const route = Router();
@@ -34,5 +34,17 @@ export default (app: Router) => {
       }),
     }),
     ctrl.endTrip,
+  );
+
+  route.post(
+    '/scan',
+    middlewares.isAuth,
+    celebrate({
+      body: Joi.object({
+        tripId: Joi.string().required(),
+        payload: Joi.any().required(),
+      }),
+    }),
+    ctrl.scanQR,
   );
 };

@@ -44,7 +44,7 @@ export class TripController {
     try {
       const tripId = req.body.tripId as ITrip['_id'];
       const userId = req.currentUser.userId;
-      
+
       const trip = await this.tripServiceInstance.endTrip(userId, tripId);
       return res.status(200).json(Result.success(trip));
     } catch (e) {
@@ -57,7 +57,9 @@ export class TripController {
     this.logger.debug('Calling scan QR endpoint with body %o', req.body);
 
     try {
-      const qr = this.tripServiceInstance.scanQR();
+      const tripId = req.body.tripId as ITrip['_id'];
+      const payload = req.body.payload as any;
+      const qr = this.tripServiceInstance.scanQR(tripId, payload);
 
       return res.status(200).json(Result.success(qr));
     } catch (e) {

@@ -10,8 +10,9 @@ const OngoingTrip = ({ navigation }) => {
     const scan = () => {
         navigation.navigate("QR")
     }
-    const endTrip = () => {
-        tripService.endTrip(navigation);
+    const endTrip = async () => {
+        await tripService.endTrip();
+        navigation.navigate("Running")
     }
     return (
         <View style={{ flex: 1, justifyContent: 'space-evenly', alignItems: 'center' }}>

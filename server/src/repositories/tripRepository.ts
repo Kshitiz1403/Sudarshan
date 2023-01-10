@@ -34,4 +34,16 @@ export class TripRepository {
       return doc.toObject();
     });
   };
+
+  public scanQR = async (id: ITrip['_id']) => {
+    return TripModel.findOneAndUpdate(
+      { _id: id },
+      { $set: { isDumped: true, isCompleted: true } },
+      { new: true },
+      (err, doc) => {
+        if (err) throw err;
+        return doc.toObject();
+      },
+    );
+  };
 }

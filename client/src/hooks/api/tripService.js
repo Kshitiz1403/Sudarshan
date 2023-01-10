@@ -33,14 +33,27 @@ const useTripService = () => {
         }
     }
 
-    const endTrip = async (navigation) => {
+    const endTrip = async () => {
         try {
             const authenticatedAxios = getAuthenticatedAxios('/trips', token);
             const data = await authenticatedAxios.post('/end', {
                 tripId
             })
             dispatch(endTripAction());
-            navigation.navigate("Running")
+        } catch (e) {
+        }
+    }
+
+    const scanQR = async (payload) => {
+        try {
+            const authenticatedAxios = getAuthenticatedAxios('/trips', token);
+            const data = await authenticatedAxios.post('/scan', {
+                tripId,
+                payload
+            });
+            dispatch(endTripAction());
+            return data;
+
         } catch (e) {
 
         }
@@ -113,7 +126,7 @@ const useTripService = () => {
         })
     }
 
-    return { startTrip, endTrip, checkIfReached }
+    return { startTrip, endTrip, scanQR, checkIfReached }
 }
 
 export default useTripService;

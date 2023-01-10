@@ -18,9 +18,8 @@ const CustomDrawer = ({ navigation, ...props }) => {
         let count = 0;
         const menuItems = [];
         menuItems.push(getMenuItem("Home", () => <FontAwesome5 name="running" size={24} color={colors.secondary} />, count++, "Running"))
-        menuItems.push(getMenuItem("Settings", () => <Feather name="settings" size={24} color={colors.secondary} />, count++, "Settings"))
-        menuItems.push(getMenuItem("Report", () => <Feather name="settings" size={24} color={colors.secondary} />, count++, "Report"))
         menuItems.push(getMenuItem("Rewards", () => <Image source={require("../assets/money-bag.png")} style={{ height: 24, width: 24 }} />, count++, "Rewards"))
+        menuItems.push(getMenuItem("Settings", () => <Feather name="settings" size={24} color={colors.secondary} />, count++, "Settings"))
 
         return menuItems;
     }
@@ -42,7 +41,7 @@ const CustomDrawer = ({ navigation, ...props }) => {
                 </View>
             </TouchableOpacity>
             {getMenuItems().map(item =>
-                <DrawerItem activeTintColor={colors.primary} label={item.label} key={item.key} onPress={item.onPress} icon={item.icon} inactiveTintColor={colors.secondary} labelStyle={{ fontSize: 15 }} pressColor={colors.tertiary} />
+                <DrawerItem activeTintColor={colors.primary} label={item.label} key={item.key} onPress={item.onPress} icon={item.icon} style={{ paddingVertical: 5 }} inactiveTintColor={colors.secondary} labelStyle={{ fontSize: 15 }} pressColor={colors.tertiary} />
             )}
             <View style={signOutStyles.wrapper}>
                 <TouchableOpacity style={signOutStyles.container} activeOpacity={0.7} onPress={logout}>

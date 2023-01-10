@@ -104,14 +104,6 @@ const Routes = () => {
             <Drawer.Screen name="Directions" component={Directions} options={{ headerShown: false, }} />
             <Drawer.Screen name="Rewards" component={Rewards} options={{ headerTitleAlign: 'center', headerStyle: { backgroundColor: isDark ? "#010101" : "#f2f2f2", }, headerShadowVisible: false, headerTintColor: colors.primary }} />
             <Drawer.Screen name="Settings" component={Settings} options={{ headerTitleAlign: 'center', headerStyle: { backgroundColor: colors.primary }, headerTintColor: 'white' }} />
-            <Drawer.Screen name="Report" component={Report}
-                options={{
-                    headerTitleAlign: 'center',
-                    headerStyle: { backgroundColor: colors.primary },
-                    headerShadowVisible: false,
-                    headerTintColor: 'white',
-                    headerTitle: 'Running Report',
-                }} />
         </Drawer.Navigator>
     )
 
@@ -123,6 +115,14 @@ const Routes = () => {
             <AppStack.Screen name="QR" component={QRScreen} options={{ headerTitleAlign: 'center', headerTitle: 'Scan QR Code', headerStyle: { backgroundColor: colors.primary }, headerTintColor: 'white', unmountOnBlur: true }} />
             <AppStack.Screen name="Profile" component={PersonalDetails} options={{ headerShown: false }} />
             <AppStack.Screen name="OngoingTrip" component={OngoingTrip} options={{ headerShown: false }} />
+            <AppStack.Screen name="Report" component={Report}
+                options={{
+                    headerTitleAlign: 'center',
+                    headerStyle: { backgroundColor: colors.primary },
+                    headerShadowVisible: false,
+                    headerTintColor: 'white',
+                    headerTitle: 'Running Report',
+                }} />
         </AppStack.Navigator>
     )
 

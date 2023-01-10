@@ -11,7 +11,7 @@ import ThemedText from '../../components/ThemedText';
 import sharedStyles from '../Auth/sharedStyles';
 import _debounce from 'lodash.debounce'
 
-const Report = () => {
+const Report = ({ navigation }) => {
     const themeColors = useTheme().colors;
     const isDarkMode = useSelector(state => state.theme.isDark)
 
@@ -19,8 +19,12 @@ const Report = () => {
 
     const [selected, setSelected] = useState('calories')
 
-    const sliderValueChange = (v) =>{
-        _debounce(()=>setSlider(v), 33);
+    const sliderValueChange = (v) => {
+        _debounce(() => setSlider(v), 33);
+    }
+
+    const goToHome = () => {
+        navigation.navigate("Running")
     }
 
     return (
@@ -66,7 +70,7 @@ const Report = () => {
                     <ThemedText style={bottomStyles.detailsMain}>42:09</ThemedText>
                     <ThemedText style={bottomStyles.detailsSub}>minutes</ThemedText>
                 </View>
-                <TouchableOpacity style={{ ...sharedStyles.button, width: '75%' }} activeOpacity={0.7}>
+                <TouchableOpacity style={{ ...sharedStyles.button, width: '75%' }} activeOpacity={0.7} onPress={goToHome}>
                     <ThemedText style={{ ...sharedStyles.buttonText }}>Done</ThemedText>
                 </TouchableOpacity>
             </View>

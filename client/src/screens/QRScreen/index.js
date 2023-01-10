@@ -32,7 +32,7 @@ const QRScreen = ({ navigation }) => {
         (async () => {
             if (selectedBarcode && isBarcodeScanned) {
                 await tripService.scanQR(selectedBarcode);
-                navigation.navigate("Running")
+                navigation.navigate("Report")
             }
         })();
     }, [selectedBarcode, isBarcodeScanned])

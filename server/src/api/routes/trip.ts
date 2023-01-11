@@ -11,6 +11,8 @@ export default (app: Router) => {
 
   app.use('/trips', route);
 
+  route.get('/', middlewares.isAuth, ctrl.getAllTrips);
+
   route.post(
     '/start',
     middlewares.isAuth,

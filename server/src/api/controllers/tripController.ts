@@ -15,6 +15,18 @@ export class TripController {
     this.logger = logger;
   }
 
+  public getAllTrips = async (req: IRequest, res: IResponse, next: INextFunction) => {
+    this.logger.debug('Calling get all trips endpoint with query %o', req.query);
+    try {
+      const userId = req.currentUser.userId;
+      const trips = await this.tripServiceInstance.getAllTrips(userId);
+      return res.status(200).json(Result.success(trips));
+    } catch (e) {
+      this.logger.error('🔥 error: %o', e);
+      return next(e);
+    }
+  };
+
   public startTrip = async (req: IRequest, res: IResponse, next: INextFunction) => {
     this.logger.debug('Calling start trip endpoint with body %o', req.body);
 

@@ -14,6 +14,25 @@ export class TripService {
     this.logger = logger;
   }
 
+  public getAllTrips = async (userId: IUser['_id']) => {
+    try {
+      this.logger.silly('Getting all trips record');
+      const tripsRecord = await this.tripRepositoryInstance.getAllTripsForUser(userId);
+      const formatted = tripsRecord.map(trip => {
+        let { source, destination } = trip;
+        const obj: any = { ...trip };
+        let src = { latitude: source['coordinates'][1], longitude: source['coordinates'][0] };
+        let end = { latitude: destination['coordinates'][1], longitude: destination['coordinates'][0] };
+        obj.source = src;
+        obj.destination = end;
+        return obj;
+      });
+      return { trips: formatted };
+    } catch (e) {
+      throw e;
+    }
+  };
+
   public startTrip = async (startTripInputDTO: ITripStartInputDTO) => {
     try {
       this.logger.silly('Creating trip record');
@@ -40,9 +59,9 @@ export class TripService {
   public scanQR = async (id: ITrip['_id'], payload) => {
     this.logger.silly('Updating trip record');
     try {
-      console.log(payload)
+      console.log(payload);
       const tripRecord = await this.tripRepositoryInstance.scanQR(id);
-      
+
       return tripRecord;
     } catch (e) {
       throw e;

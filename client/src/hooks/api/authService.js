@@ -90,7 +90,9 @@ const useAuthService = () => {
         try {
             const authenticatedAxios = getAuthenticatedAxios('/users', token);
             const data = await authenticatedAxios.patch('/details', { name, dob, gender, weightKG, heightCM })
+            const { user } = data;
             dispatch(setProfileCompleted());
+            dispatch(setUser(user));
             return data;
         } catch (error) {
         }

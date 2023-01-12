@@ -58,15 +58,18 @@ export class UserRepository {
   };
 
   public completeDetails = async (userId: IUser['_id'], userInputDTO: IUserDetails) => {
-    try {
-      const status = await UserModel.updateOne({ _id: userId }, { ...userInputDTO, isProfileCompleted: true });
-      return userInputDTO;
-    } catch (error) {
-      throw error;
-    }
+    return UserModel.findOneAndUpdate(
+      { _id: userId },
+      { $set: { ...userInputDTO, isProfileCompleted: true } },
+      { new: true },
+      (err, doc) => {
+        if (err) throw err;
+        return doc
+      },
+    ).lean();
   };
 
-  public updatePasswordByUsername = async (userId: IUser['_id'], salt: IUser['salt'], password: IUser['password']) => {
+  public updatePasswordById = async (userId: IUser['_id'], salt: IUser['salt'], password: IUser['password']) => {
     return UserModel.findOneAndUpdate({ _id: userId }, { $set: { salt, password } }, { new: true }, (err, doc) => {
       if (err) throw err;
       return doc.toObject();

@@ -37,7 +37,7 @@ export default class UserService {
       const user = { ...userRecord };
       Reflect.deleteProperty(user, 'salt');
       Reflect.deleteProperty(user, 'password');
-      return user;
+      return { user };
     } catch (e) {
       this.logger.error(e);
       throw new Error(e);

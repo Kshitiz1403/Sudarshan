@@ -42,7 +42,6 @@ export class UserController {
     });
     try {
       const user = await this.userServiceInstance.completeDetails(req.currentUser.userId, req.body as IUserDetails);
-      console.log(user)
       return res.status(200).json(Result.success(user));
     } catch (e) {
       this.logger.error('🔥 error: %o', e);

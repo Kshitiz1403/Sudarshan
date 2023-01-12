@@ -140,7 +140,7 @@ export default class AuthService {
 
       this.logger.silly('Updating user db record');
       const userId = record['_id'];
-      const userRecord = this.userRepositoryInstance.updatePasswordByUsername(
+      const userRecord = this.userRepositoryInstance.updatePasswordById(
         userId,
         salt.toString('hex'),
         hashedPassword,

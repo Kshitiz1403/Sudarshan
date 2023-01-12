@@ -2,7 +2,7 @@ import { BackHandler, StyleSheet, Text, TextInput, TouchableOpacity, View, Image
 import React, { useEffect, useState } from 'react'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import colors from '../../theme/colors'
-import DatePicker from 'react-native-modern-datepicker';
+import DatePicker from 'react-native-date-picker'
 import sharedStyles from './sharedStyles';
 import { useDispatch, useSelector } from 'react-redux';
 import { setProfileCompleted } from '../../store/reducers/authSlice';
@@ -16,7 +16,7 @@ const PersonalDetails = ({ navigation, route }) => {
     const [isCalledFromProfile, setIsCalledFromProfile] = useState(false)
 
     const [name, setName] = useState("")
-    const [dobRaw, setDOBRaw] = useState(null)
+    const [dobRaw, setDOBRaw] = useState(new Date())
     const [dob, setDOB] = useState('')
     const [height, setHeight] = useState("")
     const [weight, setWeight] = useState("")
@@ -27,7 +27,9 @@ const PersonalDetails = ({ navigation, route }) => {
     useEffect(() => {
         if (user['name']) setName(user.name);
         if (user['dob']) {
-            updateDate(user.dob)
+            let date = new Date(user.dob);
+            setDOBRaw(date);
+            setDOB(date.toLocaleDateString())
         }
         if (user['gender']) setGender(user.gender)
         if (user['heightCM']) setHeight(`${user.heightCM}`)
@@ -44,12 +46,9 @@ const PersonalDetails = ({ navigation, route }) => {
     const dispatch = useDispatch();
 
     const updateDate = (date) => {
-        let rawDate = new Date(date);
-        setDOBRaw(rawDate)
-        let d = new Date(date).toDateString();
-        d = d.split(' ').slice(1)
-        d = `${d[0]} ${d[1]}, ${d[2]}`
-        setDOB(d)
+        setDOBRaw(date)
+        let d = new Date(date);
+        setDOB(d.toLocaleDateString())
         setIsDatePickerVisible(false)
     }
 
@@ -91,23 +90,15 @@ const PersonalDetails = ({ navigation, route }) => {
         </TouchableOpacity>
     }
 
-    BackHandler.addEventListener("hardwareBackPress", () => {
-        if (isDatePickerVisible) {
-            setIsDatePickerVisible(false)
-            return true;
-        }
-        return false;
-    })
-
     const themeColors = useTheme().colors;
 
     const Label = ({ label }) => <Text style={{ ...styles.itemTitle, color: themeColors.text }}>{label}</Text>
 
     return (
         <SafeAreaView style={{ flex: 1 }}>
-            {!isCalledFromProfile && <TouchableOpacity style={styles.skipContainer} onPress={skip}>
+            {/* {!isCalledFromProfile && <TouchableOpacity style={styles.skipContainer} onPress={skip}>
                 <Text style={styles.skipText}>Skip</Text>
-            </TouchableOpacity>}
+            </TouchableOpacity>} */}
             <View style={styles.titleContainer}>
                 <Text style={{ ...styles.title, color: themeColors.text }}>Personal Details</Text>
                 <Text style={styles.subText}>Let us know about you to speed up the result, get fit with your personal workout plan.</Text>
@@ -123,7 +114,7 @@ const PersonalDetails = ({ navigation, route }) => {
                         <Text style={styles.itemValue}>{dob ? dob : 'Select date'}</Text>
                     </TouchableOpacity>
                 </View>
-                {isDatePickerVisible && <DatePicker mode='calendar' onSelectedChange={updateDate} options={{ mainColor: colors.primary, backgroundColor: themeColors.card, textDefaultColor: themeColors.text, textHeaderColor: themeColors.primary }} />}
+                <DatePicker modal open={isDatePickerVisible} date={dobRaw} onConfirm={updateDate} onCancel={() => setIsDatePickerVisible(false)} mode="date" textColor={colors.primary} />
                 <View style={styles.itemContainer}>
                     <Label label="Height" />
                     <View style={{ flexDirection: 'row', alignItems: 'center' }}>

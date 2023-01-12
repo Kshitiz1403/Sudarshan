@@ -6,10 +6,12 @@ import MaterialIcons from 'react-native-vector-icons/MaterialIcons'
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5'
 import Feather from 'react-native-vector-icons/Feather'
 import useAuthService from '../hooks/api/authService'
+import { useSelector } from 'react-redux'
 
 const CustomDrawer = ({ navigation, ...props }) => {
 
     const authService = useAuthService();
+    const user = useSelector(state => state.auth.user);
 
     const getMenuItem = (label, icon, key, navigateTo) => {
         return { label, icon, key, onPress: () => navigation.navigate(navigateTo) }
@@ -37,7 +39,7 @@ const CustomDrawer = ({ navigation, ...props }) => {
                     </View>
                 </View>
                 <View style={profileStyles.nameContainer}>
-                    <Text style={profileStyles.name} numberOfLines={2}>Kshitiz Agrawal</Text>
+                    <Text style={profileStyles.name} numberOfLines={2}>{user['name']}</Text>
                 </View>
             </TouchableOpacity>
             {getMenuItems().map(item =>

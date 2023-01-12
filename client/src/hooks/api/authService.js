@@ -3,6 +3,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { loginUser, logoutUser, setLoaded, setLoading, setProfileCompleted, setProfileCompleteLoaded, setUser } from "../../store/reducers/authSlice";
 import { getAuthenticatedAxios, getUnauthenticatedAxios } from "./baseConfig";
 import config from "../../config";
+import mime from "mime";
 
 const useAuthService = () => {
     const dispatch = useDispatch();
@@ -86,14 +87,36 @@ const useAuthService = () => {
         } catch (error) { }
     }
 
-    const completeProfile = async (name, dob, gender, weightKG, heightCM) => {
+    const completeProfile = async (name, dob, gender, weightKG, heightCM, imageData) => {
         try {
-            const authenticatedAxios = getAuthenticatedAxios('/users', token);
-            const data = await authenticatedAxios.patch('/details', { name, dob, gender, weightKG, heightCM })
-            const { user } = data;
-            dispatch(setProfileCompleted());
-            dispatch(setUser(user));
-            return data;
+            const userAxios = getAuthenticatedAxios('/users', token);
+            const imageAxios = getAuthenticatedAxios('/users', token, { headers: { "Content-Type": "multipart/form-data" } })
+
+            let imageRequest = null;
+            const userRequest = userAxios.patch('/details', { name, dob, gender, weightKG, heightCM })
+
+            if (imageData.URI) {
+                const formData = new FormData();
+                formData.append("photo", { uri: 'file://' + imageData.URI, name: imageData.filename, type: mime.getType(imageData.URI) })
+                imageRequest = imageAxios.post('/photo', formData,)
+            }
+
+            const userResponse = await userRequest;
+
+
+            if (imageRequest) {
+                const imageResponse = await imageRequest;
+
+                const { user } = imageResponse;
+                dispatch(setProfileCompleted());
+                dispatch(setUser(user));
+                return user;
+            } else {
+                const { user } = userResponse;
+                dispatch(setProfileCompleted());
+                dispatch(setUser(user));
+                return user;
+            }
         } catch (error) {
         }
     }

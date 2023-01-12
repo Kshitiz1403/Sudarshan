@@ -1,4 +1,4 @@
-import { BackHandler, StyleSheet, Text, TextInput, TouchableOpacity, View, Image } from 'react-native'
+import { StyleSheet, Text, TextInput, TouchableOpacity, View, Image } from 'react-native'
 import React, { useEffect, useState } from 'react'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import colors from '../../theme/colors'
@@ -8,6 +8,9 @@ import { useDispatch, useSelector } from 'react-redux';
 import { setProfileCompleted } from '../../store/reducers/authSlice';
 import useAuthService from '../../hooks/api/authService';
 import { useTheme } from '@react-navigation/native';
+import Feather from 'react-native-vector-icons/Feather'
+import MaterialIcons from 'react-native-vector-icons/MaterialIcons'
+import { launchCamera, launchImageLibrary } from 'react-native-image-picker'
 
 const PersonalDetails = ({ navigation, route }) => {
 
@@ -16,6 +19,7 @@ const PersonalDetails = ({ navigation, route }) => {
     const [isCalledFromProfile, setIsCalledFromProfile] = useState(false)
 
     const [name, setName] = useState("")
+    const [image, setImage] = useState("")
     const [dobRaw, setDOBRaw] = useState(new Date())
     const [dob, setDOB] = useState('')
     const [height, setHeight] = useState("")
@@ -23,6 +27,7 @@ const PersonalDetails = ({ navigation, route }) => {
     const [gender, setGender] = useState("")
 
     const [isDatePickerVisible, setIsDatePickerVisible] = useState(false)
+    const [imageData, setImageData] = useState({ URI: "", filename: "", type: "" })
 
     useEffect(() => {
         if (user['name']) setName(user.name);
@@ -65,12 +70,32 @@ const PersonalDetails = ({ navigation, route }) => {
 
 
     const submit = async () => {
-        await authService.completeProfile(name, dobRaw, gender, weight, height)
+        await authService.completeProfile(name, dobRaw, gender, weight, height, imageData)
         if (isCalledFromProfile) navigation.goBack();
     }
 
     const skip = () => {
         dispatch(setProfileCompleted())
+    }
+
+    const pickImage = async (result) => {
+        if (result.didCancel) return;
+
+        let imageURI = result.assets[0].uri;
+        let type = result.assets[0].type;
+        setImage(imageURI);
+        const fileName = imageURI.split('/').pop();
+        setImageData({ URI: imageURI, filename: fileName, type })
+    }
+
+    const pickFromGallery = async () => {
+        const result = await launchImageLibrary({ mediaType: "photo", quality: 1, selectionLimit: 1, })
+        pickImage(result)
+    }
+
+    const pickFromCamera = async () => {
+        const result = await launchCamera({ mediaType: "photo", quality: 1, });
+        pickImage(result)
     }
 
     const GenderBox = ({ text, isLeft, isRight }) => {
@@ -107,6 +132,18 @@ const PersonalDetails = ({ navigation, route }) => {
                 <View style={styles.itemContainer}>
                     <Label label="Name" />
                     <TextInput placeholder='Enter name' placeholderTextColor={colors.primary} style={styles.itemValue} value={name} onChangeText={(t) => setName(t)} />
+                </View>
+                <View style={styles.itemContainer}>
+                    <Label label='Profile Pic (optional)' />
+                    <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                        {image && <Image source={{ uri: image }} style={{ width: 50, aspectRatio: 1, marginRight: 10 }} />}
+                        <TouchableOpacity onPress={pickFromGallery} style={{ marginRight: 10 }}>
+                            <MaterialIcons name="photo-library" size={24} color={colors.primary} />
+                        </TouchableOpacity>
+                        <TouchableOpacity onPress={pickFromCamera}>
+                            <Feather name="camera" size={24} color={colors.primary} />
+                        </TouchableOpacity>
+                    </View>
                 </View>
                 <View style={{ ...styles.itemContainer, paddingVertical: 10 }}>
                     <Label label="Birthday" />

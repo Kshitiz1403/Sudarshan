@@ -35,7 +35,7 @@ const CustomDrawer = ({ navigation, ...props }) => {
             <TouchableOpacity activeOpacity={0.8} onPress={() => navigation.navigate("Profile", { isCalledFromProfile: true })} style={profileStyles.container}>
                 <View style={profileStyles.imageWrapper}>
                     <View style={profileStyles.imageContainer}>
-                        <Image style={profileStyles.image} source={{ uri: 'https://sudarshanstorage.blob.core.windows.net/store/profile_pic.jpg' }} />
+                        <Image style={profileStyles.image} source={{ uri: user['profileImage'] ? user['profileImage'] : "https://sudarshanstorage.blob.core.windows.net/store/dummy_profile_image.png" }} />
                     </View>
                 </View>
                 <View style={profileStyles.nameContainer}>

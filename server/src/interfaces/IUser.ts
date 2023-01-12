@@ -10,6 +10,7 @@ export interface IUser {
   gender: 'Male' | 'Female' | 'Other';
   weightKG: number;
   heightCM: number;
+  profileImage: string;
   isProfileCompleted: Boolean;
 }
 

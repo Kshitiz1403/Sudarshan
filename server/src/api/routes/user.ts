@@ -4,14 +4,11 @@ import { Router } from 'express';
 import Container from 'typedi';
 import { UserController } from '../controllers/userController';
 import middlewares from '../middlewares';
-import multer from 'multer';
 
 const route = Router();
 
 export default (app: Router) => {
   const ctrl: UserController = Container.get(UserController);
-
-  const upload = multer({ dest: 'uploads/' });
 
   app.use('/users', route);
 
@@ -19,5 +16,7 @@ export default (app: Router) => {
 
   route.get('/profileStatus', middlewares.isAuth, ctrl.isProfileComplete);
 
-  route.patch('/details', middlewares.isAuth,  ctrl.completeDetails);
+  route.patch('/details', middlewares.isAuth, ctrl.completeDetails);
+
+  route.post('/photo', middlewares.isAuth, middlewares.upload.single('photo'), ctrl.uploadImage);
 };

@@ -64,9 +64,16 @@ export class UserRepository {
       { new: true },
       (err, doc) => {
         if (err) throw err;
-        return doc
+        return doc;
       },
     ).lean();
+  };
+
+  public addProfileURL = async (userId: IUser['_id'], url: IUser['profileImage']) => {
+    return UserModel.findOneAndUpdate({ _id: userId }, { $set: { profileImage: url } }, { new: true }, (err, doc) => {
+      if (err) throw err;
+      return doc;
+    }).lean();
   };
 
   public updatePasswordById = async (userId: IUser['_id'], salt: IUser['salt'], password: IUser['password']) => {

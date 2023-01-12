@@ -35,14 +35,24 @@ export class UserController {
     }
   };
 
-  public completeDetails = async (req: IRequest & { file: any }, res: Response, next: NextFunction) => {
-    this.logger.debug('Calling Complete Details endpoint with body & file: %o', {
+  public completeDetails = async (req: IRequest, res: Response, next: NextFunction) => {
+    this.logger.debug('Calling Complete Details endpoint with body: %o', {
       body: JSON.parse(JSON.stringify(req.body)),
-      file: req.file,
     });
     try {
       const user = await this.userServiceInstance.completeDetails(req.currentUser.userId, req.body as IUserDetails);
       return res.status(200).json(Result.success(user));
+    } catch (e) {
+      this.logger.error('🔥 error: %o', e);
+      return next(e);
+    }
+  };
+
+  public uploadImage = async (req: IRequest & { file: any }, res: Response, next: NextFunction) => {
+    this.logger.debug('Calling Upload Image endpoint with file: %o', { file: req.file });
+    try {
+      const data = await this.userServiceInstance.uploadProfilePic(req.currentUser.userId, req.file);
+      return res.status(200).json(Result.success(data));
     } catch (e) {
       this.logger.error('🔥 error: %o', e);
       return next(e);

@@ -1,14 +1,22 @@
 import { IUser, IUserDetails } from '@/interfaces/IUser';
 import { UserRepository } from '@/repositories/userRepository';
+import { resolve } from 'path';
 import { Inject, Service } from 'typedi';
 import { Logger } from 'winston';
+import { StorageService } from './storageService';
 
 @Service()
 export default class UserService {
   protected userRepositoryInstance: UserRepository;
+  protected storageServiceInstance: StorageService;
 
-  constructor(userRepository: UserRepository, @Inject('logger') private logger: Logger) {
+  constructor(
+    userRepository: UserRepository,
+    storageService: StorageService,
+    @Inject('logger') private logger: Logger,
+  ) {
     this.userRepositoryInstance = userRepository;
+    this.storageServiceInstance = storageService;
   }
 
   public getUserDetails = async (userId: IUser['_id']) => {
@@ -39,8 +47,27 @@ export default class UserService {
       Reflect.deleteProperty(user, 'password');
       return { user };
     } catch (e) {
-      this.logger.error(e);
-      throw new Error(e);
+      throw e;
+    }
+  };
+
+  public uploadProfilePic = async (userId: IUser['_id'], file: any) => {
+    try {
+      const folderForProfilePhotos = 'profilePics';
+      const path = resolve(file.path);
+      const fileName = `${folderForProfilePhotos}/${file.filename}`;
+      const metaData = { userId };
+      const fileType = file.mimetype;
+
+      const { url } = await this.storageServiceInstance.uploadToStore(fileName, path, metaData, fileType);
+      const userRecord = await this.userRepositoryInstance.addProfileURL(userId, url);
+
+      const user = { ...userRecord };
+      Reflect.deleteProperty(user, 'salt');
+      Reflect.deleteProperty(user, 'password');
+      return { user };
+    } catch (e) {
+      throw e;
     }
   };
 }

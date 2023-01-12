@@ -37,6 +37,9 @@ const User = new mongoose.Schema(
     heightCM: {
       type: Number,
     },
+    profileImage: {
+      type: String,
+    },
     isProfileCompleted: {
       type: Boolean,
       default: false,

@@ -136,7 +136,7 @@ const PersonalDetails = ({ navigation, route }) => {
                 <View style={styles.itemContainer}>
                     <Label label='Profile Pic (optional)' />
                     <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                        {image && <Image source={{ uri: image }} style={{ width: 50, aspectRatio: 1, marginRight: 10 }} />}
+                        {(image || user['profileImage']) && <Image source={{ uri: (image || user['profileImage']) }} style={{ width: 50, aspectRatio: 1, marginRight: 10 }} />}
                         <TouchableOpacity onPress={pickFromGallery} style={{ marginRight: 10 }}>
                             <MaterialIcons name="photo-library" size={24} color={colors.primary} />
                         </TouchableOpacity>

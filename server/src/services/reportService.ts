@@ -87,6 +87,17 @@ export class ReportService {
     }
   };
 
+  public takeFeedback = async(reportId: IReport['_id'], userFeedback: IReport['userFeedback']) => {
+    try {
+      this.logger.silly('Putting feedback for report id', reportId);
+
+      const reportRecord = await this.reportRepositoryInstance.putFeedback(reportId, userFeedback);
+      return reportRecord;
+    } catch (e) {
+      throw e;
+    }
+  };
+
   private getCalories = (
     gender: IUser['gender'],
     weightPerson: IUser['weightKG'],

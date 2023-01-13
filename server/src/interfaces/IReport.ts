@@ -3,12 +3,14 @@ import { IUser } from './IUser';
 
 export interface IReport {
   _id: Types.ObjectId;
+  userId: Types.ObjectId;
   tripId: Types.ObjectId;
   calories: Number;
   'distance(KM)': Number;
   'time(S)': Number;
   'speed(KMH)': Number;
   'trash(KG)': Number;
+  userFeedback: Number;
 }
 
 export interface IReportInputDTO {

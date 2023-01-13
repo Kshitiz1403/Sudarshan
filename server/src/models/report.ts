@@ -10,6 +10,7 @@ const Report = new mongoose.Schema(
     'time(S)': Number,
     'speed(KMH)': Number,
     'trash(KG)': Number,
+    userFeedback: Number,
   },
   { timestamps: true },
 );

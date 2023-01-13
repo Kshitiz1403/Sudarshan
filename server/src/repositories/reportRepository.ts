@@ -1,4 +1,4 @@
-import { IReportInputDTO } from '@/interfaces/IReport';
+import { IReport, IReportInputDTO } from '@/interfaces/IReport';
 import { ITrip } from '@/interfaces/ITrip';
 import { Service } from 'typedi';
 import ReportModel from '@/models/report';
@@ -50,29 +50,14 @@ export class ReportRepository {
   };
 
   public getAllReports = async (userId: ITrip['userId']) => {
-    const docs = await TripModel.aggregate([
-      {
-        $match: {
-          userId,
-        },
-      },
-      {
-        $lookup: {
-          from: 'reports',
-          localField: '_id',
-          foreignField: 'tripId',
-          as: 'reports',
-        },
-      },
-      {
-        $unwind: {
-          path: '$reports',
-        },
-      },
-    ]);
-    if (!docs || docs.length == 0) return null;
+    const docs = await ReportModel.find({ userId });
+    return docs;
+  };
 
-    const reports = docs.map(doc => doc['reports']);
-    return reports;
+  public putFeedback = (reportId: IReport['_id'], userFeedback: IReport['userFeedback']) => {
+    return ReportModel.findOneAndUpdate({ _id: reportId }, { $set: { userFeedback } }, { new: true }, (err, doc) => {
+      if (err) throw err;
+      return doc;
+    }).lean();
   };
 }

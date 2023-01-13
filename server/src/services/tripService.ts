@@ -6,16 +6,24 @@ import { IUser } from '@/interfaces/IUser';
 import totp from 'totp-generator';
 import jwt from 'jsonwebtoken';
 import { DustbinRepository } from '@/repositories/dustbinRepository';
+import { ReportService } from './reportService';
 
 @Service()
 export class TripService {
   protected tripRepositoryInstance: TripRepository;
   protected dustbinRepositoryInstance: DustbinRepository;
+  protected reportServiceInstance: ReportService;
   protected logger: Logger;
 
-  constructor(tripRepository: TripRepository, dustbinRepository: DustbinRepository, @Inject('logger') logger: Logger) {
+  constructor(
+    tripRepository: TripRepository,
+    dustbinRepository: DustbinRepository,
+    reportService: ReportService,
+    @Inject('logger') logger: Logger,
+  ) {
     this.tripRepositoryInstance = tripRepository;
     this.dustbinRepositoryInstance = dustbinRepository;
+    this.reportServiceInstance = reportService;
     this.logger = logger;
   }
 
@@ -65,15 +73,22 @@ export class TripService {
     this.logger.silly('Updating trip record');
     try {
       const { dustbinId, timeStamp, token } = JSON.parse(payload);
+
       const hash = await this.dustbinRepositoryInstance.getHashByDustbinId(dustbinId);
       if (!hash) throw 'Dustbin does not exist';
+
       const otp = this.generateTOTP(hash, timeStamp);
+
       const decoded = jwt.verify(token, otp, { algorithms: ['HS256'] });
       const weight = +decoded.weight;
-      const tripRecord = await this.tripRepositoryInstance.scanQR(tripId, weight);
+
+      const tripRecord = await this.tripRepositoryInstance.addWeight(tripId, weight);
       if (!tripRecord) throw 'Trip does not exist';
 
-      return tripRecord;
+      const report = await this.reportServiceInstance.generateReport(tripRecord['_id']);
+      if (!report) throw 'Report does not exist';
+
+      return report;
     } catch (e) {
       throw e;
     }

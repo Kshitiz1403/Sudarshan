@@ -6,6 +6,48 @@ import TripModel from '@/models/trip';
 export class TripRepository {
   constructor() {}
 
+  public findTripWithUserInfo = async (tripId: ITrip['_id']) => {
+    try {
+      const docs = await TripModel.aggregate([
+        {
+          $match: {
+            _id: tripId,
+          },
+        },
+        {
+          $lookup: {
+            from: 'users',
+            localField: 'userId',
+            foreignField: '_id',
+            as: 'users',
+          },
+        },
+        {
+          $unwind: '$users',
+        },
+        {
+          $addFields: {
+            weightTrash: '$weightKG',
+            heightCM: '$users.heightCM',
+            dob: '$users.dob',
+            weightPerson: '$users.weightKG',
+            gender: '$users.gender',
+          },
+        },
+        {
+          $project: {
+            users: 0,
+            weightKG: 0,
+          },
+        },
+      ]);
+      if (!docs || docs.length == 0) return null;
+      return docs[0];
+    } catch (e) {
+      throw e;
+    }
+  };
+
   public getAllTripsForUser = async (userId: ITrip['userId']) => {
     try {
       const docs = await TripModel.find({ userId });
@@ -48,7 +90,7 @@ export class TripRepository {
     }
   };
 
-  public scanQR = async (id: ITrip['_id'], weight: Number) => {
+  public addWeight = async (id: ITrip['_id'], weight: Number) => {
     try {
       return TripModel.findOneAndUpdate(
         { _id: id },

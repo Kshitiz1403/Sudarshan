@@ -41,10 +41,10 @@ function App() {
             </div>
             <input type="text" name='Hash' value={hash} disabled={true} />
           </div>
+          <button type='submit' onClick={generate}>Generate</button>
         </form>
       </div>
       <div style={{ marginBottom: 20 }}>
-        <button type='submit' onClick={generate}>Generate</button>
       </div>
 
       <QRCode value={qr} />

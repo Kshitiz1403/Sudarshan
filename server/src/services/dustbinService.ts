@@ -3,6 +3,8 @@ import { ILatLng } from '@/interfaces/IPlace';
 import { DustbinRepository } from '@/repositories/dustbinRepository';
 import { Inject, Service } from 'typedi';
 import { Logger } from 'winston';
+import crypto from 'crypto';
+import base32 from 'hi-base32';
 
 @Service()
 export default class DustbinService {
@@ -15,8 +17,9 @@ export default class DustbinService {
   public addDustbin = async (location: ILatLng, name: IDustbin['name'], address: IDustbin['address']) => {
     try {
       this.logger.silly('Creating dustbin record');
+      const hash = this.generateHash();
 
-      const dustbinRecord = await this.dustbinRepositoryInstance.createDustbinAtLocation(location, name, address);
+      const dustbinRecord = await this.dustbinRepositoryInstance.createDustbinAtLocation(location, name, address, hash);
       return dustbinRecord;
     } catch (error) {
       throw error;
@@ -28,5 +31,11 @@ export default class DustbinService {
     try {
       return 'Accepted';
     } catch (error) {}
+  };
+
+  private generateHash = () => {
+    const bytes = crypto.randomBytes(10).toString('hex');
+    const hash = base32.encode(new Buffer(bytes));
+    return hash;
   };
 }

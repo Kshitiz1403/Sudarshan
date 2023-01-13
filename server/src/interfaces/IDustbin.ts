@@ -8,6 +8,7 @@ export interface IDustbin {
   };
   name: String;
   address: String;
+  hash: String;
 }
 
 export interface IDustbinRangeInputDTO {

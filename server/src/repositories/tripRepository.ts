@@ -48,17 +48,17 @@ export class TripRepository {
     }
   };
 
-  public scanQR = async (id: ITrip['_id']) => {
+  public scanQR = async (id: ITrip['_id'], weight: Number) => {
     try {
       return TripModel.findOneAndUpdate(
         { _id: id },
-        { $set: { isDumped: true, isCompleted: true } },
+        { $set: { isDumped: true, isCompleted: true, weightKG: weight } },
         { new: true },
         (err, doc) => {
           if (err) throw err;
-          return doc.toObject();
+          return doc;
         },
-      );
+      ).lean();
     } catch (e) {
       throw e;
     }

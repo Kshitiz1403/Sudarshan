@@ -24,12 +24,14 @@ export class DustbinRepository {
     coordinates: ILatLng,
     name: IDustbin['name'],
     address: IDustbin['address'],
+    hash: IDustbin['hash'],
   ) => {
     try {
       const dustbin = await DustbinModel.create({
         location: { coordinates: [coordinates.longitude, coordinates.latitude] },
         name,
         address,
+        hash,
       });
       if (dustbin) {
         return dustbin.toObject();
@@ -38,6 +40,15 @@ export class DustbinRepository {
     } catch (error) {
       throw error;
     }
+  };
+
+  public getHashByDustbinId = async (id: IDustbin['_id']) => {
+    const dustbin = await DustbinModel.findOne({ _id: id });
+    if (dustbin && dustbin['hash']) {
+      const record = dustbin.toObject();
+      return record.hash;
+    }
+    return null;
   };
 
   public findDustbinsInRange = async ({

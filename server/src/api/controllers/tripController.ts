@@ -71,9 +71,9 @@ export class TripController {
     try {
       const tripId = req.body.tripId as ITrip['_id'];
       const payload = req.body.payload as any;
-      const qr = this.tripServiceInstance.scanQR(tripId, payload);
+      const trip = await this.tripServiceInstance.scanQR(tripId, payload);
 
-      return res.status(200).json(Result.success(qr));
+      return res.status(200).json(Result.success(trip));
     } catch (e) {
       this.logger.error('🔥 error: %o', e);
       return next(e);

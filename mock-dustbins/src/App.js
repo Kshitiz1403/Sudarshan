@@ -10,7 +10,7 @@ function App() {
 
   const generate = async (e) => {
     e.preventDefault();
-    const token = await (await axios.get('http://localhost:4001/', {
+    const token = await (await axios.get('/qr', {
       params: {
         weight, hash, dustbinId
       }

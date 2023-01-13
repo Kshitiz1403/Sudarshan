@@ -6,7 +6,9 @@ const totp = require('totp-generator')
 const app = express();
 app.use(cors())
 
-app.get('/', (req, res) => {
+app.use(express.static('build'))
+
+app.get('/qr', (req, res) => {
     console.log(req.query)
     const { weight, hash, dustbinId, } = req.query;
     const now = Date.parse(new Date());

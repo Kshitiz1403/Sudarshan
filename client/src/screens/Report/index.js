@@ -10,21 +10,85 @@ import colors from '../../theme/colors';
 import ThemedText from '../../components/ThemedText';
 import sharedStyles from '../Auth/sharedStyles';
 import _debounce from 'lodash.debounce'
+import { useEffect } from 'react';
+import useTripService from '../../hooks/api/tripService';
 
-const Report = ({ navigation }) => {
+const Report = ({ navigation, route }) => {
     const themeColors = useTheme().colors;
     const isDarkMode = useSelector(state => state.theme.isDark)
+    const tripService = useTripService();
 
     const [slider, setSlider] = useState(1)
 
     const [selected, setSelected] = useState('calories')
 
-    const sliderValueChange = (v) => {
-        _debounce(() => setSlider(v), 33);
+    const [report, setReport] = useState({ reportId: "", calories: "jdaskl", time: "time", speed: "speed", trash: "trash" })
+
+
+    const goToHome = async () => {
+        await addFeedback();
+        navigation.navigate("Running")
     }
 
-    const goToHome = () => {
-        navigation.navigate("Running")
+    const addFeedback = async () => {
+        const score = slider * 100;
+        const reportResponse = await tripService.addFeedback(report.reportId, score)
+        return reportResponse
+    }
+
+    useEffect(() => {
+        let reportId = "";
+        let calories = "";
+        let distance = "";
+        let speed = "";
+        let time = "";
+        let trash = "";
+
+        if (route['params'] && route.params['reportData'] && route.params['reportData']['calories']) calories = route.params['reportData']['calories'];
+        if (route['params'] && route.params['reportData'] && route.params['reportData']['distance(KM)']) distance = route.params['reportData']['distance(KM)'];
+        if (route['params'] && route.params['reportData'] && route.params['reportData']['speed(KMH)']) speed = route.params['reportData']['speed(KMH)'];
+        if (route['params'] && route.params['reportData'] && route.params['reportData']['time(S)']) time = route.params['reportData']['time(S)'];
+        if (route['params'] && route.params['reportData'] && route.params['reportData']['trash(KG)']) trash = route.params['reportData']['trash(KG)'];
+        if (route['params'] && route.params['reportData'] && route.params['reportData']['_id']) reportId = route.params['reportData']['_id'];
+        setReport({ reportId, calories, time, speed, trash, distance })
+    }, [route])
+
+    const handleMainTexts = () => {
+        function fancyTimeFormat(duration) {
+            // Hours, minutes and seconds
+            var hrs = ~~(duration / 3600);
+            var mins = ~~((duration % 3600) / 60);
+            var secs = ~~duration % 60;
+
+            // Output like "1:01" or "4:03:59" or "123:03:59"
+            var ret = "";
+            let isHours = false;
+            if (hrs > 0) {
+                ret += "" + hrs + ":" + (mins < 10 ? "0" : "");
+                isHours = true;
+            }
+
+            ret += "" + mins + ":" + (secs < 10 ? "0" : "");
+            ret += "" + secs;
+            return { result: ret, isHours };
+        }
+
+        let main = Math.round((report[selected]) * 100) / 100;
+        let subMain;
+        if (selected == 'time') {
+            const { result, isHours } = fancyTimeFormat(main);
+            main = result;
+            if (isHours) subMain = "hours"
+            else subMain = "minutes"
+        } else if (selected == 'speed') {
+            subMain = "km/hr"
+        }
+        else if (selected == 'calories') {
+            subMain = "calories"
+        } else if (selected == "trash") {
+            subMain = "kg"
+        }
+        return { main, subMain }
     }
 
     return (
@@ -38,7 +102,7 @@ const Report = ({ navigation }) => {
                     </View>
                     <Slider
                         value={slider}
-                        onValueChange={sliderValueChange}
+                        onValueChange={_debounce((v) => setSlider(v), 50)}
                         style={{ width: '80%', height: 50 }}
                         minimumValue={0}
                         maximumValue={1}
@@ -67,8 +131,8 @@ const Report = ({ navigation }) => {
                     Calories
                 </ThemedText>
                 <View style={bottomStyles.detailsContainer}>
-                    <ThemedText style={bottomStyles.detailsMain}>42:09</ThemedText>
-                    <ThemedText style={bottomStyles.detailsSub}>minutes</ThemedText>
+                    <ThemedText style={bottomStyles.detailsMain}>{handleMainTexts().main}</ThemedText>
+                    <ThemedText style={bottomStyles.detailsSub}>{handleMainTexts().subMain}</ThemedText>
                 </View>
                 <TouchableOpacity style={{ ...sharedStyles.button, width: '75%' }} activeOpacity={0.7} onPress={goToHome}>
                     <ThemedText style={{ ...sharedStyles.buttonText }}>Done</ThemedText>

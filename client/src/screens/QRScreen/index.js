@@ -31,8 +31,8 @@ const QRScreen = ({ navigation }) => {
     useEffect(() => {
         (async () => {
             if (selectedBarcode && isBarcodeScanned) {
-                await tripService.scanQR(selectedBarcode);
-                navigation.navigate("Report")
+                const reportData = await tripService.scanQR(selectedBarcode);
+                navigation.navigate("Report", { reportData, reportId: reportData['_id'] })
             }
         })();
     }, [selectedBarcode, isBarcodeScanned])

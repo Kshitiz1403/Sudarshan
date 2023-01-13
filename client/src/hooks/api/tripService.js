@@ -47,13 +47,27 @@ const useTripService = () => {
     const scanQR = async (payload) => {
         try {
             const authenticatedAxios = getAuthenticatedAxios('/trips', token);
-            const data = await authenticatedAxios.post('/scan', {
+            const reportData = await authenticatedAxios.post('/scan', {
                 tripId,
                 payload
             });
             dispatch(endTripAction());
-            return data;
+            return reportData;
 
+        } catch (e) {
+
+        }
+    }
+
+    const addFeedback = async (reportId, feedbackScore) => {
+        try {
+
+            const authenticatedAxios = getAuthenticatedAxios('/reports', token);
+            const report = await authenticatedAxios.post('/feedback', {
+                reportId,
+                feedback: feedbackScore
+            })
+            return report;
         } catch (e) {
 
         }
@@ -126,7 +140,7 @@ const useTripService = () => {
         })
     }
 
-    return { startTrip, endTrip, scanQR, checkIfReached }
+    return { startTrip, endTrip, scanQR, addFeedback, checkIfReached }
 }
 
 export default useTripService;

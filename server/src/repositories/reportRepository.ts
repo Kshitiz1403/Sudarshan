@@ -24,33 +24,12 @@ export class ReportRepository {
   };
 
   public getReportByTripId = async (tripId: ITrip['_id'], userId: ITrip['userId']) => {
-    const docs = await TripModel.aggregate([
-      {
-        $match: {
-          _id: tripId,
-          userId: userId,
-        },
-      },
-      {
-        $lookup: {
-          from: 'reports',
-          localField: '_id',
-          foreignField: 'tripId',
-          as: 'reports',
-        },
-      },
-      {
-        $unwind: {
-          path: '$reports',
-        },
-      },
-    ]);
-    if (!docs || docs.length == 0) return null;
-    return docs[0]['reports'];
+    const docs = await ReportModel.find({ userId, tripId });
+    return docs;
   };
 
   public getAllReports = async (userId: ITrip['userId']) => {
-    const docs = await ReportModel.find({ userId });
+    const docs = await ReportModel.find({ userId }).sort({ createdAt: -1 }).lean();
     return docs;
   };
 

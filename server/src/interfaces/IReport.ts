@@ -5,19 +5,21 @@ export interface IReport {
   _id: Types.ObjectId;
   userId: Types.ObjectId;
   tripId: Types.ObjectId;
-  calories: Number;
-  'distance(KM)': Number;
-  'time(S)': Number;
-  'speed(KMH)': Number;
-  'trash(KG)': Number;
-  userFeedback: Number;
+  calories: number;
+  'distance(KM)': number;
+  'time(S)': number;
+  'speed(KMH)': number;
+  'trash(KG)': number;
+  userFeedback: number;
+  createdAt: Date;
+  updatedAt: Date;
 }
 
 export interface IReportInputDTO {
   userId: IUser['_id'];
   tripId: IReport['tripId'];
   calories: IReport['calories'];
-  'distance(KM)': Number;
+  'distance(KM)': IReport['distance(KM)'];
   'time(S)': IReport['time(S)'];
   'speed(KMH)': IReport['speed(KMH)'];
   'trash(KG)': IReport['trash(KG)'];

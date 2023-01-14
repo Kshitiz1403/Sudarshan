@@ -12,4 +12,6 @@ export default (app: Router) => {
   app.use('/reports', route);
 
   route.post('/feedback', middlewares.isAuth, ctrl.addFeedback);
+
+  route.get('/previous', middlewares.isAuth, ctrl.getPreviousWalks);
 };

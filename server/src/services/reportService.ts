@@ -5,6 +5,7 @@ import { ReportRepository } from '@/repositories/reportRepository';
 import { TripRepository } from '@/repositories/tripRepository';
 import { Inject, Service } from 'typedi';
 import { Logger } from 'winston';
+import dayjs from 'dayjs';
 
 @Service()
 export class ReportService {
@@ -64,6 +65,41 @@ export class ReportService {
     }
   };
 
+  public getPreviousWalks = async (userId: ITrip['userId']) => {
+    try {
+      this.logger.silly('Getting all reports for userId', userId);
+
+      const reports = await this.reportRepositoryInstance.getAllReports(userId); // sorted in descending order
+     
+      const results = [];
+     
+      for (let i = 0; i < reports.length; i++) {
+        const report = reports[i];
+
+        let previousReport = {};
+        if (i < reports.length - 1) previousReport = reports[i + 1]; //since they are in descending order
+        
+        const obj = {};
+        obj['date'] = dayjs(report['createdAt']).format('DD MMMM');
+        obj['distance'] = `${Math.round(report['distance(KM)'] * 100) / 100} km`;
+        obj['calories'] = `${Math.round(report['calories'] * 100) / 100} g`;
+        
+        const caloriesDelta = report['calories'] - (previousReport['calories'] || 0);
+        const distanceDelta = report['distance(KM)'] - (previousReport['distance(KM)'] || 0);
+        const changeInCalories = caloriesDelta / report['calories'];
+        const changeInDistance = distanceDelta / report['distance(KM)'];
+        obj['changeInCalories'] = changeInCalories;
+        obj['changeInDistance'] = changeInDistance;
+        
+        results.push(obj);
+      }
+
+      return results;
+    } catch (e) {
+      throw e;
+    }
+  };
+
   public getAllReports = async (userId: ITrip['userId']) => {
     try {
       this.logger.silly('Getting all reports for userId', userId);
@@ -87,7 +123,7 @@ export class ReportService {
     }
   };
 
-  public takeFeedback = async(reportId: IReport['_id'], userFeedback: IReport['userFeedback']) => {
+  public takeFeedback = async (reportId: IReport['_id'], userFeedback: IReport['userFeedback']) => {
     try {
       this.logger.silly('Putting feedback for report id', reportId);
 

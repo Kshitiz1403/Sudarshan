@@ -73,6 +73,16 @@ const useTripService = () => {
         }
     }
 
+    const getPreviousWalks = async () => {
+        try {
+            const authenticatedAxios = getAuthenticatedAxios('/reports', token);
+            const reports = await authenticatedAxios.get('/previous');
+            return reports;
+        } catch (e) {
+
+        }
+    }
+
     const checkIfReached = () => {
         const dustbin_location = { latitude: selectedDustbin.dustbin_location.lat, longitude: selectedDustbin.dustbin_location.lng };
         if (distanceBetweenTwoCoordinates(dustbin_location, sourceLocation) <= 50) { //we are standing 50 meters apart from the dustbin
@@ -140,7 +150,7 @@ const useTripService = () => {
         })
     }
 
-    return { startTrip, endTrip, scanQR, addFeedback, checkIfReached }
+    return { startTrip, endTrip, scanQR, addFeedback, getPreviousWalks, checkIfReached }
 }
 
 export default useTripService;

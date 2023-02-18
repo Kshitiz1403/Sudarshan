@@ -4,6 +4,7 @@ import { resolve } from 'path';
 import { Inject, Service } from 'typedi';
 import { Logger } from 'winston';
 import { StorageService } from './storageService';
+import { unlink } from 'fs/promises';
 
 @Service()
 export default class UserService {
@@ -60,6 +61,7 @@ export default class UserService {
       const fileType = file.mimetype;
 
       const { url } = await this.storageServiceInstance.uploadToStore(fileName, path, metaData, fileType);
+      unlink(path);
       const userRecord = await this.userRepositoryInstance.addProfileURL(userId, url);
 
       const user = { ...userRecord };

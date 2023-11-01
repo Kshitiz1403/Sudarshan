@@ -8,6 +8,7 @@ export default async (): Promise<Db> => {
     useCreateIndex: true,
     useUnifiedTopology: true,
     useFindAndModify: false,
+    dbName: config.dbName,
   });
   return connection.connection.db;
 };

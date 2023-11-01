@@ -19,6 +19,8 @@ export default {
    */
   databaseURL: process.env.MONGODB_URI,
 
+  dbName: process.env.DB_NAME,
+
   /**
    * Your secret sauce
    */

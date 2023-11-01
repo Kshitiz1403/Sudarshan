@@ -1,0 +1,71 @@
+version: "3.9"
+
+services:
+  server:
+    build: ./server
+    deploy:
+      restart_policy:
+        condition: on-failure
+        max_attempts: 5
+    ports:
+      - 3978:${PORT}
+    networks:
+      - sudarshan-network
+    depends_on:
+      - redis
+      - mongodb
+    environment:
+      JWT_SECRET: ${JWT_SECRET}
+      JWT_ALGO: ${JWT_ALGO}
+      MONGODB_URI: ${MONGODB_URI}
+      PORT: ${PORT}
+      NODE_ENV: ${NODE_ENV}
+      AZURE_EMAIL_CONNECTION_STRING: ${AZURE_EMAIL_CONNECTION_STRING}
+      AZURE_EMAIL_SENDER: ${AZURE_EMAIL_SENDER}
+      AZURE_BLOB_STORAGE_CONNECTION_STRING: ${AZURE_BLOB_STORAGE_CONNECTION_STRING}
+      GOOGLE_CLOUD_MAPS_API_KEY: ${GOOGLE_CLOUD_MAPS_API_KEY}
+      REDIS_HOST: ${REDIS_HOST}
+      REDIS_PORT: ${REDIS_PORT}
+
+  mock-dustbins:
+    build: ./mock-dustbins
+    deploy:
+      restart_policy:
+        condition: on-failure
+        max_attempts: 5
+    ports:
+      - 3977:4001
+    networks:
+      - sudarshan-network
+
+  mongodb:
+    image: mongo
+    deploy:
+      restart_policy:
+        condition: on-failure
+        max_attempts: 5
+    networks:
+      - sudarshan-network
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: admin
+      MONGO_INITDB_DATABASE: dev
+    volumes:
+      - sudarshan-volume:/data/db
+
+  redis:
+    image: "bitnami/redis:latest"
+    deploy:
+      restart_policy:
+        condition: on-failure
+        max_attempts: 5
+    environment:
+      - ALLOW_EMPTY_PASSWORD=yes
+    networks:
+      - sudarshan-network
+
+networks:
+  sudarshan-network:
+
+volumes:
+  sudarshan-volume:

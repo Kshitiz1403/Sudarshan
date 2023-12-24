@@ -3,10 +3,7 @@ version: "3.9"
 services:
   server:
     build: ./server
-    deploy:
-      restart_policy:
-        condition: on-failure
-        max_attempts: 5
+    restart: unless-stopped
     ports:
       - 3978:${PORT}
     networks:
@@ -30,10 +27,7 @@ services:
 
   mock-dustbins:
     build: ./mock-dustbins
-    deploy:
-      restart_policy:
-        condition: on-failure
-        max_attempts: 5
+    restart: unless-stopped
     ports:
       - 3977:4001
     networks:
@@ -41,10 +35,7 @@ services:
 
   mongodb:
     image: mongo
-    deploy:
-      restart_policy:
-        condition: on-failure
-        max_attempts: 5
+    restart: unless-stopped
     networks:
       - sudarshan-network
     environment:
@@ -56,10 +47,7 @@ services:
 
   redis:
     image: "bitnami/redis:latest"
-    deploy:
-      restart_policy:
-        condition: on-failure
-        max_attempts: 5
+    restart: unless-stopped
     environment:
       - ALLOW_EMPTY_PASSWORD=yes
     networks:
